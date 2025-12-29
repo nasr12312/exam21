@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body { font-family: 'Tajawal', sans-serif; background: #f1f5f9; padding: 20px; }
+  .header-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+  .card-stat { background: white; padding: 25px; border-radius: 16px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; overflow: hidden; height: 100%; }
+  .card-stat:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .stat-icon { position: absolute; left: -15px; bottom: -15px; font-size: 100px; opacity: 0.08; transform: rotate(15deg); }
+  .stat-num { font-size: 40px; font-weight: 800; color: #2563eb; margin-top: 10px; }
+  .control-panel { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+  .nav-pills .nav-link { background: #e2e8f0; color: #475569; margin-left: 10px; border-radius: 10px; font-weight: bold; padding: 12px 25px; transition:0.3s; }
+  .nav-pills .nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+  .voucher { border: 2px dashed #333; background: white; display: flex; margin-bottom: 10px; page-break-inside: avoid; position: relative; border-radius: 8px; overflow: hidden; height: 100px; }
+  .v-main { flex: 1; padding: 10px; text-align: center; border-left: 2px dashed #333; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .v-side { width: 40px; background: #eee; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-weight: bold; font-size: 12px; letter-spacing: 2px; }
+  .v-code { font-family: 'Courier New', monospace; font-weight: 900; font-size: 22px; background: #000; color: #fff; padding: 2px 10px; margin: 5px 0; border-radius: 4px; letter-spacing: 2px; }
+  .id-card-wrap { width: 350px; height: 210px; position: relative; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); margin: 15px auto; display: flex; page-break-inside: avoid; border: 1px solid #e2e8f0; }
+  .id-header { position: absolute; top:0; left:0; width:100%; height: 50px; background: linear-gradient(90deg, #1e3a8a, #2563eb); z-index: 1; }
+  .id-header::after { content: ''; position: absolute; bottom: -20px; left: 0; width: 100%; height: 40px; background: white; border-radius: 50% 50% 0 0; }
+  .id-content { width: 100%; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; margin-top: 20px; }
+  .id-photo { width: 90px; height: 90px; border-radius: 50%; border: 4px solid white; object-fit: cover; background: #ddd; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 10px; z-index: 3; }
+  .id-info { text-align: center; line-height: 1.4; }
+  .id-qr { position: absolute; bottom: 10px; left: 10px; width: 50px; opacity: 0.8; }
+  .id-badge { background: #f59e0b; color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; position: absolute; top: 10px; right: 10px; z-index: 5; }
+  @media print {
+      @page { size: A4; margin: 5mm; }
+      body { background: white; padding: 0; font-size: 12px; }
+      .no-print, .header-card, .nav, .stat-card, .control-panel, .btn { display: none !important; }
+      .print-grid-vouchers { display: grid !important; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+      .print-grid-ids { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .voucher { border: 1px solid #000; box-shadow: none; break-inside: avoid; }
+      .id-card-wrap { border: 1px solid #000; margin: 0; width: 100%; height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container-fluid">
+  
+  <div class="header-card d-flex justify-content-between align-items-center no-print">
+    <div>
+       <h2 class="fw-bold mb-1"><i class="fas fa-school"></i> لوحة الإدارة التعليمية</h2>
+       <p class="mb-0 text-white-50" style="font-size:16px">أهلاً بك أستاذ عبد الرحمن | التحكم الكامل</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-warning fw-bold btn-lg"><i class="fas fa-print"></i> طباعة</button>
+    </div>
+  </div>
+
+  <ul class="nav nav-pills mb-4 no-print" id="pills-tab" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-home">🏠 الرئيسية</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-students" onclick="loadIds()">👥 الطلاب</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-leaderboard" onclick="loadLeaderboard()">🏆 المتصدرين</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-library" onclick="loadLibrary()">📚 المتجر</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-results" onclick="loadResults()">📋 النتائج</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-assign" onclick="loadAssign()">📝 الواجبات</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-complaints" onclick="loadComp()">📨 الشكاوى</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-settings" onclick="loadSettings()">⚙️ إعدادات</button></li>
+  </ul>
+
+  <div class="tab-content" id="pills-tabContent">
+    
+    <div class="tab-pane fade show active" id="pills-home">
+        <div class="row mb-4 no-print">
+            <div class="col-md-3"><div class="card-stat"><h5 class="text-secondary">الطلاب المسجلين</h5><div id="s-cnt" class="stat-num">-</div><i class="fas fa-user-graduate stat-icon text-primary"></i></div></div>
+            <div class="col-md-3"><div class="card-stat"><h5 class="text-secondary">الامتحانات النشطة</h5><div id="e-cnt" class="stat-num">-</div><i class="fas fa-file-contract stat-icon text-warning"></i></div></div>
+            <div class="col-md-6">
+               <div class="card-stat" style="background: linear-gradient(135deg, #eff6ff, #fff);">
+                  <label class="fw-bold mb-3 text-primary"><i class="fas fa-plus-circle"></i> توليد أكواد تفعيل جديدة</label>
+                  <div class="input-group input-group-lg">
+                      <input id="gen-count" type="number" class="form-control" placeholder="العدد" style="max-width:100px">
+                      <input id="gen-cls" class="form-control" placeholder="اكتب الصف يدوياً (مثال: الثامن أ)">
+                      <button onclick="generate()" class="btn btn-primary px-4 fw-bold">توليد <i class="fas fa-magic"></i></button>
+                  </div>
+               </div>
+            </div>
+        </div>
+        
+        <div class="control-panel no-print">
+            <h5><i class="fas fa-filter"></i> فلترة الطباعة (الأكواد)</h5>
+            <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <label>اختر الصف للطباعة:</label>
+                    <select id="f-cls" class="form-select" onchange="render()"><option value="all">كل الصفوف</option></select>
+                </div>
+                <div class="col-md-4">
+                     <label>الحالة:</label>
+                     <select id="f-sts" class="form-select" onchange="render()"><option value="New">🟢 أكواد جديدة (غير مستخدمة)</option><option value="Used">🔴 مستخدمة</option><option value="all">الكل</option></select>
+                </div>
+                <div class="col-md-4">
+                    <br>
+                    <button onclick="deleteUsedCodes()" class="btn btn-danger w-100"><i class="fas fa-trash"></i> تنظيف المستخدم</button>
+                </div>
+            </div>
+            <div class="mt-2 fw-bold text-center bg-light p-2 rounded" id="count-lbl"></div>
+        </div>
+        <div id="code-container" class="print-grid-vouchers"></div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-students">
+         <div class="control-panel no-print">
+             <h4><i class="fas fa-tools"></i> أدوات إدارة الطلاب</h4>
+             <div class="row g-2">
+                 <div class="col-md-4"><input id="m-email" class="form-control" placeholder="بريد الطالب (للإجراءات)"></div>
+                 <div class="col-md-4"><input id="m-pass" class="form-control" placeholder="كلمة مرور جديدة"></div>
+                 <div class="col-md-2"><button onclick="resetPass()" class="btn btn-warning w-100">تغيير الباسوورد</button></div>
+                 <div class="col-md-2"><button onclick="delStudent()" class="btn btn-danger w-100">حذف الطالب</button></div>
+             </div>
+         </div>
+         <div id="ids-grid" class="print-grid-ids row">جاري التحميل...</div>
+    </div>
+    
+    <div class="tab-pane fade" id="pills-leaderboard">
+        <div class="control-panel d-flex gap-2">
+            <select id="lead-cls" class="form-select w-25" onchange="loadLeaderboard()"><option value="all">كل الصفوف</option><option value="الرابع">الرابع</option><option value="الخامس">الخامس</option><option value="التاسع">التاسع</option></select>
+            <button onclick="loadLeaderboard()" class="btn btn-primary"><i class="fas fa-sync"></i> تحديث الترتيب</button>
+        </div>
+        <div class="card border-0 shadow-sm">
+            <table class="table table-hover mb-0 text-center"><thead class="table-dark"><tr><th>#</th><th>الطالب</th><th>الصف</th><th>مجموع الدرجات</th><th>عدد الامتحانات</th></tr></thead><tbody id="leader-body"></tbody></table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-results">
+        <div class="control-panel d-flex gap-2">
+            <input type="text" id="res-search" class="form-control" placeholder="🔍 بحث عن طالب..." onkeyup="filterResults()">
+            <select id="res-cls-filter" class="form-select w-25" onchange="filterResults()"><option value="all">كل الصفوف</option></select>
+            <button onclick="exportToExcel()" class="btn btn-success text-nowrap"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+        </div>
+        <div class="card border-0 shadow-sm"><table class="table table-hover mb-0" id="res-table"><thead class="table-light"><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>الامتحان</th><th>الدرجة</th><th>غش؟</th><th>إجراءات</th></tr></thead><tbody id="res-body"></tbody></table></div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-library">
+        <div class="row"><div class="col-md-4"><div class="control-panel"><h5 class="fw-bold mb-3"><i class="fas fa-plus"></i> إضافة للمتجر</h5><input id="lib-title" class="form-control mb-2" placeholder="العنوان"><select id="lib-type" class="form-select mb-2"><option value="PDF">📄 PDF</option><option value="Video">🎥 فيديو</option><option value="News">📢 خبر</option><option value="Link">🔗 رابط</option></select><input id="lib-cls" class="form-control mb-2" placeholder="الصف"><input id="lib-link" class="form-control mb-3" placeholder="الرابط"><button onclick="addLib()" class="btn btn-primary w-100">نشر</button></div></div><div class="col-md-8"><div class="card border-0 shadow-sm"><div class="card-body p-0"><table class="table table-striped mb-0"><thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead><tbody id="lib-body"></tbody></table></div></div></div></div>
+    </div>
+    
+    <div class="tab-pane fade" id="pills-assign">
+        <div class="card border-0 shadow-sm"><table class="table table-hover"><thead class="table-light"><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>الوصف</th><th>الملف</th><th>الدرجة</th><th>رصد</th></tr></thead><tbody id="ass-body"></tbody></table></div>
+    </div>
+    
+    <div class="tab-pane fade" id="pills-complaints">
+        <div class="card border-0 shadow-sm"><table class="table"><thead class="table-light"><tr><th>التاريخ</th><th>الطالب</th><th>الرسالة</th><th>الرد الحالي</th><th>رد المعلم</th></tr></thead><tbody id="comp-body"></tbody></table></div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-settings">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="control-panel">
+                    <h4><i class="fas fa-user-tie"></i> بيانات المعلم & الواتساب</h4>
+                    <p class="text-muted">هذه البيانات تظهر للطالب في لوحته.</p>
+                    <label>اسم المعلم:</label>
+                    <input id="sett-name" class="form-control mb-2" placeholder="أ. عبد الرحمن نصر الله">
+                    <label>رابط مجموعة الواتساب:</label>
+                    <input id="sett-wa" class="form-control mb-2" placeholder="https://chat.whatsapp.com/...">
+                    <label>وضع الصيانة:</label>
+                    <select id="sett-maint" class="form-select mb-3"><option value="Off">تعطيل (المنصة تعمل)</option><option value="On">تفعيل (إغلاق المنصة)</option></select>
+                    <button onclick="saveSettings()" class="btn btn-primary w-100">حفظ الإعدادات العامة</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="control-panel">
+                    <h4><i class="fas fa-paper-plane"></i> إرسال رسائل (Notifications)</h4>
+                    <label>اختر الهدف:</label>
+                    <select id="msg-target" class="form-select mb-2"><option value="All">الجميع</option><option value="الرابع">الرابع</option><option value="الخامس">الخامس</option><option value="التاسع">التاسع</option></select>
+                    <label>الرسالة:</label>
+                    <textarea id="msg-text" class="form-control mb-2" rows="3"></textarea>
+                    <button onclick="sendMsg()" class="btn btn-danger w-100">إرسال الإشعار</button>
+                </div>
+            </div>
+        </div>
+        <div class="control-panel mt-3">
+             <h4><i class="fas fa-eye-slash"></i> التحكم بظهور الامتحانات</h4>
+             <div id="exams-control-list">جاري التحميل...</div>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ===========================================
+// ⚠️ هام: استبدل الرابط أدناه برابط النشر الخاص بك
+const API_URL = "https://script.google.com/macros/s/AKfycbziRaSTjVRhkF15Xti9SV_4zTvXz4uzALbPS7wXLbHJpTQfEwQv5a2oyNOTfS8mNqsVmg/exec";
+// ===========================================
+
+async function callApi(action, data = {}) {
+    data.action = action;
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        return {success: false, message: 'خطأ في الاتصال'};
+    }
+}
+
+let allData=[], allResults=[];
+
+window.onload = function() { 
+    callApi('getAdminData').then(data => init(data)); 
+};
+
+function init(data) {
+  allData = data.codes;
+  document.getElementById('s-cnt').innerText = data.stats.students;
+  document.getElementById('e-cnt').innerText = data.stats.exams;
+  if(data.settings) {
+      if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
+      if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
+      if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
+  }
+  let classes = [...new Set(allData.map(i=>i.cls))];
+  let sel = document.getElementById('f-cls');
+  let resSel = document.getElementById('res-cls-filter');
+  classes.forEach(c => { 
+      if(c){ 
+          let o = document.createElement('option'); o.value = c; o.innerText = c; 
+          sel.appendChild(o.cloneNode(true));
+          resSel.appendChild(o.cloneNode(true));
+      } 
+  });
+  render();
+}
+
+function render() {
+  let cls = document.getElementById('f-cls').value;
+  let sts = document.getElementById('f-sts').value;
+  let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
+  document.getElementById('count-lbl').innerText = "العدد الظاهر: " + filtered.length;
+  let h = '';
+  filtered.forEach(c => {
+    h += `<div class="voucher"><div class="v-main"><h6 class="fw-bold text-dark m-0">منصة العربية لغتي</h6><div class="badge bg-warning text-dark my-1">${c.cls}</div><div class="v-code">${c.code}</div></div><div class="v-side">CODE</div></div>`;
+  });
+  document.getElementById('code-container').innerHTML = h || '<div class="col-12 text-center py-5 text-muted">لا توجد بيانات</div>';
+}
+
+function generate() {
+  let count = document.getElementById('gen-count').value, cls = document.getElementById('gen-cls').value;
+  if(!count || !cls) return alert('أدخل العدد واسم الصف');
+  document.querySelector('.tab-content').style.opacity = '0.5';
+  callApi('generateNewCodes', {count:count, cls:cls}).then(res => { alert(res); location.reload(); });
+}
+
+function deleteUsedCodes(){
+    if(confirm('هل أنت متأكد من حذف جميع الأكواد المستخدمة؟ لا يمكن التراجع.')) {
+        callApi('deleteUsedCodes').then(alert);
+    }
+}
+
+function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data; renderResults(data); }); }
+function renderResults(data) {
+    let tbody = document.getElementById('res-body');
+    if(!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center">لا توجد نتائج</td></tr>'; return; }
+    let h = '';
+    data.forEach(r => {
+        h += `<tr><td>${r.date}</td><td class="fw-bold">${r.name}</td><td>${r.cls}</td><td>${r.exam}</td><td><span class="badge ${parseInt(r.score)>=50?'bg-success':'bg-danger'}">${r.score}</span></td><td>${r.cheats>0?'<span class="text-danger fw-bold">'+r.cheats+'</span>':'-'}</td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteRes(${r.rowId})"><i class="fas fa-trash"></i> إعادة</button></td></tr>`;
+    });
+    tbody.innerHTML = h;
+}
+function filterResults() {
+    let q = document.getElementById('res-search').value.toLowerCase();
+    let cls = document.getElementById('res-cls-filter').value;
+    let filtered = allResults.filter(r => (r.name.toLowerCase().includes(q) || r.exam.toLowerCase().includes(q)) && (cls === 'all' || r.cls === cls));
+    renderResults(filtered);
+}
+function deleteRes(rowId) { if(!confirm('تأكيد الحذف؟')) return; callApi('deleteResultRow', {rowId:rowId}).then(msg => { alert(msg); loadResults(); }); }
+function exportToExcel() {
+    let csv = "data:text/csv;charset=utf-8,\uFEFFالتاريخ,الطالب,الصف,الامتحان,الدرجة,غش\n";
+    allResults.forEach(r => { csv += `${r.date},${r.name},${r.cls},${r.exam},${r.score},${r.cheats}\n`; });
+    let link = document.createElement("a"); link.href = encodeURI(csv); link.download = "نتائج.csv"; link.click();
+}
+
+function loadLibrary() {
+    callApi('getLibraryForAdmin').then(list => {
+        let h = '';
+        list.forEach(i => {
+            let icon = i.type=='PDF'?'fa-file-pdf text-danger':(i.type=='Video'?'fa-video text-primary':'fa-bullhorn text-warning');
+            h += `<tr><td><i class="fas ${icon} me-2"></i> ${i.title}</td><td>${i.type}</td><td>${i.cls||'الكل'}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`;
+        });
+        document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center">المكتبة فارغة</td></tr>';
+    });
+}
+function addLib() {
+    let d = { title: document.getElementById('lib-title').value, type: document.getElementById('lib-type').value, cls: document.getElementById('lib-cls').value, link: document.getElementById('lib-link').value };
+    if(!d.title || !d.link) return alert('البيانات ناقصة');
+    callApi('addToLibrary', {d:d}).then(r=>{ alert(r); loadLibrary(); });
+}
+function delLib(id) { if(confirm('حذف؟')) callApi('deleteLibraryItem', {rowId:id}).then(r=>{ loadLibrary(); }); }
+
+function loadAssign() {
+    callApi('getAssignmentsForAdmin').then(list => {
+        let h = '';
+        list.forEach(i => {
+            h += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.type}</td><td>${i.desc}</td><td><a href="${i.link}" target="_blank" class="btn btn-sm btn-primary">مشاهدة</a></td><td><input id="g-${i.rowId}" value="${i.grade}" style="width:60px" class="form-control form-control-sm"></td><td><button onclick="saveGrade(${i.rowId})" class="btn btn-sm btn-success">حفظ</button></td></tr>`;
+        });
+        document.getElementById('ass-body').innerHTML = h || '<tr><td colspan="7">لا توجد واجبات</td></tr>';
+    });
+}
+function saveGrade(id) { let g = document.getElementById('g-'+id).value; callApi('gradeAssignment', {rowId:id, grade:g}).then(r => alert(r)); }
+
+function loadComp() {
+    callApi('getComplaintsForAdmin').then(list => {
+        let h = '';
+        if(list.length === 0) h = '<tr><td colspan="5" class="text-center text-muted">لا توجد شكاوى أو رسائل جديدة</td></tr>';
+        else list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td class="text-danger">${i.msg}</td><td>${i.reply || '-'}</td><td><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-info text-white">رد</button></td></tr>`; });
+        document.getElementById('comp-body').innerHTML = h;
+    });
+}
+function replyComp(id) {
+    let r = prompt("اكتب الرد للطالب:");
+    if(r) callApi('replyToComplaint', {rowId:id, reply:r}).then(alert);
+}
+
+function saveSettings() {
+    let s = { 'TeacherName': document.getElementById('sett-name').value, 'WhatsApp': document.getElementById('sett-wa').value, 'Maintenance': document.getElementById('sett-maint').value };
+    callApi('saveGeneralSettings', {s:s}).then(alert);
+}
+function sendMsg() {
+    let t = document.getElementById('msg-target').value; let m = document.getElementById('msg-text').value; if(!m) return alert('اكتب الرسالة');
+    callApi('sendTargetedMessage', {target:t, msg:m}).then(alert);
+}
+
+function loadIds() {
+    callApi('getStudentsForCards').then(list => {
+        let h = '';
+        if(!list || list.length === 0) h = '<div class="alert alert-warning">لا يوجد طلاب</div>';
+        else list.forEach(s => {
+            let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(s.email);
+            let img = s.photo ? s.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            h += `<div class="col-md-6 mb-3"><div class="id-card-wrap"><div class="id-header"></div><div class="id-badge">${s.cls}</div><div class="id-content"><img src="${img}" class="id-photo"><div class="id-info"><h5 class="fw-bold mb-0 text-dark">${s.name}</h5><small class="text-muted">${s.email}</small></div><img src="${qr}" class="id-qr"></div></div></div>`;
+        });
+        document.getElementById('ids-grid').innerHTML = h;
+    });
+}
+
+function resetPass(){ let e = document.getElementById('m-email').value, p = document.getElementById('m-pass').value; if(!e || !p) return alert('البيانات ناقصة'); callApi('adminResetPass', {email:e, newPass:p}).then(alert); }
+function delStudent(){ let e = document.getElementById('m-email').value; if(!e) return alert('أدخل البريد'); if(!confirm('حذف نهائي؟')) return; callApi('deleteStudent', {email:e}).then(alert); }
+
+function loadLeaderboard() {
+    let cls = document.getElementById('lead-cls').value;
+    document.getElementById('leader-body').innerHTML = '<tr><td colspan="5">جاري التحميل...</td></tr>';
+    callApi('getGlobalLeaderboard', {filterCls:cls}).then(list => {
+        let h = '';
+        if(list.length === 0) h = '<tr><td colspan="5">لا توجد بيانات</td></tr>';
+        else list.forEach((s, index) => {
+            let medal = index===0?'🥇':(index===1?'🥈':(index===2?'🥉':(index+1)));
+            h += `<tr><td><span class="fs-5">${medal}</span></td><td class="fw-bold text-primary">${s.name}</td><td>${s.cls}</td><td><span class="badge bg-success fs-6">${s.totalScore}</span></td><td>${s.examsCount}</td></tr>`;
+        });
+        document.getElementById('leader-body').innerHTML = h;
+    });
+}
+
+function loadSettings() {
+    callApi('getExamsForAdminControl').then(list => {
+        let h = '<ul class="list-group">';
+        list.forEach(ex => {
+            let btn = ex.status == 'Hidden' ? `<button class="btn btn-sm btn-success" onclick="togEx('${ex.title}', 'Active')">إظهار</button>` : `<button class="btn btn-sm btn-warning" onclick="togEx('${ex.title}', 'Hidden')">إخفاء</button>`;
+            h += `<li class="list-group-item d-flex justify-content-between align-items-center">${ex.title} (${ex.cls}) ${btn}</li>`;
+        });
+        h += '</ul>';
+        document.getElementById('exams-control-list').innerHTML = h;
+    });
+}
+function togEx(title, st) { callApi('toggleExamVisibility', {title:title, status:st}).then(r => { alert(r); loadSettings(); }); }
+</script>
+</body>
+</html>
