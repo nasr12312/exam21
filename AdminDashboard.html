@@ -171,7 +171,16 @@
             <div class="col-md-6">
                 <div class="control-panel">
                     <h4><i class="fas fa-bell"></i> إرسال إشعار</h4>
-                    <select id="msg-target" class="form-select mb-2"><option value="All">للجميع</option></select>
+                    <select id="msg-target" class="form-select mb-2">
+                        <option value="All">للجميع</option>
+                        <option value="الرابع">الرابع</option>
+                        <option value="الخامس">الخامس</option>
+                        <option value="السادس">السادس</option>
+                        <option value="السابع">السابع</option>
+                        <option value="الثامن">الثامن</option>
+                        <option value="التاسع">التاسع</option>
+                        <option value="العاشر">العاشر</option>
+                    </select>
                     <textarea id="msg-text" class="form-control mb-2" placeholder="الرسالة..."></textarea>
                     <button onclick="sendMsg()" class="btn btn-danger w-100">إرسال</button>
                 </div>
@@ -184,7 +193,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ===========================================
-// ⚠️ رابط السيرفر (تأكد أنه صحيح)
+// ⚠️ رابط السيرفر
 const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec";
 // ===========================================
 
@@ -215,7 +224,7 @@ function init(data) {
       if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
   }
 
-  // تعبئة روابط التواصل (الجزء الجديد)
+  // تعبئة روابط التواصل
   if(data.socials) {
       document.getElementById('social-facebook').value = data.socials.facebook || '';
       document.getElementById('social-instagram').value = data.socials.instagram || '';
@@ -257,7 +266,7 @@ function deleteUsedCodes(){
     if(confirm('تأكيد حذف الأكواد المستخدمة؟')) callApi('deleteUsedCodes').then(alert);
 }
 
-// === حفظ الروابط الاجتماعية (الدالة الجديدة) ===
+// === حفظ الروابط الاجتماعية ===
 function saveSocialLinks() {
     let links = {
         'Facebook': document.getElementById('social-facebook').value,
@@ -362,4 +371,3 @@ function sendMsg() { let t = document.getElementById('msg-target').value; let m 
 </script>
 </body>
 </html>
-
