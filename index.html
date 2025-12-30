@@ -280,7 +280,7 @@
 
 <script>
 // ===========================================
-// ⚠️ هام: تم وضع رابط النشر الخاص بك هنا
+// ⚠️ هام: تأكد من أن رابط API_URL هو الرابط الخاص بك
 const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec";
 // ===========================================
 
@@ -290,14 +290,13 @@ let token = localStorage.getItem('tk');
 let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
 const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
 
-// === الدالة الجديدة لتنظيف الرابط (تمت إضافتها) ===
+// ✅ دالة جديدة: تنظيف الرابط من ?exam=... والعودة للرئيسية
 function cleanUrlAndDash() {
     const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.pushState({path:cleanURL},'',cleanURL);
     loadDash();
 }
 
-// === دالة الاتصال بالسيرفر ===
 async function callApi(action, data = {}) {
     data.action = action;
     try {
@@ -312,70 +311,54 @@ async function callApi(action, data = {}) {
     }
 }
 
-// === عند تحميل الصفحة ===
 window.onload = function() {
   document.getElementById('stamp-img').src = STAMP_URL;
   
-  // معالجة الروابط المباشرة للامتحانات
+  // 1. قراءة اسم الامتحان من رابط المتصفح
   const urlParams = new URLSearchParams(window.location.search);
   const examName = urlParams.get('exam');
 
   if (examName) {
       sessionStorage.setItem('pending', examName);
+      // ⚠️ تنظيف الرابط بصرياً فوراً لمنع التكرار عند التحديث، ولكن الاحتفاظ به في الذاكرة
+      window.history.replaceState({}, document.title, window.location.pathname);
   }
 
-  // التحقق من تسجيل الدخول
+  // 2. التحقق من الدخول
   if(token) {
       checkPending(); 
   } else {
       document.getElementById('v-login').classList.remove('hidden');
   }
-  
-  // نظام منع الغش (مراقبة التبويب)
+
   document.addEventListener("visibilitychange", () => {
     if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
         st.cheats++;
         Swal.fire({ icon: 'warning', title: 'تحذير!', text: 'الخروج من الامتحان ممنوع!', timer: 3000, showConfirmButton: false });
     }
   });
-  
-  // التحقق الدوري من الرسائل والإشعارات
-  setInterval(checkMsgs, 60000); // كل دقيقة
+  setInterval(checkMsgs, 60000); 
   checkBroadcast();
 };
 
-// === التنقل بين التبويبات ===
 function switchTab(tabId, el) {
     ['exams', 'library', 'leader', 'history', 'assign', 'contact', 'notes'].forEach(id => document.getElementById('tab-'+id).classList.add('hidden'));
     document.getElementById('tab-'+tabId).classList.remove('hidden');
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    
-    // تحميل بيانات خاصة بالتبويب
     if(tabId === 'history') loadStats();
     if(tabId === 'notes') loadNotes();
     if(tabId === 'contact') loadMsgHistory();
 }
 
-// === الوضع الليلي / النهاري ===
 function toggleTheme() {
     let b = document.body;
-    if(b.getAttribute('data-theme') == 'light') {
-        b.setAttribute('data-theme', 'dark');
-        document.getElementById('theme-icon').className = 'fas fa-moon';
-    } else {
-        b.setAttribute('data-theme', 'light');
-        document.getElementById('theme-icon').className = 'fas fa-sun';
-    }
+    if(b.getAttribute('data-theme') == 'light') { b.setAttribute('data-theme', 'dark'); document.getElementById('theme-icon').className = 'fas fa-moon'; } 
+    else { b.setAttribute('data-theme', 'light'); document.getElementById('theme-icon').className = 'fas fa-sun'; }
 }
 
-// === التبديل بين الدخول والتسجيل ===
-function tog(r){ 
-    document.getElementById('f-log').classList.toggle('hidden',r); 
-    document.getElementById('f-reg').classList.toggle('hidden',!r); 
-}
+function tog(r){ document.getElementById('f-log').classList.toggle('hidden',r); document.getElementById('f-reg').classList.toggle('hidden',!r); }
 
-// === قراءة الصورة عند التسجيل ===
 function readP(i){ 
   if(i.files[0]){ 
     let r=new FileReader(); 
@@ -393,7 +376,6 @@ function readP(i){
   } 
 }
 
-// === دوال المصادقة (دخول، تسجيل، خروج) ===
 function login(){
   let e=document.getElementById('le').value, p=document.getElementById('lp').value;
   ld(1); 
@@ -413,16 +395,12 @@ function reg(){
   });
 }
 
-function sv(r){ 
-  localStorage.setItem('tk',r.token); localStorage.setItem('nm',r.name); localStorage.setItem('cl',r.classLevel); 
-  if(r.photo && r.photo.length > 50) localStorage.setItem('ph', r.photo);
-  token=r.token; 
-}
+function sv(r){ localStorage.setItem('tk',r.token); localStorage.setItem('nm',r.name); localStorage.setItem('cl',r.classLevel); if(r.photo && r.photo.length > 50) localStorage.setItem('ph', r.photo); token=r.token; }
 
 function checkPending(){ 
     let p = sessionStorage.getItem('pending'); 
     if(p){ 
-        sessionStorage.removeItem('pending'); 
+        sessionStorage.removeItem('pending'); // حذف الامتحان من الذاكرة لكي لا يتكرر
         start(p); 
     } else { 
         loadDash(); 
@@ -430,89 +408,66 @@ function checkPending(){
 }
 function logout(){ localStorage.clear(); location.reload(); }
 
-// === تحميل لوحة التحكم (البيانات الرئيسية) ===
 function loadDash(){
   document.getElementById('v-login').classList.add('hidden'); 
   document.getElementById('v-exam').classList.add('hidden'); 
   document.getElementById('v-dash').classList.remove('hidden'); 
   document.getElementById('notif-bell').classList.remove('hidden');
-  
   document.getElementById('u-name').innerText = localStorage.getItem('nm'); 
   document.getElementById('u-cls').innerText = localStorage.getItem('cl');
   let ph = localStorage.getItem('ph'); document.getElementById('u-img').src = ph ? ph : DEF_IMG;
 
-  // جلب الامتحانات
   ld(1);
   callApi('getExamsList', {token:token}).then(r=>{
     let h=''; if(!r.exams.length) h='<p style="color:#94a3b8">لا توجد امتحانات متاحة حالياً</p>';
     else r.exams.forEach(x=>{
-      h+=`<div class="exam-item" onclick="start('${x.title}')">
-            <i class="fas fa-file-alt exam-icon"></i>
-            <h3 style="margin:0;color:var(--text)">${x.title}</h3>
-            <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
-          </div>`;
+      h+=`<div class="exam-item" onclick="start('${x.title}')"><i class="fas fa-file-alt exam-icon"></i><h3 style="margin:0;color:var(--text)">${x.title}</h3><div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div></div>`;
     });
     document.getElementById('exams-list').innerHTML=h;
     ld(0);
   });
 
-  // جلب المكتبة
   callApi('getLibraryContent', {token:token}).then(r=>{
       let h='';
       if(r.library && r.library.length) {
           r.library.forEach(i => {
               let icon = i.type=='Video' ? 'fa-youtube text-danger' : 'fa-file-pdf text-warning';
-              h+=`<a href="${i.link}" target="_blank" class="lib-item">
-                    <i class="fab ${icon} fa-2x" style="margin-left:15px"></i>
-                    <div><h4 style="margin:0;font-size:16px">${i.title}</h4><span style="font-size:12px;color:#94a3b8">${i.date}</span></div>
-                    <i class="fas fa-external-link-alt" style="margin-right:auto;color:#555"></i>
-                  </a>`;
+              h+=`<a href="${i.link}" target="_blank" class="lib-item"><i class="fab ${icon} fa-2x" style="margin-left:15px"></i><div><h4 style="margin:0;font-size:16px">${i.title}</h4><span style="font-size:12px;color:#94a3b8">${i.date}</span></div><i class="fas fa-external-link-alt" style="margin-right:auto;color:#555"></i></a>`;
           });
       } else h = '<p style="color:#94a3b8; text-align:center">لا توجد مصادر تعليمية حالياً</p>';
       document.getElementById('lib-content').innerHTML = h;
   });
 
-  // جلب المتصدرين
   callApi('getLeaderboard', {token:token}).then(r=>{
     let h='';
     if(r.list) {
-      r.list.forEach((l,i)=>{ 
-        h+=`<tr>
-              <td style="color:var(--gold)">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</td>
-              <td><div style="display:flex;align-items:center;gap:10px;justify-content:flex-end"><span>${l.name}</span><i class="fas fa-user-graduate" style="color:#94a3b8"></i></div></td>
-              <td style="color:var(--blue);font-weight:bold">${l.score}%</td>
-            </tr>`; 
-      });
+      r.list.forEach((l,i)=>{ h+=`<tr><td style="color:var(--gold)">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:flex-end"><span>${l.name}</span><i class="fas fa-user-graduate" style="color:#94a3b8"></i></div></td><td style="color:var(--blue);font-weight:bold">${l.score}%</td></tr>`; });
       document.getElementById('leader-body').innerHTML=h || '<tr><td colspan="3">لا يوجد متصدرين بعد</td></tr>';
     }
   });
 
-  // جلب النتائج السابقة
   callApi('getStudentResults', {token:token}).then(r=>{
     let h='';
     r.results.forEach(x=>{
       let pass=parseInt(x.percent)>=50;
-      h+=`<tr><td>${x.exam}</td><td style="color:${pass?'var(--green)':'var(--red)'}">${x.percent}</td>
-          <td>${pass?`<button class="btn-g" style="width:auto;padding:5px 10px;font-size:12px;margin:0" onclick="cert('${x.exam}','${x.percent}')">📜 الشهادة</button>`:'-'}</td></tr>`;
+      h+=`<tr><td>${x.exam}</td><td style="color:${pass?'var(--green)':'var(--red)'}">${x.percent}</td><td>${pass?`<button class="btn-g" style="width:auto;padding:5px 10px;font-size:12px;margin:0" onclick="cert('${x.exam}','${x.percent}')">📜 الشهادة</button>`:'-'}</td></tr>`;
     });
     document.getElementById('res-list').innerHTML=h;
   });
-  
   loadStats(); 
   checkMsgs();
 }
 
-// === منطق الامتحانات ===
 function start(t){
   ld(1); 
   callApi('getExamQuestions', {token:token, name:t}).then(r=>{
     ld(0); 
-    // ⚠️ التحقق من نجاح الدخول (تجنب تداخل الصفوف)
+    // ✅ التحقق من رد السيرفر: إذا رفض الدخول، نعرض رسالة وننظف الرابط
     if(!r.success) {
-         Swal.fire('تنبيه', r.message, 'warning').then(() => cleanUrlAndDash());
-         return;
+        Swal.fire('تنبيه', r.message, 'warning').then(() => cleanUrlAndDash());
+        return;
     }
-    // -----------------------------------------------------
+
     st.exam=r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0;
     st.seconds = r.duration * 60; 
     document.getElementById('v-login').classList.add('hidden'); document.getElementById('v-dash').classList.add('hidden');
@@ -545,7 +500,6 @@ function rendQ(){
 }
 function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
 function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
-
 function sub(){ submitExam(false); }
 
 function submitExam(forced){
@@ -555,36 +509,29 @@ function submitExam(forced){
   callApi('submitExam', {token:token, n:st.title, a:st.ans, cheats:st.cheats}).then(res=>{ 
     ld(0); 
     document.getElementById('v-exam').classList.add('hidden');
-    
     let isPass = parseInt(res.percent)>=50;
     st.lastScore = res.percent; 
     
-    // ⚠️ استخدام cleanUrlAndDash عند الخروج
+    // ✅ استخدام cleanUrlAndDash عند الخروج
     Swal.fire({
       title: isPass ? '🎉 مبروك!' : 'حظاً أوفر',
       html: `النتيجة: <b style="font-size:30px; color:${isPass?'green':'red'}">${res.percent}</b><br>إجابات صحيحة: ${res.score}/${res.total}`,
       icon: isPass ? 'success' : 'error',
-      showDenyButton: true,
-      showCancelButton: isPass, 
-      confirmButtonText: '🏠 الرئيسية',
-      denyButtonText: '🔍 مراجعة الإجابات',
-      cancelButtonText: '📜 تحميل الشهادة',
-      cancelButtonColor: '#f59e0b'
+      showDenyButton: true, showCancelButton: isPass, confirmButtonText: '🏠 الرئيسية', denyButtonText: '🔍 مراجعة الإجابات', cancelButtonText: '📜 تحميل الشهادة', cancelButtonColor: '#f59e0b'
     }).then((result) => {
       if (result.isDenied) {
-         showReview(st.title, isPass);
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-         cert(st.title, res.percent); confetti();
-         setTimeout(cleanUrlAndDash, 2000); 
-      } else {
-         cleanUrlAndDash(); 
-         if(isPass) confetti();
+          showReview(st.title, isPass);
+      } else if (result.dismiss === Swal.DismissReason.cancel) { 
+          cert(st.title, res.percent); confetti(); 
+          setTimeout(cleanUrlAndDash, 2000); // ⚠️ تنظيف الرابط
+      } else { 
+          cleanUrlAndDash(); // ⚠️ تنظيف الرابط
+          if(isPass) confetti(); 
       }
     });
   }); 
 }
 
-// === منطق المراجعة ===
 function showReview(examTitle, isPass) {
   ld(1);
   callApi('getReviewData', {token:token, title:examTitle}).then(r => {
@@ -594,182 +541,59 @@ function showReview(examTitle, isPass) {
     else document.getElementById('cert-review-btn').classList.add('hidden');
     let h = '';
     st.exam.forEach((q, i) => {
-      let userAns = st.ans[q.id];
-      let correctAns = r.answers[q.id];
-      let isCorrect = userAns === correctAns;
-      h += `<div style="background:rgba(128,128,128,0.05); padding:15px; border-radius:10px; margin-bottom:15px; border-right:4px solid ${isCorrect?'var(--green)':'var(--red)'}">
-              <p style="font-weight:bold; margin:0 0 10px 0; text-align:right">س${i+1}: ${q.text}</p>
-              ${q.img ? `<img src="${q.img}" style="max-height:100px; display:block; margin-bottom:10px">` : ''}
-              <div style="font-size:14px; text-align:right">
-                <span style="color:#94a3b8">إجابتك: </span> <span style="color:${isCorrect?'var(--green)':'var(--red)'}">${userAns || 'لم يتم الإجابة'}</span><br>
-                ${!isCorrect ? `<span style="color:#94a3b8">الإجابة الصحيحة: </span> <span style="color:var(--green)">${correctAns}</span>` : ''}
-              </div>
-            </div>`;
+      let userAns = st.ans[q.id]; let correctAns = r.answers[q.id]; let isCorrect = userAns === correctAns;
+      h += `<div style="background:rgba(128,128,128,0.05); padding:15px; border-radius:10px; margin-bottom:15px; border-right:4px solid ${isCorrect?'var(--green)':'var(--red)'}"><p style="font-weight:bold; margin:0 0 10px 0; text-align:right">س${i+1}: ${q.text}</p>${q.img ? `<img src="${q.img}" style="max-height:100px; display:block; margin-bottom:10px">` : ''}<div style="font-size:14px; text-align:right"><span style="color:#94a3b8">إجابتك: </span> <span style="color:${isCorrect?'var(--green)':'var(--red)'}">${userAns || 'لم يتم الإجابة'}</span><br>${!isCorrect ? `<span style="color:#94a3b8">الإجابة الصحيحة: </span> <span style="color:var(--green)">${correctAns}</span>` : ''}</div></div>`;
     });
     document.getElementById('review-content').innerHTML = h;
   });
 }
 
-function closeReview(){
-  document.getElementById('review-modal').classList.add('hidden');
-  cleanUrlAndDash(); // ⚠️ تنظيف
-}
+function closeReview(){ document.getElementById('review-modal').classList.add('hidden'); cleanUrlAndDash(); } 
 
-// === منطق الشهادات ===
-function cert(e,s){
-  document.getElementById('c-name').innerText=localStorage.getItem('nm');
-  document.getElementById('c-ex').innerText=e; document.getElementById('c-sc').innerText=s;
-  let ph = localStorage.getItem('ph'); document.getElementById('c-img').src = ph ? ph : DEF_IMG;
-  document.getElementById('cert-modal').style.display='flex';
-}
+function cert(e,s){ document.getElementById('c-name').innerText=localStorage.getItem('nm'); document.getElementById('c-ex').innerText=e; document.getElementById('c-sc').innerText=s; let ph = localStorage.getItem('ph'); document.getElementById('c-img').src = ph ? ph : DEF_IMG; document.getElementById('cert-modal').style.display='flex'; }
+function dlCert(){ let node = document.getElementById('cert-node'); html2canvas(node, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' }).then(c=>{ let a=document.createElement('a'); a.download='Certificate.png'; a.href=c.toDataURL(); a.click(); }); }
 
-function dlCert(){
-  let node = document.getElementById('cert-node');
-  html2canvas(node, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' }).then(c=>{
-    let a=document.createElement('a'); a.download='Certificate.png'; a.href=c.toDataURL(); a.click();
-  });
-}
-
-// === منطق الواجبات ===
-function readAsFile(input) {
-  if(input.files && input.files[0]) {
-    let f = input.files[0];
-    document.getElementById('as-fname').innerText = f.name;
-    let r = new FileReader();
-    r.onload = e => { st.assignFile = e.target.result; st.assignName = f.name; };
-    r.readAsDataURL(f);
-  }
-}
+function readAsFile(input) { if(input.files && input.files[0]) { let f = input.files[0]; document.getElementById('as-fname').innerText = f.name; let r = new FileReader(); r.onload = e => { st.assignFile = e.target.result; st.assignName = f.name; }; r.readAsDataURL(f); } }
 function uploadAss() {
   if(!st.assignFile) return Swal.fire('تنبيه', 'يرجى اختيار ملف', 'warning');
   ld(1);
-  let d = {
-     type: document.getElementById('as-type').value,
-     desc: document.getElementById('as-desc').value,
-     fileData: st.assignFile,
-     fileName: st.assignName,
-     mimeType: st.assignFile.split(';')[0].split(':')[1]
-  };
-  callApi('uploadStudentAssignment', {token:token, d:d}).then(r=>{
-     ld(0); if(r.success) Swal.fire('تم', 'تم تسليم الواجب بنجاح', 'success'); else Swal.fire('خطأ', r.message, 'error');
-  });
+  let d = { type: document.getElementById('as-type').value, desc: document.getElementById('as-desc').value, fileData: st.assignFile, fileName: st.assignName, mimeType: st.assignFile.split(';')[0].split(':')[1] };
+  callApi('uploadStudentAssignment', {token:token, d:d}).then(r=>{ ld(0); if(r.success) Swal.fire('تم', 'تم تسليم الواجب بنجاح', 'success'); else Swal.fire('خطأ', r.message, 'error'); });
 }
 
-// === منطق الشكاوى والإشعارات ===
 function sendComplaint() {
-  let msg = document.getElementById('contact-msg').value;
-  if(!msg) return Swal.fire('تنبيه', 'اكتب الرسالة أولاً', 'warning');
+  let msg = document.getElementById('contact-msg').value; if(!msg) return Swal.fire('تنبيه', 'اكتب الرسالة أولاً', 'warning');
   ld(1);
-  callApi('sendComplaint', {token:token, msg:msg}).then(r=>{
-     ld(0); Swal.fire('تم', 'تم إرسال رسالتك بنجاح', 'success');
-     document.getElementById('contact-msg').value = '';
-     loadMsgHistory();
-  });
+  callApi('sendComplaint', {token:token, msg:msg}).then(r=>{ ld(0); Swal.fire('تم', 'تم إرسال رسالتك بنجاح', 'success'); document.getElementById('contact-msg').value = ''; loadMsgHistory(); });
 }
 
 function loadStats() {
     callApi('getStudentStats', {token:token}).then(r => {
         if(!r.success) return;
-        document.getElementById('perf-chart').innerHTML = `
-           <div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div>
-           <div class="chart-bar chart-cls" style="height:${r.classAvg}%;"><span style="margin-bottom:5px">${r.classAvg}%</span></div>
-           <div style="position:absolute; bottom:-30px; left:20px; right:20px; display:flex; justify-content:space-between; color:#94a3b8; font-size:12px"><span>مستواي</span><span>متوسط الفصل</span></div>
-        `;
-        let b = '';
-        if(r.badges && r.badges.length) {
-           r.badges.forEach(badge => b += `<span class="badge-item"><i class="fas fa-medal"></i> ${badge}</span>`);
-           document.getElementById('badges-area').innerHTML = b;
-        }
+        document.getElementById('perf-chart').innerHTML = `<div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div><div class="chart-bar chart-cls" style="height:${r.classAvg}%;"><span style="margin-bottom:5px">${r.classAvg}%</span></div><div style="position:absolute; bottom:-30px; left:20px; right:20px; display:flex; justify-content:space-between; color:#94a3b8; font-size:12px"><span>مستواي</span><span>متوسط الفصل</span></div>`;
+        let b = ''; if(r.badges && r.badges.length) { r.badges.forEach(badge => b += `<span class="badge-item"><i class="fas fa-medal"></i> ${badge}</span>`); document.getElementById('badges-area').innerHTML = b; }
         if(r.teacher && r.teacher.name) document.getElementById('t-name').innerText = r.teacher.name;
-        if(r.teacher && r.teacher.whatsapp) { 
-            let wb=document.getElementById('wa-btn'); 
-            wb.href=r.teacher.whatsapp; 
-            wb.classList.remove('hidden'); 
-        }
+        if(r.teacher && r.teacher.whatsapp) { let wb=document.getElementById('wa-btn'); wb.href=r.teacher.whatsapp; wb.classList.remove('hidden'); }
     });
 }
 
-function genReport() {
-    let el = document.getElementById('tab-history');
-    html2canvas(el).then(canvas => {
-       let a=document.createElement('a'); a.download='Report.png'; a.href=canvas.toDataURL(); a.click();
-    });
-}
-
+function genReport() { let el = document.getElementById('tab-history'); html2canvas(el).then(canvas => { let a=document.createElement('a'); a.download='Report.png'; a.href=canvas.toDataURL(); a.click(); }); }
 function editProfile() {
-    Swal.fire({
-        title: 'تعديل الملف الشخصي',
-        html: '<input id="sw-pass" type="password" placeholder="كلمة المرور الجديدة">',
-        showCancelButton: true,
-        confirmButtonText: 'حفظ',
-        cancelButtonText: 'إلغاء',
-        preConfirm: () => {
-            return document.getElementById('sw-pass').value;
-        }
-    }).then((res) => {
-        if(res.isConfirmed && res.value) {
-            ld(1);
-            callApi('updateProfile', {token:token, newPass:res.value, newPhoto:null}).then(r => {
-                ld(0);
-                if(r.success) Swal.fire('تم', r.message, 'success');
-            });
-        }
+    Swal.fire({ title: 'تعديل الملف الشخصي', html: '<input id="sw-pass" type="password" placeholder="كلمة المرور الجديدة">', showCancelButton: true, confirmButtonText: 'حفظ', cancelButtonText: 'إلغاء', preConfirm: () => { return document.getElementById('sw-pass').value; } }).then((res) => {
+        if(res.isConfirmed && res.value) { ld(1); callApi('updateProfile', {token:token, newPass:res.value, newPhoto:null}).then(r => { ld(0); if(r.success) Swal.fire('تم', r.message, 'success'); }); }
     });
 }
 
-function loadNotes() {
-    callApi('getStudentNote', {token:token}).then(r => {
-        if(r.success) document.getElementById('my-notes').value = r.note;
-    });
-}
-
-function saveNotes() {
-    let txt = document.getElementById('my-notes').value;
-    callApi('saveStudentNote', {token:token, text:txt}).then(r => {
-        const Toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
-        Toast.fire({icon: 'success', title: 'تم الحفظ'});
-    });
-}
-
-function checkBroadcast() {
-    // ⚠️ Placeholder in case the backend function doesn't exist
-    try {
-        callApi('getBroadcastMessage').then(msg => {
-            if(msg && msg.length > 0) {
-                document.getElementById('bc-text').innerText = msg;
-                document.getElementById('broadcast-bar').style.display = 'block';
-            }
-        });
-    } catch(e) { console.log('Broadcast function missing or error'); }
-}
-
-// === نظام الإشعارات والرسائل ===
+function loadNotes() { callApi('getStudentNote', {token:token}).then(r => { if(r.success) document.getElementById('my-notes').value = r.note; }); }
+function saveNotes() { let txt = document.getElementById('my-notes').value; callApi('saveStudentNote', {token:token, text:txt}).then(r => { const Toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 3000}); Toast.fire({icon: 'success', title: 'تم الحفظ'}); }); }
+function checkBroadcast() { /* Placeholder */ }
 function checkMsgs() {
     callApi('getStudentMessages', {token:token}).then(msgs => {
-        if(msgs && msgs.length > 0) {
-            document.getElementById('notif-dot').style.display = 'block';
-            let h = ''; 
-            msgs.forEach(m => {
-                h += `<div style="background:var(--glass); padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid var(--border)">
-                        <small style="color:#94a3b8; display:block; margin-bottom:5px">${m.date}</small>
-                        <p style="margin:0; font-size:14px">${m.msg}</p>
-                      </div>`;
-            });
-            document.getElementById('msg-history').innerHTML = h;
-        }
+        if(msgs && msgs.length > 0) { document.getElementById('notif-dot').style.display = 'block'; let h = ''; msgs.forEach(m => { h += `<div style="background:var(--glass); padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid var(--border)"><small style="color:#94a3b8; display:block; margin-bottom:5px">${m.date}</small><p style="margin:0; font-size:14px">${m.msg}</p></div>`; }); document.getElementById('msg-history').innerHTML = h; }
     });
 }
-
-function showNotifs() {
-    switchTab('contact', document.querySelectorAll('.nav-tab')[6]); // الانتقال لتبويب الشكاوي
-    document.getElementById('msg-history').classList.remove('hidden');
-    document.getElementById('notif-dot').style.display = 'none';
-}
-
-function loadMsgHistory() { 
-    checkMsgs(); 
-    document.getElementById('msg-history').classList.remove('hidden'); 
-}
+function showNotifs() { switchTab('contact', document.querySelectorAll('.nav-tab')[6]); document.getElementById('msg-history').classList.remove('hidden'); document.getElementById('notif-dot').style.display = 'none'; }
+function loadMsgHistory() { checkMsgs(); document.getElementById('msg-history').classList.remove('hidden'); }
 </script>
 </body>
 </html>
@@ -777,11 +601,9 @@ function loadMsgHistory() {
 ---
 
 ### 2️⃣ ملف لوحة المدير (`AdminDashboard.html`)
-**الإصلاحات التي تمت:**
-1.  **إضافة خيارات الصفوف للإشعارات:** تم تحديث قائمة "إرسال إشعار" لتشمل خيارات (الرابع، الخامس، السادس.. الخ) بدلاً من "الجميع" فقط.
-2.  **تفعيل روابط التواصل:** تم إضافة الكود الخاص بحفظ وجلب روابط السوشيال ميديا.
+**الإصلاح:** تم إضافة خيارات الصفوف في القائمة المنسدلة للإشعارات.
 
-**(انسخ هذا الكود بالكامل وضعه في AdminDashboard.html)**
+**(انسخ هذا الكود كاملاً واستبدل به محتوى AdminDashboard.html)**
 
 ```html
 <!DOCTYPE html>
