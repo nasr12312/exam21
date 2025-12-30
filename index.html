@@ -228,7 +228,7 @@
   <div style="color:white">جاري المعالجة...</div>
 </div>
 
-<div id="direct-link" class="hidden"><?= targetExam ?></div>
+<div id="direct-link" class="hidden"></div>
 
 <div id="broadcast-bar">
   <i class="fas fa-bullhorn"></i> <span id="bc-text"></span> 
@@ -439,7 +439,11 @@
 </div>
 
 <script>
-// الثوابت والمتغيرات العامة
+// ===========================================
+// ⚠️ هام: تم وضع رابط النشر الخاص بك هنا
+const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec";
+// ===========================================
+
 const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
 const DEF_IMG = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 let token = localStorage.getItem('tk');
@@ -448,10 +452,24 @@ const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' :
 
 // === الدالة الجديدة لتنظيف الرابط (تمت إضافتها) ===
 function cleanUrlAndDash() {
-    // هذه الدالة تزيل "?exam=..." من الرابط لتعيد المستخدم للرئيسية النظيفة
     const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.pushState({path:cleanURL},'',cleanURL);
     loadDash();
+}
+
+// === دالة الاتصال بالسيرفر (بديل google.script.run) ===
+async function callApi(action, data = {}) {
+    data.action = action;
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        return {success: false, message: 'خطأ في الاتصال'};
+    }
 }
 
 // === عند تحميل الصفحة ===
@@ -461,6 +479,7 @@ window.onload = function() {
   // معالجة الروابط المباشرة للامتحانات
   let dLink = document.getElementById('direct-link').innerText;
   if(dLink && dLink.trim() !== "") sessionStorage.setItem('pending', dLink);
+  
   // تنظيف الرابط مبدئياً
   if (window.location.search.includes('exam=')) window.history.replaceState({}, document.title, window.location.pathname);
 
@@ -533,13 +552,21 @@ function readP(i){
 // === دوال المصادقة (دخول، تسجيل، خروج) ===
 function login(){
   let e=document.getElementById('le').value, p=document.getElementById('lp').value;
-  ld(1); google.script.run.withSuccessHandler(r=>{ ld(0); if(r.success){ sv(r); checkPending(); } else Swal.fire('خطأ',r.message,'error'); }).loginUser(e,p);
+  ld(1); 
+  callApi('loginUser', {email:e, pass:p}).then(r=>{ 
+      ld(0); 
+      if(r.success){ sv(r); checkPending(); } else Swal.fire('خطأ',r.message,'error'); 
+  });
 }
 
 function reg(){
   let d={code:document.getElementById('rc').value, name:document.getElementById('rn').value, phone:document.getElementById('rph').value, email:document.getElementById('re').value, password:document.getElementById('rpa').value, photoData:st.photo};
   if(!d.code) return Swal.fire('تنبيه','بيانات ناقصة','warning');
-  ld(1); google.script.run.withSuccessHandler(r=>{ ld(0); if(r.success){ sv(r); Swal.fire('تم','أهلاً بك','success').then(checkPending); } else Swal.fire('خطأ',r.message,'error'); }).registerStudent(d);
+  ld(1); 
+  callApi('registerStudent', {d:d}).then(r=>{ 
+      ld(0); 
+      if(r.success){ sv(r); Swal.fire('تم','أهلاً بك','success').then(checkPending); } else Swal.fire('خطأ',r.message,'error'); 
+  });
 }
 
 function sv(r){ 
@@ -564,7 +591,7 @@ function loadDash(){
 
   // جلب الامتحانات
   ld(1);
-  google.script.run.withSuccessHandler(r=>{
+  callApi('getExamsList', {token:token}).then(r=>{
     let h=''; if(!r.exams.length) h='<p style="color:#94a3b8">لا توجد امتحانات متاحة حالياً</p>';
     else r.exams.forEach(x=>{
       h+=`<div class="exam-item" onclick="start('${x.title}')">
@@ -575,10 +602,10 @@ function loadDash(){
     });
     document.getElementById('exams-list').innerHTML=h;
     ld(0);
-  }).getExamsList(token);
+  });
 
   // جلب المكتبة
-  google.script.run.withSuccessHandler(r=>{
+  callApi('getLibraryContent', {token:token}).then(r=>{
       let h='';
       if(r.library && r.library.length) {
           r.library.forEach(i => {
@@ -591,10 +618,10 @@ function loadDash(){
           });
       } else h = '<p style="color:#94a3b8; text-align:center">لا توجد مصادر تعليمية حالياً</p>';
       document.getElementById('lib-content').innerHTML = h;
-  }).getLibraryContent(token);
+  });
 
   // جلب المتصدرين
-  google.script.run.withSuccessHandler(r=>{
+  callApi('getLeaderboard', {token:token}).then(r=>{
     let h='';
     if(r.list) {
       r.list.forEach((l,i)=>{ 
@@ -606,10 +633,10 @@ function loadDash(){
       });
       document.getElementById('leader-body').innerHTML=h || '<tr><td colspan="3">لا يوجد متصدرين بعد</td></tr>';
     }
-  }).getLeaderboard(token);
+  });
 
   // جلب النتائج السابقة
-  google.script.run.withSuccessHandler(r=>{
+  callApi('getStudentResults', {token:token}).then(r=>{
     let h='';
     r.results.forEach(x=>{
       let pass=parseInt(x.percent)>=50;
@@ -617,7 +644,7 @@ function loadDash(){
           <td>${pass?`<button class="btn-g" style="width:auto;padding:5px 10px;font-size:12px;margin:0" onclick="cert('${x.exam}','${x.percent}')">📜 الشهادة</button>`:'-'}</td></tr>`;
     });
     document.getElementById('res-list').innerHTML=h;
-  }).getStudentResults(token);
+  });
   
   loadStats(); 
   checkMsgs();
@@ -625,7 +652,8 @@ function loadDash(){
 
 // === منطق الامتحانات ===
 function start(t){
-  ld(1); google.script.run.withSuccessHandler(r=>{
+  ld(1); 
+  callApi('getExamQuestions', {token:token, name:t}).then(r=>{
     ld(0); 
     // ⚠️ تعديل: التحقق من نجاح الدخول (لتجنب تداخل الصفوف)
     if(!r || !r.success) {
@@ -641,7 +669,7 @@ function start(t){
     document.getElementById('q-count').innerText = st.exam.length;
     startTimer();
     rendQ();
-  }).getExamQuestions(token, t);
+  });
 }
 
 function startTimer(){
@@ -672,7 +700,7 @@ function submitExam(forced){
   if(!forced && !confirm('هل أنت متأكد من التسليم؟')) return;
   clearInterval(st.timer);
   ld(1); 
-  google.script.run.withSuccessHandler(res=>{ 
+  callApi('submitExam', {token:token, n:st.title, a:st.ans, cheats:st.cheats}).then(res=>{ 
     ld(0); 
     document.getElementById('v-exam').classList.add('hidden');
     
@@ -701,13 +729,13 @@ function submitExam(forced){
          if(isPass) confetti();
       }
     });
-  }).submitExam(token, st.title, st.ans, st.cheats); 
+  }); 
 }
 
 // === منطق المراجعة ===
 function showReview(examTitle, isPass) {
   ld(1);
-  google.script.run.withSuccessHandler(r => {
+  callApi('getReviewData', {token:token, title:examTitle}).then(r => {
     ld(0);
     document.getElementById('review-modal').classList.remove('hidden');
     if(isPass) document.getElementById('cert-review-btn').classList.remove('hidden');
@@ -727,7 +755,7 @@ function showReview(examTitle, isPass) {
             </div>`;
     });
     document.getElementById('review-content').innerHTML = h;
-  }).getReviewData(token, examTitle);
+  });
 }
 
 function closeReview(){
@@ -770,9 +798,9 @@ function uploadAss() {
      fileName: st.assignName,
      mimeType: st.assignFile.split(';')[0].split(':')[1]
   };
-  google.script.run.withSuccessHandler(r=>{
+  callApi('uploadStudentAssignment', {token:token, d:d}).then(r=>{
      ld(0); if(r.success) Swal.fire('تم', 'تم تسليم الواجب بنجاح', 'success'); else Swal.fire('خطأ', r.message, 'error');
-  }).uploadStudentAssignment(token, d);
+  });
 }
 
 // === منطق الشكاوى والإشعارات ===
@@ -780,15 +808,15 @@ function sendComplaint() {
   let msg = document.getElementById('contact-msg').value;
   if(!msg) return Swal.fire('تنبيه', 'اكتب الرسالة أولاً', 'warning');
   ld(1);
-  google.script.run.withSuccessHandler(r=>{
+  callApi('sendComplaint', {token:token, msg:msg}).then(r=>{
      ld(0); Swal.fire('تم', 'تم إرسال رسالتك بنجاح', 'success');
      document.getElementById('contact-msg').value = '';
      loadMsgHistory();
-  }).sendComplaint(token, msg);
+  });
 }
 
 function loadStats() {
-    google.script.run.withSuccessHandler(r => {
+    callApi('getStudentStats', {token:token}).then(r => {
         if(!r.success) return;
         document.getElementById('perf-chart').innerHTML = `
            <div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div>
@@ -809,7 +837,7 @@ function loadStats() {
             wb.href=r.teacher.whatsapp; 
             wb.classList.remove('hidden'); 
         }
-    }).getStudentStats(token);
+    });
 }
 
 function genReport() {
@@ -832,44 +860,42 @@ function editProfile() {
     }).then((res) => {
         if(res.isConfirmed && res.value) {
             ld(1);
-            google.script.run.withSuccessHandler(r => {
+            callApi('updateProfile', {token:token, newPass:res.value, newPhoto:null}).then(r => {
                 ld(0);
                 if(r.success) Swal.fire('تم', r.message, 'success');
-            }).updateProfile(token, res.value, null);
+            });
         }
     });
 }
 
 function loadNotes() {
-    google.script.run.withSuccessHandler(r => {
+    callApi('getStudentNote', {token:token}).then(r => {
         if(r.success) document.getElementById('my-notes').value = r.note;
-    }).getStudentNote(token);
+    });
 }
 
 function saveNotes() {
     let txt = document.getElementById('my-notes').value;
-    google.script.run.withSuccessHandler(r => {
+    callApi('saveStudentNote', {token:token, text:txt}).then(r => {
         const Toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
         Toast.fire({icon: 'success', title: 'تم الحفظ'});
-    }).saveStudentNote(token, txt);
+    });
 }
 
 function checkBroadcast() {
-    // ⚠️ ملاحظة: هذه الدالة كانت ناقصة في كودك الأصلي أو تستدعي دالة غير موجودة في السيرفر
-    // تم الإبقاء عليها كما هي حسب طلبك بعدم الحذف
     try {
-        google.script.run.withSuccessHandler(msg => {
+        callApi('getBroadcastMessage').then(msg => {
             if(msg && msg.length > 0) {
                 document.getElementById('bc-text').innerText = msg;
                 document.getElementById('broadcast-bar').style.display = 'block';
             }
-        }).getBroadcastMessage();
+        });
     } catch(e) { console.log('Broadcast function missing on server'); }
 }
 
 // === نظام الإشعارات والرسائل ===
 function checkMsgs() {
-    google.script.run.withSuccessHandler(msgs => {
+    callApi('getStudentMessages', {token:token}).then(msgs => {
         if(msgs && msgs.length > 0) {
             document.getElementById('notif-dot').style.display = 'block';
             let h = ''; 
@@ -881,7 +907,7 @@ function checkMsgs() {
             });
             document.getElementById('msg-history').innerHTML = h;
         }
-    }).getStudentMessages(token);
+    });
 }
 
 function showNotifs() {
