@@ -1,215 +1,371 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة القيادة المركزية | Admin Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
-  body { font-family: 'Tajawal', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; min-height: 100vh; }
-  .header-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-left: 5px solid #667eea; }
-  .card-stat { background: white; padding: 25px; border-radius: 16px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; overflow: hidden; height: 100%; }
-  .card-stat:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
-  .stat-icon { position: absolute; left: -15px; bottom: -15px; font-size: 100px; opacity: 0.08; transform: rotate(15deg); }
-  .stat-num { font-size: 40px; font-weight: 800; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 10px; }
-  .control-panel { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-  .nav-pills .nav-link { background: #e2e8f0; color: #475569; margin-left: 10px; border-radius: 10px; font-weight: bold; padding: 12px 25px; transition:0.3s; }
-  .nav-pills .nav-link.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
-  .social-link-box { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
-  .dashboard-quick-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+  :root {
+    --primary: #4f46e5;
+    --secondary: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --dark: #1e293b;
+    --light: #f8fafc;
+  }
+  body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; min-height: 100vh; overflow-x: hidden; }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 260px; height: 100vh; position: fixed; right: 0; top: 0;
+    background: var(--dark); color: white; transition: 0.3s; z-index: 1000;
+    padding-top: 20px;
+  }
+  .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+  .nav-link {
+    color: #94a3b8; padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+    font-weight: 500; transition: 0.3s; border-radius: 8px; margin: 0 10px 5px; cursor: pointer;
+  }
+  .nav-link:hover, .nav-link.active { background: var(--primary); color: white; transform: translateX(-5px); }
+  .nav-link i { width: 20px; text-align: center; }
+
+  /* Main Content */
+  .main-content { margin-right: 260px; padding: 30px; transition: 0.3s; }
+  
+  /* Cards */
+  .stat-card {
+    background: white; border-radius: 16px; padding: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: none;
+    position: relative; overflow: hidden; height: 100%;
+  }
+  .stat-card::after {
+    content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%;
+  }
+  .stat-card.blue::after { background: var(--primary); }
+  .stat-card.green::after { background: var(--success); }
+  .stat-card.orange::after { background: var(--warning); }
+  
+  .stat-icon {
+    width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center;
+    justify-content: center; font-size: 24px; margin-bottom: 15px;
+  }
+  .bg-soft-blue { background: #e0e7ff; color: var(--primary); }
+  .bg-soft-green { background: #d1fae5; color: var(--success); }
+  .bg-soft-orange { background: #fef3c7; color: var(--warning); }
+
+  /* Tables */
+  .custom-table { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+  .custom-table th { background: #f8fafc; color: var(--secondary); font-weight: 700; padding: 15px; border-bottom: 2px solid #e2e8f0; }
+  .custom-table td { padding: 15px; vertical-align: middle; color: var(--dark); border-bottom: 1px solid #f1f5f9; }
+
+  /* Forms */
+  .form-control, .form-select {
+    padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;
+    box-shadow: none; font-size: 14px;
+  }
+  .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+  .btn-primary { background: var(--primary); border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; }
+  .btn-primary:hover { background: #4338ca; }
+
+  /* ID Card Printing Styling - Professional A4 */
+  #print-area { display: none; }
+  
   @media print {
-      .no-print { display: none !important; }
+    body { background: white; -webkit-print-color-adjust: exact; }
+    .sidebar, .no-print, .header-area, .btn { display: none !important; }
+    .main-content { margin: 0; padding: 0; width: 100%; }
+    #print-area { 
+      display: grid !important; 
+      grid-template-columns: repeat(2, 1fr); /* بطاقتين بالعرض */
+      gap: 15px; 
+      padding: 20px;
+    }
+    .id-card-print {
+      border: 1px solid #000;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      page-break-inside: avoid;
+      background: white;
+      height: 180px; /* ارتفاع ثابت */
+    }
+    .id-photo { width: 100px; height: 100px; object-fit: cover; border: 2px solid #333; }
+    .id-info { flex: 1; text-align: right; }
+    .id-qr { width: 90px; height: 90px; }
+  }
+
+  @media (max-width: 992px) {
+    .sidebar { transform: translateX(100%); }
+    .sidebar.active { transform: translateX(0); }
+    .main-content { margin-right: 0; }
   }
 </style>
 </head>
 <body>
 
-<div class="container-fluid">
-  
-  <div class="header-card d-flex justify-content-between align-items-center no-print">
-    <div>
-       <h2 class="fw-bold mb-1"><i class="fas fa-school"></i> لوحة الإدارة المتطورة PRO</h2>
-       <p class="mb-0 text-white-50" style="font-size:16px">مرحباً بك أستاذ | التحكم الكامل على المنصة</p>
-    </div>
-    <div class="d-flex gap-2">
-        <button onclick="window.print()" class="btn btn-warning fw-bold btn-lg"><i class="fas fa-print"></i> طباعة</button>
-    </div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h4 class="mb-0 fw-bold"><i class="fas fa-layer-group text-primary"></i> العربية لغتي</h4>
+    <small class="text-white-50">لوحة الإدارة V2.0</small>
   </div>
-
-  <div class="dashboard-quick-stats no-print">
-    <div class="card-stat" style="border-top: 4px solid #667eea;">
-      <h5 class="text-secondary"><i class="fas fa-users"></i> الطلاب</h5>
-      <div id="s-cnt" class="stat-num">-</div>
-    </div>
-    <div class="card-stat" style="border-top: 4px solid #10b981;">
-      <h5 class="text-secondary"><i class="fas fa-file-contract"></i> الامتحانات</h5>
-      <div id="e-cnt" class="stat-num">-</div>
-    </div>
-    <div class="card-stat" style="border-top: 4px solid #f59e0b;">
-      <h5 class="text-secondary"><i class="fas fa-code"></i> الأكواد</h5>
-      <div id="c-cnt" class="stat-num">-</div>
-    </div>
-  </div>
-
-  <ul class="nav nav-pills mb-4 no-print" id="pills-tab" role="tablist">
-    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-home">🏠 الرئيسية</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-students" onclick="loadIds()">👥 الطلاب</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-results" onclick="loadResults()">📋 النتائج</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-library" onclick="loadLibrary()">📚 المكتبة</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-assign" onclick="loadAssign()">📝 الواجبات</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-complaints" onclick="loadComp()">📨 الشكاوى</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-social">🔗 التواصل</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-settings">⚙️ الإعدادات</button></li>
-  </ul>
-
-  <div class="tab-content" id="pills-tabContent">
-    
-    <div class="tab-pane fade show active" id="pills-home">
-        <div class="control-panel no-print" style="background: linear-gradient(135deg, #eff6ff, #e0f2fe);">
-             <label class="fw-bold mb-3 text-primary"><i class="fas fa-plus-circle"></i> توليد أكواد جديدة</label>
-             <div class="input-group input-group-lg">
-                 <input id="gen-count" type="number" class="form-control" placeholder="العدد" style="max-width:150px">
-                 <input id="gen-cls" class="form-control" placeholder="اسم الصف (مثال: الثامن أ)">
-                 <button onclick="generate()" class="btn btn-primary px-4 fw-bold">توليد</button>
-             </div>
-        </div>
-        
-        <div class="control-panel no-print">
-            <h5><i class="fas fa-filter"></i> طباعة الأكواد</h5>
-            <div class="row g-2 align-items-center">
-                <div class="col-md-3">
-                    <select id="f-cls" class="form-select" onchange="render()"><option value="all">كل الصفوف</option></select>
-                </div>
-                <div class="col-md-3">
-                     <select id="f-sts" class="form-select" onchange="render()"><option value="New">🟢 جديدة</option><option value="Used">🔴 مستخدمة</option><option value="all">الكل</option></select>
-                </div>
-                <div class="col-md-3">
-                    <button onclick="deleteUsedCodes()" class="btn btn-danger w-100"><i class="fas fa-trash"></i> تنظيف المستخدم</button>
-                </div>
-            </div>
-            <div class="mt-2 fw-bold text-center bg-light p-2 rounded" id="count-lbl"></div>
-        </div>
-        <div id="code-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;"></div>
-    </div>
-
-    <div class="tab-pane fade" id="pills-students">
-         <div class="control-panel no-print">
-             <h4><i class="fas fa-tools"></i> إدارة الطلاب</h4>
-             <div class="row g-2">
-                 <div class="col-md-4"><input id="m-email" class="form-control" placeholder="بريد الطالب"></div>
-                 <div class="col-md-4"><input id="m-pass" class="form-control" placeholder="كلمة مرور جديدة"></div>
-                 <div class="col-md-2"><button onclick="resetPass()" class="btn btn-warning w-100">تغيير الباسوورد</button></div>
-                 <div class="col-md-2"><button onclick="delStudent()" class="btn btn-danger w-100">حذف</button></div>
-             </div>
-         </div>
-         <div id="ids-grid" class="row">جاري التحميل...</div>
-    </div>
-    
-    <div class="tab-pane fade" id="pills-results">
-        <div class="control-panel d-flex gap-2 no-print">
-            <input type="text" id="res-search" class="form-control" placeholder="🔍 بحث..." onkeyup="filterResults()">
-            <select id="res-cls-filter" class="form-select w-25" onchange="filterResults()"><option value="all">كل الصفوف</option></select>
-            <button onclick="exportToExcel()" class="btn btn-success text-nowrap"><i class="fas fa-file-excel"></i> تصدير</button>
-        </div>
-        <div class="card border-0 shadow-sm"><table class="table table-hover mb-0" id="res-table"><thead class="table-light"><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>الامتحان</th><th>الدرجة</th><th>إجراءات</th></tr></thead><tbody id="res-body"></tbody></table></div>
-    </div>
-
-    <div class="tab-pane fade" id="pills-library">
-        <div class="row"><div class="col-md-4"><div class="control-panel"><h5 class="fw-bold mb-3"><i class="fas fa-plus"></i> إضافة محتوى</h5><input id="lib-title" class="form-control mb-2" placeholder="العنوان"><select id="lib-type" class="form-select mb-2"><option value="PDF">📄 PDF</option><option value="Video">🎥 فيديو</option></select><input id="lib-cls" class="form-control mb-2" placeholder="الصف"><input id="lib-link" class="form-control mb-3" placeholder="الرابط"><button onclick="addLib()" class="btn btn-primary w-100">نشر</button></div></div><div class="col-md-8"><div class="card border-0"><table class="table"><thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>إجراء</th></tr></thead><tbody id="lib-body"></tbody></table></div></div></div>
-    </div>
-    
-    <div class="tab-pane fade" id="pills-assign">
-        <div class="card border-0"><table class="table table-hover"><thead class="table-light"><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>الملف</th><th>الدرجة</th><th>حفظ</th></tr></thead><tbody id="ass-body"></tbody></table></div>
-    </div>
-    
-    <div class="tab-pane fade" id="pills-complaints">
-        <div class="card border-0"><table class="table"><thead class="table-light"><tr><th>التاريخ</th><th>الطالب</th><th>الرسالة</th><th>الرد</th></tr></thead><tbody id="comp-body"></tbody></table></div>
-    </div>
-
-    <div class="tab-pane fade" id="pills-social">
-        <div class="control-panel">
-            <h4><i class="fas fa-share-alt"></i> روابط التواصل الاجتماعي</h4>
-            <p class="text-muted">هذه الروابط ستظهر للطلاب في لوحتهم.</p>
-            
-            <div class="social-link-box">
-                <label style="width: 150px;"><i class="fab fa-whatsapp text-success"></i> واتساب (الرابط):</label>
-                <input id="social-whatsapp" class="form-control" placeholder="https://chat.whatsapp.com/...">
-            </div>
-            
-            <div class="social-link-box">
-                <label style="width: 150px;"><i class="fab fa-facebook text-primary"></i> فيسبوك:</label>
-                <input id="social-facebook" class="form-control" placeholder="https://facebook.com/...">
-            </div>
-            
-            <div class="social-link-box">
-                <label style="width: 150px;"><i class="fab fa-instagram text-danger"></i> إنستجرام:</label>
-                <input id="social-instagram" class="form-control" placeholder="https://instagram.com/...">
-            </div>
-
-            <div class="social-link-box">
-                <label style="width: 150px;"><i class="fab fa-youtube text-danger"></i> يوتيوب:</label>
-                <input id="social-youtube" class="form-control" placeholder="https://youtube.com/...">
-            </div>
-            
-            <button onclick="saveSocialLinks()" class="btn btn-success w-100">حفظ الروابط</button>
-        </div>
-    </div>
-
-    <div class="tab-pane fade" id="pills-settings">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="control-panel">
-                    <h4><i class="fas fa-user-tie"></i> بيانات المعلم</h4>
-                    <label>اسم المعلم:</label>
-                    <input id="sett-name" class="form-control mb-2" placeholder="أ. عبد الرحمن نصر الله">
-                    <label>رقم الواتساب (للتواصل الشخصي):</label>
-                    <input id="sett-wa" class="form-control mb-3" placeholder="9627...">
-                    <label>وضع الصيانة:</label>
-                    <select id="sett-maint" class="form-select mb-3"><option value="Off">تعطيل (المنصة تعمل)</option><option value="On">تفعيل (إغلاق المنصة)</option></select>
-                    <button onclick="saveSettings()" class="btn btn-primary w-100">حفظ الإعدادات العامة</button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="control-panel">
-                    <h4><i class="fas fa-bell"></i> إرسال إشعار</h4>
-                    <select id="msg-target" class="form-select mb-2">
-                        <option value="All">للجميع</option>
-                        <option value="الرابع">الرابع</option>
-                        <option value="الخامس">الخامس</option>
-                        <option value="السادس">السادس</option>
-                        <option value="السابع">السابع</option>
-                        <option value="الثامن">الثامن</option>
-                        <option value="التاسع">التاسع</option>
-                        <option value="العاشر">العاشر</option>
-                    </select>
-                    <textarea id="msg-text" class="form-control mb-2" placeholder="الرسالة..."></textarea>
-                    <button onclick="sendMsg()" class="btn btn-danger w-100">إرسال</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="nav flex-column">
+    <div class="nav-link active" onclick="showTab('home', this)"><i class="fas fa-home"></i> الرئيسية</div>
+    <div class="nav-link" onclick="showTab('students', this)"><i class="fas fa-users"></i> الطلاب والبطاقات</div>
+    <div class="nav-link" onclick="showTab('results', this)"><i class="fas fa-chart-bar"></i> النتائج والتقارير</div>
+    <div class="nav-link" onclick="showTab('library', this)"><i class="fas fa-book"></i> المكتبة</div>
+    <div class="nav-link" onclick="showTab('assign', this)"><i class="fas fa-tasks"></i> الواجبات</div>
+    <div class="nav-link" onclick="showTab('complaints', this)"><i class="fas fa-envelope"></i> الشكاوى</div>
+    <div class="nav-link" onclick="showTab('settings', this)"><i class="fas fa-cog"></i> الإعدادات</div>
   </div>
 </div>
+
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-4 header-area no-print">
+    <div>
+      <h3 class="fw-bold text-dark mb-1">لوحة القيادة</h3>
+      <p class="text-muted mb-0">نظرة عامة على أداء المنصة</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button onclick="location.reload()" class="btn btn-light"><i class="fas fa-sync-alt"></i> تحديث</button>
+      <button class="btn btn-primary d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+
+  <div id="tab-home" class="section-tab">
+    <div class="row g-4 mb-4 no-print">
+      <div class="col-md-4">
+        <div class="stat-card blue">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class="text-muted mb-1">إجمالي الطلاب</p>
+              <h2 class="fw-bold mb-0" id="s-cnt">-</h2>
+            </div>
+            <div class="stat-icon bg-soft-blue"><i class="fas fa-user-graduate"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card green">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class="text-muted mb-1">الامتحانات النشطة</p>
+              <h2 class="fw-bold mb-0" id="e-cnt">-</h2>
+            </div>
+            <div class="stat-icon bg-soft-green"><i class="fas fa-file-alt"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card orange">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <p class="text-muted mb-1">الأكواد المتوفرة</p>
+              <h2 class="fw-bold mb-0" id="c-cnt">-</h2>
+            </div>
+            <div class="stat-icon bg-soft-orange"><i class="fas fa-barcode"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row no-print">
+      <div class="col-md-8 mb-4">
+        <div class="card border-0 shadow-sm p-4 h-100">
+          <h5 class="fw-bold mb-3"><i class="fas fa-plus-circle text-primary"></i> توليد أكواد تفعيل</h5>
+          <div class="row g-3">
+             <div class="col-md-4"><input id="gen-count" type="number" class="form-control" placeholder="عدد الأكواد"></div>
+             <div class="col-md-4"><input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع أ)"></div>
+             <div class="col-md-4"><button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button></div>
+          </div>
+          <hr class="my-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+             <h6 class="fw-bold m-0">الأكواد الحالية</h6>
+             <div class="d-flex gap-2">
+               <select id="f-cls" class="form-select form-select-sm" style="width:120px" onchange="render()"><option value="all">كل الصفوف</option></select>
+               <select id="f-sts" class="form-select form-select-sm" style="width:120px" onchange="render()"><option value="New">جديدة</option><option value="Used">مستخدمة</option><option value="all">الكل</option></select>
+               <button onclick="deleteUsedCodes()" class="btn btn-sm btn-outline-danger">تنظيف المستخدم</button>
+               <button onclick="printCodes()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> طباعة القائمة</button>
+             </div>
+          </div>
+          <div id="code-container" style="max-height:400px; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px"></div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card border-0 shadow-sm p-4 h-100 bg-dark text-white" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
+           <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane text-warning"></i> إرسال إشعار فوري</h5>
+           <p class="text-white-50">سيظهر الإشعار في شريط التنبيهات لدى الطلاب.</p>
+           <label class="mb-2">المستلمون:</label>
+           <select id="msg-target" class="form-select mb-3 bg-white text-dark border-0">
+             <option value="All">جميع الطلاب</option>
+           </select>
+           <label class="mb-2">نص الرسالة:</label>
+           <textarea id="msg-text" class="form-control mb-3" rows="3" placeholder="اكتب رسالتك هنا..."></textarea>
+           <button onclick="sendMsg()" class="btn btn-warning w-100 fw-bold">إرسال الإشعار</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-students" class="section-tab d-none">
+     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <h4 class="fw-bold">بطاقات الطلاب</h4>
+        <button onclick="printCards()" class="btn btn-success"><i class="fas fa-print"></i> طباعة البطاقات (A4)</button>
+     </div>
+     
+     <div class="card p-3 mb-4 no-print">
+        <div class="row g-2">
+            <div class="col-md-4"><input id="m-email" class="form-control" placeholder="بحث بالبريد الإلكتروني"></div>
+            <div class="col-md-3"><input id="m-pass" class="form-control" placeholder="كلمة المرور الجديدة"></div>
+            <div class="col-md-2"><button onclick="resetPass()" class="btn btn-warning w-100">تغيير الباس</button></div>
+            <div class="col-md-2"><button onclick="delStudent()" class="btn btn-danger w-100">حذف الحساب</button></div>
+        </div>
+     </div>
+
+     <div id="ids-grid" class="row g-3 no-print"></div>
+  </div>
+
+  <div id="tab-results" class="section-tab d-none">
+     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <h4 class="fw-bold">سجل النتائج</h4>
+        <div class="d-flex gap-2">
+           <input type="text" id="res-search" class="form-control" placeholder="بحث..." onkeyup="filterResults()">
+           <select id="res-cls-filter" class="form-select" onchange="filterResults()"><option value="all">الكل</option></select>
+           <button onclick="exportToExcel()" class="btn btn-success text-nowrap"><i class="fas fa-file-excel"></i> اكسل</button>
+        </div>
+     </div>
+     <div class="custom-table">
+        <table class="table table-hover mb-0" id="res-table">
+           <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>الامتحان</th><th>الدرجة</th><th>إجراء</th></tr></thead>
+           <tbody id="res-body"></tbody>
+        </table>
+     </div>
+  </div>
+
+  <div id="tab-library" class="section-tab d-none">
+     <div class="row">
+       <div class="col-md-4">
+         <div class="card p-4 border-0 shadow-sm">
+            <h5 class="fw-bold mb-3">إضافة محتوى</h5>
+            <input id="lib-title" class="form-control mb-2" placeholder="عنوان الدرس">
+            <select id="lib-type" class="form-select mb-2"><option value="PDF">ملف PDF</option><option value="Video">فيديو يوتيوب</option></select>
+            <input id="lib-cls" class="form-control mb-2" placeholder="الصف (اتركه فارغاً للكل)">
+            <input id="lib-link" class="form-control mb-3" placeholder="الرابط المباشر">
+            <button onclick="addLib()" class="btn btn-primary w-100">نشر المحتوى</button>
+         </div>
+       </div>
+       <div class="col-md-8">
+         <div class="custom-table">
+           <table class="table mb-0">
+             <thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead>
+             <tbody id="lib-body"></tbody>
+           </table>
+         </div>
+       </div>
+     </div>
+  </div>
+
+  <div id="tab-assign" class="section-tab d-none">
+     <div class="custom-table">
+        <table class="table table-hover mb-0">
+           <thead><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>الملف</th><th>الدرجة</th><th>حفظ</th></tr></thead>
+           <tbody id="ass-body"></tbody>
+        </table>
+     </div>
+  </div>
+
+  <div id="tab-complaints" class="section-tab d-none">
+     <div class="custom-table">
+        <table class="table mb-0">
+           <thead><tr><th>التاريخ</th><th>الطالب</th><th>الرسالة</th><th>الرد الإداري</th></tr></thead>
+           <tbody id="comp-body"></tbody>
+        </table>
+     </div>
+  </div>
+
+  <div id="tab-settings" class="section-tab d-none">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card p-4 border-0 shadow-sm">
+          <h5 class="fw-bold mb-3"><i class="fas fa-user-cog text-primary"></i> بيانات المعلم والمنصة</h5>
+          <label class="form-label">اسم المعلم (يظهر في الشهادة):</label>
+          <input id="sett-name" class="form-control mb-3" placeholder="أ. فلان الفلاني">
+          <label class="form-label">رقم الواتساب الشخصي:</label>
+          <input id="sett-wa" class="form-control mb-3" placeholder="00962...">
+          <label class="form-label">حالة المنصة:</label>
+          <select id="sett-maint" class="form-select mb-3">
+             <option value="Off">🟢 تعمل بشكل طبيعي</option>
+             <option value="On">🔴 وضع الصيانة (مغلقة)</option>
+          </select>
+          <button onclick="saveSettings()" class="btn btn-primary w-100">حفظ الإعدادات</button>
+        </div>
+      </div>
+      <div class="col-md-6">
+         <div class="card p-4 border-0 shadow-sm">
+            <h5 class="fw-bold mb-3"><i class="fas fa-share-alt text-primary"></i> روابط التواصل الاجتماعي</h5>
+            <div class="mb-3">
+               <label><i class="fab fa-whatsapp text-success"></i> رابط مجموعة الواتساب:</label>
+               <input id="social-whatsapp" class="form-control" placeholder="https://chat.whatsapp.com/...">
+            </div>
+            <div class="mb-3">
+               <label><i class="fab fa-facebook text-primary"></i> صفحة الفيسبوك:</label>
+               <input id="social-facebook" class="form-control" placeholder="https://facebook.com/...">
+            </div>
+            <div class="mb-3">
+               <label><i class="fab fa-instagram text-danger"></i> انستجرام:</label>
+               <input id="social-instagram" class="form-control" placeholder="https://instagram.com/...">
+            </div>
+            <div class="mb-3">
+               <label><i class="fab fa-youtube text-danger"></i> يوتيوب:</label>
+               <input id="social-youtube" class="form-control" placeholder="https://youtube.com/...">
+            </div>
+            <button onclick="saveSocialLinks()" class="btn btn-success w-100">تحديث الروابط</button>
+         </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="print-area"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ===========================================
-// ⚠️ رابط السيرفر
+// ⚠️ تأكد من أن هذا الرابط هو رابط الـ Deployment الصحيح
 const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec";
 // ===========================================
+
+let allData=[], allResults=[], allStudents=[];
+
+window.onload = function() { loadAllData(); };
 
 async function callApi(action, data = {}) {
     data.action = action;
     try {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         return await response.json();
-    } catch (e) { return {success: false, message: 'خطأ في الاتصال'}; }
+    } catch (e) { 
+        Swal.fire('خطأ', 'فشل الاتصال بالسيرفر', 'error');
+        return {success: false}; 
+    }
 }
 
-let allData=[], allResults=[];
-
-window.onload = function() { 
-    callApi('getAdminData').then(data => init(data)); 
-};
+function loadAllData() {
+    Swal.fire({title: 'جاري التحميل', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+    callApi('getAdminData').then(data => {
+        Swal.close();
+        init(data);
+    });
+}
 
 function init(data) {
   allData = data.codes;
@@ -217,14 +373,12 @@ function init(data) {
   document.getElementById('e-cnt').innerText = data.stats.exams;
   document.getElementById('c-cnt').innerText = data.stats.codes;
 
-  // تعبئة الإعدادات العامة
+  // Settings Fill
   if(data.settings) {
       if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
       if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
       if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
   }
-
-  // تعبئة روابط التواصل
   if(data.socials) {
       document.getElementById('social-facebook').value = data.socials.facebook || '';
       document.getElementById('social-instagram').value = data.socials.instagram || '';
@@ -232,57 +386,142 @@ function init(data) {
       document.getElementById('social-youtube').value = data.socials.youtube || '';
   }
 
-  let classes = [...new Set(allData.map(i=>i.cls))];
+  // Populate Classes for Filter & Message Target
+  // جلب الصفوف من الأكواد لتعبئة القوائم
+  let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
+  
+  // تعبئة فلتر الأكواد وفلتر النتائج
   ['f-cls', 'res-cls-filter'].forEach(id => {
       let sel = document.getElementById(id);
-      classes.forEach(c => { if(c){ let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); } });
+      sel.innerHTML = '<option value="all">كل الصفوف</option>';
+      classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
   });
+
+  // تعبئة قائمة إرسال الرسائل (أهم نقطة لظهور الرسائل حسب الصف)
+  let msgSel = document.getElementById('msg-target');
+  msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
+  classes.forEach(c => {
+      let o = document.createElement('option'); o.value = c; o.innerText = "طلاب " + c; msgSel.appendChild(o);
+  });
+
   render();
 }
 
+function showTab(tabId, el) {
+    document.querySelectorAll('.section-tab').forEach(d => d.classList.add('d-none'));
+    document.getElementById('tab-'+tabId).classList.remove('d-none');
+    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+    el.classList.add('active');
+    
+    // Load specific data on tab switch
+    if(tabId === 'students') loadIds();
+    if(tabId === 'results') loadResults();
+    if(tabId === 'library') loadLibrary();
+    if(tabId === 'assign') loadAssign();
+    if(tabId === 'complaints') loadComp();
+    
+    // On mobile, hide sidebar after click
+    if(window.innerWidth < 992) document.getElementById('sidebar').classList.remove('active');
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+
+// --- Codes ---
 function render() {
   let cls = document.getElementById('f-cls').value;
   let sts = document.getElementById('f-sts').value;
   let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
-  document.getElementById('count-lbl').innerText = "العدد: " + filtered.length;
   let h = '';
   filtered.forEach(c => {
-    h += `<div style="border: 2px dashed #333; padding: 10px; border-radius: 8px; text-align: center; background:white;">
-            <h6 class="fw-bold text-dark m-0">${c.cls}</h6>
-            <div class="badge bg-secondary my-1">${c.status}</div>
-            <div style="font-family: monospace; font-weight: bold; font-size: 18px; background: #000; color: #fff; padding: 5px; border-radius: 4px;">${c.code}</div>
+    h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center;">
+            <div class="fw-bold small text-muted">${c.cls}</div>
+            <div class="fw-bold fs-5 my-1" style="letter-spacing:2px">${c.code}</div>
+            <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
           </div>`;
   });
-  document.getElementById('code-container').innerHTML = h || '<div class="col-12 text-center py-5 text-muted">لا توجد بيانات</div>';
+  document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا توجد بيانات</div>';
 }
 
 function generate() {
   let count = document.getElementById('gen-count').value, cls = document.getElementById('gen-cls').value;
-  if(!count || !cls) return alert('أدخل البيانات');
-  callApi('generateNewCodes', {count:count, cls:cls}).then(res => { alert(res); location.reload(); });
+  if(!count || !cls) return Swal.fire('تنبيه', 'أدخل العدد والصف', 'warning');
+  callApi('generateNewCodes', {count:count, cls:cls}).then(res => { Swal.fire('تم', res, 'success'); setTimeout(location.reload, 1500); });
 }
 
 function deleteUsedCodes(){
-    if(confirm('تأكيد حذف الأكواد المستخدمة؟')) callApi('deleteUsedCodes').then(alert);
+   Swal.fire({title:'تأكيد؟', text:'حذف الأكواد المستخدمة؟', icon:'warning', showCancelButton:true}).then(r=>{
+       if(r.isConfirmed) callApi('deleteUsedCodes').then(res => Swal.fire('تم', res, 'success'));
+   });
 }
 
-// === حفظ الروابط الاجتماعية ===
-function saveSocialLinks() {
-    let links = {
-        'Facebook': document.getElementById('social-facebook').value,
-        'Instagram': document.getElementById('social-instagram').value,
-        'WhatsApp_Link': document.getElementById('social-whatsapp').value,
-        'Youtube': document.getElementById('social-youtube').value
-    };
-    callApi('saveSocialLinks', {links:links}).then(r => {
-        if(r.success) alert(r.message); else alert("خطأ في الحفظ");
+// --- Messaging ---
+function sendMsg() {
+  let t = document.getElementById('msg-target').value;
+  let m = document.getElementById('msg-text').value;
+  if(!m) return Swal.fire('تنبيه', 'اكتب نص الرسالة', 'warning');
+  callApi('sendTargetedMessage', {target:t, msg:m}).then(res => Swal.fire('تم', 'تم إرسال الإشعار بنجاح', 'success'));
+}
+
+// --- Students & Cards Printing ---
+function loadIds() {
+    document.getElementById('ids-grid').innerHTML = '<div class="text-center w-100"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i></div>';
+    callApi('getStudentsForCards').then(list => {
+        allStudents = list;
+        let h = '';
+        if(!list || list.length === 0) h = '<div class="alert alert-info w-100">لا يوجد طلاب مسجلين بعد</div>';
+        else list.forEach(s => {
+            let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(s.email);
+            h += `<div class="col-md-4 col-lg-3">
+                    <div class="card p-3 shadow-sm text-center h-100 position-relative">
+                        <img src="${s.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:70px;height:70px;border-radius:50%;margin:0 auto;object-fit:cover;border:2px solid var(--primary)">
+                        <h6 class="mt-2 fw-bold mb-1">${s.name}</h6>
+                        <span class="badge bg-soft-blue text-primary mb-2">${s.cls}</span>
+                        <div class="mt-auto"><img src="${qr}" style="width:80px"></div>
+                        <div class="small text-muted mt-1" style="font-size:10px">${s.email}</div>
+                    </div>
+                  </div>`;
+        });
+        document.getElementById('ids-grid').innerHTML = h;
     });
 }
 
-function saveSettings() {
-    let s = { 'TeacherName': document.getElementById('sett-name').value, 'WhatsApp': document.getElementById('sett-wa').value, 'Maintenance': document.getElementById('sett-maint').value };
-    callApi('saveGeneralSettings', {s:s}).then(alert);
+// طباعة البطاقات بشكل احترافي A4
+function printCards() {
+    if(!allStudents.length) return Swal.fire('تنبيه', 'لا يوجد طلاب للطباعة', 'info');
+    
+    let h = '';
+    allStudents.forEach(s => {
+        let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(s.email);
+        h += `<div class="id-card-print">
+                 <img src="${s.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" class="id-photo">
+                 <div class="id-info">
+                    <h3 style="margin:0; font-weight:bold; color:#000;">${s.name}</h3>
+                    <p style="margin:5px 0; font-size:18px;">الصف: ${s.cls}</p>
+                    <p style="margin:0; font-size:12px; color:#555;">${s.email}</p>
+                 </div>
+                 <img src="${qr}" class="id-qr">
+              </div>`;
+    });
+    
+    document.getElementById('print-area').innerHTML = h;
+    window.print();
 }
+
+function printCodes() {
+   let content = document.getElementById('code-container').innerHTML;
+   let win = window.open('', '', 'height=700,width=900');
+   win.document.write('<html><head><title>طباعة الأكواد</title>');
+   win.document.write('<style>body{font-family:sans-serif; direction:rtl} .grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px} div{border:1px solid #000; padding:10px; text-align:center}</style>');
+   win.document.write('</head><body>');
+   win.document.write('<div class="grid">' + content + '</div>');
+   win.document.write('</body></html>');
+   win.document.close();
+   win.print();
+}
+
+// --- Other Logic ---
+function resetPass(){ let e = document.getElementById('m-email').value, p = document.getElementById('m-pass').value; if(!e || !p) return Swal.fire('نقص', 'البيانات ناقصة', 'warning'); callApi('adminResetPass', {email:e, newPass:p}).then(res => Swal.fire('تم', res, 'success')); }
+function delStudent(){ let e = document.getElementById('m-email').value; if(!e) return; Swal.fire({title:'حذف نهائي؟', icon:'warning', showCancelButton:true}).then(r=>{ if(r.isConfirmed) callApi('deleteStudent', {email:e}).then(res => Swal.fire('تم', res, 'success')); }); }
 
 function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data; renderResults(data); }); }
 function renderResults(data) {
@@ -290,7 +529,7 @@ function renderResults(data) {
     if(!data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد نتائج</td></tr>'; return; }
     let h = '';
     data.forEach(r => {
-        h += `<tr><td>${r.date}</td><td class="fw-bold">${r.name}</td><td>${r.cls}</td><td>${r.exam}</td><td><span class="badge ${parseInt(r.score)>=50?'bg-success':'bg-danger'}">${r.score}</span></td><td><button class="btn btn-sm btn-danger" onclick="deleteRes(${r.rowId})">حذف</button></td></tr>`;
+        h += `<tr><td>${r.date}</td><td class="fw-bold">${r.name}</td><td>${r.cls}</td><td>${r.exam}</td><td><span class="badge ${parseInt(r.score)>=50?'bg-success':'bg-danger'}">${r.score}</span></td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteRes(${r.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
     });
     tbody.innerHTML = h;
 }
@@ -300,26 +539,26 @@ function filterResults() {
     let filtered = allResults.filter(r => (r.name.toLowerCase().includes(q) || r.exam.toLowerCase().includes(q)) && (cls === 'all' || r.cls === cls));
     renderResults(filtered);
 }
-function deleteRes(rowId) { if(!confirm('تأكيد الحذف؟')) return; callApi('deleteResultRow', {rowId:rowId}).then(msg => { alert(msg); loadResults(); }); }
+function deleteRes(rowId) { Swal.fire({title:'حذف النتيجة؟', icon:'warning', showCancelButton:true}).then(r=>{ if(r.isConfirmed) callApi('deleteResultRow', {rowId:rowId}).then(msg => { loadResults(); }); }); }
 function exportToExcel() {
-    let csv = "data:text/csv;charset=utf-8,\uFEFFالتاريخ,الطالب,الصف,الامتحان,الدرجة\n";
+    let csv = "\uFEFFالتاريخ,الطالب,الصف,الامتحان,الدرجة\n";
     allResults.forEach(r => { csv += `${r.date},${r.name},${r.cls},${r.exam},${r.score}\n`; });
-    let link = document.createElement("a"); link.href = encodeURI(csv); link.download = "نتائج.csv"; link.click();
+    let link = document.createElement("a"); link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv); link.download = "النتائج.csv"; link.click();
 }
 
 function loadLibrary() {
     callApi('getLibraryForAdmin').then(list => {
         let h = '';
         list.forEach(i => {
-            h += `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls||'الكل'}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`;
+            h += `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls||'الكل'}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
         });
-        document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center">فارغة</td></tr>';
+        document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">المكتبة فارغة</td></tr>';
     });
 }
 function addLib() {
     let d = { title: document.getElementById('lib-title').value, type: document.getElementById('lib-type').value, cls: document.getElementById('lib-cls').value, link: document.getElementById('lib-link').value };
-    if(!d.title || !d.link) return alert('بيانات ناقصة');
-    callApi('addToLibrary', {d:d}).then(r=>{ alert(r); loadLibrary(); });
+    if(!d.title || !d.link) return Swal.fire('نقص', 'أكمل البيانات', 'warning');
+    callApi('addToLibrary', {d:d}).then(r=>{ Swal.fire('تم', r, 'success'); loadLibrary(); });
 }
 function delLib(id) { if(confirm('حذف؟')) callApi('deleteLibraryItem', {rowId:id}).then(r=>{ loadLibrary(); }); }
 
@@ -327,47 +566,41 @@ function loadAssign() {
     callApi('getAssignmentsForAdmin').then(list => {
         let h = '';
         list.forEach(i => {
-            h += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.type}</td><td><a href="${i.link}" target="_blank" class="btn btn-sm btn-primary">عرض</a></td><td><input id="g-${i.rowId}" value="${i.grade}" style="width:60px" class="form-control form-control-sm"></td><td><button onclick="saveGrade(${i.rowId})" class="btn btn-sm btn-success">حفظ</button></td></tr>`;
+            h += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.type}</td><td><a href="${i.link}" target="_blank" class="btn btn-sm btn-primary">عرض</a></td><td><input id="g-${i.rowId}" value="${i.grade}" style="width:60px" class="form-control form-control-sm"></td><td><button onclick="saveGrade(${i.rowId})" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button></td></tr>`;
         });
-        document.getElementById('ass-body').innerHTML = h || '<tr><td colspan="6">لا توجد واجبات</td></tr>';
+        document.getElementById('ass-body').innerHTML = h || '<tr><td colspan="6" class="text-center text-muted">لا توجد واجبات</td></tr>';
     });
 }
-function saveGrade(id) { let g = document.getElementById('g-'+id).value; callApi('gradeAssignment', {rowId:id, grade:g}).then(r => alert(r)); }
+function saveGrade(id) { let g = document.getElementById('g-'+id).value; callApi('gradeAssignment', {rowId:id, grade:g}).then(r => Swal.fire('تم', r, 'success')); }
 
 function loadComp() {
     callApi('getComplaintsForAdmin').then(list => {
         let h = '';
-        list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><textarea class="form-control form-control-sm" id="r-${i.rowId}" placeholder="رد...">${i.reply||''}</textarea><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-info text-white mt-1">إرسال</button></td></tr>`; });
-        document.getElementById('comp-body').innerHTML = h || '<tr><td colspan="4" class="text-center">لا توجد شكاوى</td></tr>';
+        list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><div class="input-group"><input class="form-control form-control-sm" id="r-${i.rowId}" placeholder="الرد..." value="${i.reply||''}"><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-primary">إرسال</button></div></td></tr>`; });
+        document.getElementById('comp-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا توجد شكاوى</td></tr>';
     });
 }
 function replyComp(id) {
     let r = document.getElementById('r-'+id).value;
-    if(r) callApi('replyToComplaint', {rowId:id, reply:r}).then(alert);
+    if(r) callApi('replyToComplaint', {rowId:id, reply:r}).then(res => Swal.fire('تم', res, 'success'));
 }
 
-function loadIds() {
-    callApi('getStudentsForCards').then(list => {
-        let h = '';
-        if(!list || list.length === 0) h = '<div class="alert alert-warning">لا يوجد طلاب</div>';
-        else list.forEach(s => {
-            let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(s.email);
-            h += `<div class="col-md-4 mb-3">
-                    <div class="card p-3 shadow-sm text-center">
-                        <img src="${s.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:60px;height:60px;border-radius:50%;margin:0 auto;">
-                        <h6 class="mt-2 fw-bold">${s.name}</h6>
-                        <span class="badge bg-secondary">${s.cls}</span>
-                        <div class="mt-2"><img src="${qr}"></div>
-                    </div>
-                  </div>`;
-        });
-        document.getElementById('ids-grid').innerHTML = h;
+function saveSocialLinks() {
+    let links = {
+        'Facebook': document.getElementById('social-facebook').value,
+        'Instagram': document.getElementById('social-instagram').value,
+        'WhatsApp_Link': document.getElementById('social-whatsapp').value,
+        'Youtube': document.getElementById('social-youtube').value
+    };
+    callApi('saveSocialLinks', {links:links}).then(r => {
+        if(r.success) Swal.fire('تم', r.message, 'success');
     });
 }
 
-function resetPass(){ let e = document.getElementById('m-email').value, p = document.getElementById('m-pass').value; if(!e || !p) return alert('بيانات ناقصة'); callApi('adminResetPass', {email:e, newPass:p}).then(alert); }
-function delStudent(){ let e = document.getElementById('m-email').value; if(!e) return alert('أدخل البريد'); if(!confirm('حذف نهائي؟')) return; callApi('deleteStudent', {email:e}).then(alert); }
-function sendMsg() { let t = document.getElementById('msg-target').value; let m = document.getElementById('msg-text').value; if(!m) return alert('اكتب الرسالة'); callApi('sendTargetedMessage', {target:t, msg:m}).then(alert); }
+function saveSettings() {
+    let s = { 'TeacherName': document.getElementById('sett-name').value, 'WhatsApp': document.getElementById('sett-wa').value, 'Maintenance': document.getElementById('sett-maint').value };
+    callApi('saveGeneralSettings', {s:s}).then(res => Swal.fire('تم', res, 'success'));
+}
 </script>
 </body>
 </html>
