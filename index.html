@@ -372,12 +372,29 @@ function cleanUrlAndDash() {
     loadDash();
 }
 
+// ============================================
+// تم التعديل لإصلاح مشكلة الباركود والروابط
+// ============================================
 window.onload = function() {
   document.getElementById('stamp-img').src = STAMP_URL;
-  let dLink = document.getElementById('direct-link').innerText;
-  if(dLink && dLink.trim() !== "") sessionStorage.setItem('pending', dLink);
-  if (window.location.search.includes('exam=')) window.history.replaceState({}, document.title, window.location.pathname);
-  if(token) checkPending(); else document.getElementById('v-login').classList.remove('hidden');
+
+  // 1. قراءة الرابط بشكل صحيح من المتصفح باستخدام URLSearchParams
+  const urlParams = new URLSearchParams(window.location.search);
+  const examParam = urlParams.get('exam');
+
+  if (examParam) {
+      // حفظ الامتحان في الذاكرة المؤقتة
+      sessionStorage.setItem('pending', examParam);
+      // تنظيف الرابط
+      window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  // التحقق من وجود توكن
+  if(token) {
+      checkPending(); 
+  } else {
+      document.getElementById('v-login').classList.remove('hidden');
+  }
   
   document.addEventListener("visibilitychange", () => {
     if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
@@ -564,7 +581,7 @@ function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
 function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
 function sub(){ submitExam(false); }
 
-// === دالة الخروج الجديدة ===
+// === دالة الخروج الجديدة (تم تعديلها لتعيد الطالب للمنصة) ===
 function exitExam() {
   Swal.fire({
     title: 'تأكيد الخروج؟',
@@ -576,8 +593,16 @@ function exitExam() {
     cancelButtonText: 'إلغاء'
   }).then((result) => {
     if (result.isConfirmed) {
-      clearInterval(st.timer);
+      clearInterval(st.timer); // إيقاف المؤقت
+      
+      // إخفاء شاشة الامتحان
       document.getElementById('v-exam').classList.add('hidden');
+      
+      // إعادة إظهار لوحة التحكم والجرس
+      document.getElementById('v-dash').classList.remove('hidden');
+      document.getElementById('notif-bell').classList.remove('hidden');
+      
+      // تحديث البيانات
       loadDash();
     }
   });
@@ -788,4 +813,3 @@ function loadMsgHistory() {
 </script>
 </body>
 </html>
-
