@@ -117,7 +117,7 @@
   <div class="sidebar-header">
     <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="logo-img">
     <h4 class="mb-0 fw-bold">منصة نبراس</h4>
-    <small class="text-white-50">لوحة الإدارة V2.0</small>
+    <small class="text-white-50">لوحة الإدارة V3.0</small>
   </div>
   <div class="nav flex-column">
     <div class="nav-link active" onclick="showTab('home', this)"><i class="fas fa-home"></i> الرئيسية</div>
@@ -184,9 +184,22 @@
         <div class="card border-0 shadow-sm p-4 h-100">
           <h5 class="fw-bold mb-3"><i class="fas fa-plus-circle text-primary"></i> توليد أكواد تفعيل</h5>
           <div class="row g-3">
-             <div class="col-md-4"><input id="gen-count" type="number" class="form-control" placeholder="عدد الأكواد"></div>
-             <div class="col-md-4"><input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع أ)"></div>
-             <div class="col-md-4"><button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button></div>
+             <div class="col-md-6"><input id="gen-count" type="number" class="form-control" placeholder="عدد الأكواد"></div>
+             <div class="col-md-6"><input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع أ)"></div>
+             
+             <div class="col-md-6">
+                <label class="small text-muted mb-1">نوع الاشتراك</label>
+                <select id="gen-type" class="form-select">
+                    <option value="Full">اشتراك كامل (مدفوع)</option>
+                    <option value="Trial">تجريبي (مجاني)</option>
+                </select>
+             </div>
+             <div class="col-md-6">
+                <label class="small text-muted mb-1">المدة بالأيام</label>
+                <input id="gen-dur" type="number" class="form-control" placeholder="مثلاً: 120" value="120">
+             </div>
+             
+             <div class="col-md-12"><button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button></div>
           </div>
           <hr class="my-4">
           <div class="d-flex justify-content-between align-items-center mb-3">
@@ -421,7 +434,6 @@ function init(data) {
   }
 
   // Populate Classes for Filter & Message Target
-  // جلب الصفوف من الأكواد لتعبئة القوائم
   let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
   
   // تعبئة فلتر الأكواد وفلتر النتائج
@@ -431,7 +443,7 @@ function init(data) {
       classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
   });
 
-  // تعبئة قائمة إرسال الرسائل (أهم نقطة لظهور الرسائل حسب الصف)
+  // تعبئة قائمة إرسال الرسائل
   let msgSel = document.getElementById('msg-target');
   msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
   classes.forEach(c => {
@@ -467,19 +479,34 @@ function render() {
   let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
   let h = '';
   filtered.forEach(c => {
+    // ✅ إضافة بادج لتوضيح نوع الكود (تجريبي أو كامل)
+    let typeBadge = c.type === 'Trial' ? '<span class="badge bg-warning text-dark">تجريبي</span>' : '<span class="badge bg-primary">كامل</span>';
     h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center;">
             <div class="fw-bold small text-muted">${c.cls}</div>
             <div class="fw-bold fs-5 my-1" style="letter-spacing:2px">${c.code}</div>
-            <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
+            <div class="d-flex justify-content-center gap-1 mt-1">
+                <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
+                ${typeBadge}
+            </div>
           </div>`;
   });
   document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا توجد بيانات</div>';
 }
 
 function generate() {
-  let count = document.getElementById('gen-count').value, cls = document.getElementById('gen-cls').value;
-  if(!count || !cls) return Swal.fire('تنبيه', 'أدخل العدد والصف', 'warning');
-  callApi('generateNewCodes', {count:count, cls:cls}).then(res => { Swal.fire('تم', res, 'success'); setTimeout(location.reload, 1500); });
+  let count = document.getElementById('gen-count').value;
+  let cls = document.getElementById('gen-cls').value;
+  // ✅ قراءة القيم الجديدة: النوع والمدة
+  let type = document.getElementById('gen-type').value;
+  let dur = document.getElementById('gen-dur').value;
+
+  if(!count || !cls || !dur) return Swal.fire('تنبيه', 'أدخل جميع البيانات', 'warning');
+  
+  callApi('generateNewCodes', {count:count, cls:cls, type:type, duration:dur})
+    .then(res => { 
+        Swal.fire('تم', res, 'success'); 
+        setTimeout(location.reload, 1500); 
+    });
 }
 
 function deleteUsedCodes(){
@@ -490,14 +517,12 @@ function deleteUsedCodes(){
 
 // --- Messaging ---
 function sendMsg() {
-  // التحقق هل كتب الإيميل يدوياً أم اختار من القائمة
   let manualEmail = document.getElementById('msg-email-manual').value;
   let target = manualEmail ? manualEmail.trim() : document.getElementById('msg-target').value;
   let m = document.getElementById('msg-text').value;
   
   if(!m) return Swal.fire('تنبيه', 'اكتب الرسالة', 'warning');
   
-  // استدعاء السيرفر
   callApi('sendTargetedMessage', {target:target, msg:m}).then(res => {
       Swal.fire('تم', 'تم الإرسال بنجاح', 'success');
       document.getElementById('msg-text').value = '';
@@ -690,4 +715,3 @@ function performReset() {
 </script>
 </body>
 </html>
-
