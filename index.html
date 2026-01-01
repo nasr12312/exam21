@@ -12,7 +12,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
-  /* نفس التنسيقات الأصلية تماماً */
   :root { 
     --bg: #0f172a; 
     --glass: rgba(30, 41, 59, 0.8); 
@@ -50,7 +49,7 @@
   .btn-p { background: linear-gradient(135deg, var(--blue), #2563eb); color: white; } 
   .btn-g { background: linear-gradient(135deg, var(--gold), #d97706); color: white; }
   .btn-o { background: rgba(128,128,128,0.1); border: 1px solid var(--border); color: var(--text); }
-  .btn-r { background: linear-gradient(135deg, var(--red), #b91c1c); color: white; } /* زر خروج جديد */
+  .btn-r { background: linear-gradient(135deg, var(--red), #b91c1c); color: white; }
   .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .nav-tab { 
     flex: 1; padding: 15px; background: rgba(128,128,128,0.1); border-radius: 12px; text-align: center; 
@@ -104,7 +103,6 @@
     animation: slideUp 0.5s; font-weight: bold; 
   }
   @keyframes slideUp { from {bottom: -50px} to {bottom: 20px} }
-  /* تنسيق الشهادة */
   #cert-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; justify-content: center; align-items: center; overflow: auto; }
   .cert-scaler { transform-origin: center top; width: 100%; display: flex; justify-content: center; padding: 20px 0; }
   .cert-box { background: white; color: black; width: 800px; min-width: 800px; padding: 40px; border-radius: 15px; text-align: center; border: 10px double #1e3a8a; outline: 5px solid #f59e0b; outline-offset: -20px; position: relative; overflow: hidden; box-sizing: border-box; }
@@ -182,6 +180,7 @@
       <div>
         <h3 id="u-name" style="margin:0; color:var(--text); font-size:20px"></h3>
         <span id="u-cls" style="color:var(--gold); font-size:14px; background:rgba(245, 158, 11, 0.1); padding:2px 8px; border-radius:10px"></span>
+        <div id="social-box" style="display:flex; gap:10px; margin-top:8px;"></div>
         <div id="badges-area" style="margin-top:5px"></div>
       </div>
     </div>
@@ -338,7 +337,7 @@
 <script>
 // ============================================
 // ⚠️ هام: ضع الرابط الجديد هنا
-const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec"; 
+const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; 
 // ============================================
 
 const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
@@ -372,24 +371,17 @@ function cleanUrlAndDash() {
     loadDash();
 }
 
-// ============================================
-// تم التعديل لإصلاح مشكلة الباركود والروابط
-// ============================================
 window.onload = function() {
   document.getElementById('stamp-img').src = STAMP_URL;
 
-  // 1. قراءة الرابط بشكل صحيح من المتصفح باستخدام URLSearchParams
   const urlParams = new URLSearchParams(window.location.search);
   const examParam = urlParams.get('exam');
 
   if (examParam) {
-      // حفظ الامتحان في الذاكرة المؤقتة
       sessionStorage.setItem('pending', examParam);
-      // تنظيف الرابط
       window.history.replaceState({}, document.title, window.location.pathname);
   }
 
-  // التحقق من وجود توكن
   if(token) {
       checkPending(); 
   } else {
@@ -581,7 +573,6 @@ function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
 function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
 function sub(){ submitExam(false); }
 
-// === دالة الخروج الجديدة (تم تعديلها لتعيد الطالب للمنصة) ===
 function exitExam() {
   Swal.fire({
     title: 'تأكيد الخروج؟',
@@ -593,16 +584,10 @@ function exitExam() {
     cancelButtonText: 'إلغاء'
   }).then((result) => {
     if (result.isConfirmed) {
-      clearInterval(st.timer); // إيقاف المؤقت
-      
-      // إخفاء شاشة الامتحان
+      clearInterval(st.timer); 
       document.getElementById('v-exam').classList.add('hidden');
-      
-      // إعادة إظهار لوحة التحكم والجرس
       document.getElementById('v-dash').classList.remove('hidden');
       document.getElementById('notif-bell').classList.remove('hidden');
-      
-      // تحديث البيانات
       loadDash();
     }
   });
@@ -730,10 +715,24 @@ function loadStats() {
            document.getElementById('badges-area').innerHTML = b;
         }
         if(r.teacher && r.teacher.name) document.getElementById('t-name').innerText = r.teacher.name;
-        if(r.teacher && r.teacher.whatsapp) { 
-            let wb=document.getElementById('wa-btn'); 
-            wb.href=r.teacher.whatsapp; 
-            wb.classList.remove('hidden'); 
+        
+        // === Render Social Icons (تم الإضافة هنا) ===
+        if(r.socials) {
+            let sHtml = '';
+            if(r.socials.whatsapp) {
+                document.getElementById('wa-btn').href = r.socials.whatsapp;
+                document.getElementById('wa-btn').classList.remove('hidden');
+            }
+            if(r.socials.facebook) {
+                sHtml += `<a href="${r.socials.facebook}" target="_blank" style="color:#1877F2; font-size:20px"><i class="fab fa-facebook"></i></a>`;
+            }
+            if(r.socials.instagram) {
+                sHtml += `<a href="${r.socials.instagram}" target="_blank" style="color:#C13584; font-size:20px"><i class="fab fa-instagram"></i></a>`;
+            }
+            if(r.socials.youtube) {
+                sHtml += `<a href="${r.socials.youtube}" target="_blank" style="color:#FF0000; font-size:20px"><i class="fab fa-youtube"></i></a>`;
+            }
+            document.getElementById('social-box').innerHTML = sHtml;
         }
     });
 }
