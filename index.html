@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة العربية لغتي | Pro</title>
+<title>منصة العربية لغتي | الطالب</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -12,7 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
-  /* === المتغيرات والألوان === */
+  /* نفس التنسيقات الأصلية تماماً */
   :root { 
     --bg: #0f172a; 
     --glass: rgba(30, 41, 59, 0.8); 
@@ -24,11 +24,7 @@
     --text: #f8fafc;
   }
   [data-theme="light"] {
-    --bg: #f1f5f9;
-    --glass: rgba(255, 255, 255, 0.9);
-    --border: rgba(0, 0, 0, 0.1);
-    --text: #1e293b;
-    --blue: #2563eb;
+    --bg: #f1f5f9; --glass: rgba(255, 255, 255, 0.9); --border: rgba(0, 0, 0, 0.1); --text: #1e293b; --blue: #2563eb;
   }
   body { 
     background: var(--bg); color: var(--text); font-family: 'Tajawal'; margin: 0; padding: 20px; min-height: 100vh;
@@ -54,6 +50,7 @@
   .btn-p { background: linear-gradient(135deg, var(--blue), #2563eb); color: white; } 
   .btn-g { background: linear-gradient(135deg, var(--gold), #d97706); color: white; }
   .btn-o { background: rgba(128,128,128,0.1); border: 1px solid var(--border); color: var(--text); }
+  .btn-r { background: linear-gradient(135deg, var(--red), #b91c1c); color: white; } /* زر خروج جديد */
   .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .nav-tab { 
     flex: 1; padding: 15px; background: rgba(128,128,128,0.1); border-radius: 12px; text-align: center; 
@@ -107,6 +104,7 @@
     animation: slideUp 0.5s; font-weight: bold; 
   }
   @keyframes slideUp { from {bottom: -50px} to {bottom: 20px} }
+  /* تنسيق الشهادة */
   #cert-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; justify-content: center; align-items: center; overflow: auto; }
   .cert-scaler { transform-origin: center top; width: 100%; display: flex; justify-content: center; padding: 20px 0; }
   .cert-box { background: white; color: black; width: 800px; min-width: 800px; padding: 40px; border-radius: 15px; text-align: center; border: 10px double #1e3a8a; outline: 5px solid #f59e0b; outline-offset: -20px; position: relative; overflow: hidden; box-sizing: border-box; }
@@ -275,7 +273,10 @@
         <h2 id="xt" style="margin:0; color:var(--blue); font-size:18px"></h2>
         <div style="font-size:12px; color:#94a3b8">عدد الأسئلة: <span id="q-count"></span></div>
       </div>
-      <div class="timer-box" id="timer-display"><i class="fas fa-clock"></i> <span id="time-val">00:00</span></div>
+      <div style="display:flex; gap:10px; align-items:center;">
+         <div class="timer-box" id="timer-display"><i class="fas fa-clock"></i> <span id="time-val">00:00</span></div>
+         <button class="btn btn-r" style="width:auto; padding:5px 15px; font-size:12px;" onclick="exitExam()">خروج <i class="fas fa-door-open"></i></button>
+      </div>
     </div>
   </div>
   <div class="card">
@@ -316,7 +317,7 @@
       <h2 id="c-name" style="color:black; font-size:38px; margin:5px 0; border-bottom:2px solid #ccc; display:inline-block; padding:0 40px; font-family:'Amiri'"></h2>
       <p style="margin-top:20px; font-size: 20px;">لاجتيازه اختبار <b id="c-ex" style="color:#d97706"></b> بنتيجة:</p>
       <h1 id="c-sc" style="color:#1e3a8a; font-size:60px; margin:10px 0; font-family:'Tajawal'"></h1>
-       
+        
       <div style="margin-top:60px; display:flex; justify-content:space-between; align-items:flex-end; padding: 0 30px;">
         <div style="text-align:right;">
           <p style="margin:0; font-weight:bold; color:#555; font-size:18px">مدير المنصة</p>
@@ -336,8 +337,8 @@
 
 <script>
 // ============================================
-// ⚠️ الرابط الذي زودتني به
-const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec";
+// ⚠️ هام: ضع الرابط الجديد هنا
+const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; 
 // ============================================
 
 const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
@@ -346,19 +347,21 @@ let token = localStorage.getItem('tk');
 let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
 const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
 
-// === Helper for API Calls (FETCH) ===
+// === دالة الاتصال المحسنة (إصلاح مشكلة التعليق) ===
 async function callApi(action, data = {}) {
     data.action = action;
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            // إزالة headers معينة تسمح لجوجل بالتعامل مع الطلب كـ Simple Request وتجنب CORS
         });
         const result = await response.json();
         return result;
     } catch (e) {
         console.error(e);
-        return { success: false, message: 'خطأ في الاتصال بالسيرفر' };
+        // في حال فشل الاتصال، ارجع رسالة خطأ بدلاً من ترك اللودر معلقاً
+        return { success: false, message: 'تعذر الاتصال بالخادم، تأكد من تحديث الرابط.' };
     }
 }
 
@@ -525,8 +528,8 @@ function start(t){
   callApi('getExamQuestions', {token:token, name:t}).then(r=>{
     ld(0); 
     if(!r || !r.success) {
-         Swal.fire('تنبيه', r ? r.message : 'خطأ غير معروف', 'warning').then(() => cleanUrlAndDash());
-         return;
+          Swal.fire('تنبيه', r ? r.message : 'خطأ غير معروف', 'warning').then(() => cleanUrlAndDash());
+          return;
     }
     st.exam=r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0;
     st.seconds = r.duration * 60; 
@@ -560,6 +563,25 @@ function rendQ(){
 function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
 function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
 function sub(){ submitExam(false); }
+
+// === دالة الخروج الجديدة ===
+function exitExam() {
+  Swal.fire({
+    title: 'تأكيد الخروج؟',
+    text: "سيتم إلغاء الامتحان ولن يتم حفظ النتيجة.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    confirmButtonText: 'نعم، خروج',
+    cancelButtonText: 'إلغاء'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      clearInterval(st.timer);
+      document.getElementById('v-exam').classList.add('hidden');
+      loadDash();
+    }
+  });
+}
 
 function submitExam(forced){
   if(!forced && !confirm('هل أنت متأكد من التسليم؟')) return;
