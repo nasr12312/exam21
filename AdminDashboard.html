@@ -11,21 +11,15 @@
 
 <style>
   :root {
-    --primary: #4f46e5;
-    --secondary: #64748b;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --dark: #1e293b;
-    --light: #f8fafc;
+    --primary: #4f46e5; --secondary: #64748b; --success: #10b981;
+    --warning: #f59e0b; --danger: #ef4444; --dark: #1e293b; --light: #f8fafc;
   }
   body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; min-height: 100vh; overflow-x: hidden; }
   
   /* Sidebar */
   .sidebar {
     width: 260px; height: 100vh; position: fixed; right: 0; top: 0;
-    background: var(--dark); color: white; transition: 0.3s; z-index: 1000;
-    padding-top: 20px;
+    background: var(--dark); color: white; transition: 0.3s; z-index: 1000; padding-top: 20px;
   }
   .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
   .logo-img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid var(--warning); }
@@ -46,9 +40,7 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: none;
     position: relative; overflow: hidden; height: 100%;
   }
-  .stat-card::after {
-    content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%;
-  }
+  .stat-card::after { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; }
   .stat-card.blue::after { background: var(--primary); }
   .stat-card.green::after { background: var(--success); }
   .stat-card.orange::after { background: var(--warning); }
@@ -68,36 +60,23 @@
 
   /* Forms */
   .form-control, .form-select {
-    padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;
-    box-shadow: none; font-size: 14px;
+    padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: none; font-size: 14px;
   }
   .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
   .btn-primary { background: var(--primary); border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; }
   .btn-primary:hover { background: #4338ca; }
 
-  /* ID Card Printing Styling - Professional A4 */
+  /* ID Card Printing */
   #print-area { display: none; }
   
   @media print {
     body { background: white; -webkit-print-color-adjust: exact; }
     .sidebar, .no-print, .header-area, .btn { display: none !important; }
     .main-content { margin: 0; padding: 0; width: 100%; }
-    #print-area { 
-      display: grid !important; 
-      grid-template-columns: repeat(2, 1fr); /* بطاقتين بالعرض */
-      gap: 15px; 
-      padding: 20px;
-    }
+    #print-area { display: grid !important; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
     .id-card-print {
-      border: 1px solid #000;
-      border-radius: 10px;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      page-break-inside: avoid;
-      background: white;
-      height: 180px; /* ارتفاع ثابت */
+      border: 1px solid #000; border-radius: 10px; padding: 15px; display: flex; align-items: center;
+      gap: 15px; page-break-inside: avoid; background: white; height: 180px;
     }
     .id-photo { width: 100px; height: 100px; object-fit: cover; border: 2px solid #333; }
     .id-info { flex: 1; text-align: right; }
@@ -117,7 +96,7 @@
   <div class="sidebar-header">
     <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="logo-img">
     <h4 class="mb-0 fw-bold">منصة نبراس</h4>
-    <small class="text-white-50">لوحة الإدارة V3.0</small>
+    <small class="text-white-50">لوحة الإدارة V3.1</small>
   </div>
   <div class="nav flex-column">
     <div class="nav-link active" onclick="showTab('home', this)"><i class="fas fa-home"></i> الرئيسية</div>
@@ -147,10 +126,7 @@
       <div class="col-md-4">
         <div class="stat-card blue">
           <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p class="text-muted mb-1">إجمالي الطلاب</p>
-              <h2 class="fw-bold mb-0" id="s-cnt">-</h2>
-            </div>
+            <div><p class="text-muted mb-1">إجمالي الطلاب</p><h2 class="fw-bold mb-0" id="s-cnt">0</h2></div>
             <div class="stat-icon bg-soft-blue"><i class="fas fa-user-graduate"></i></div>
           </div>
         </div>
@@ -158,10 +134,7 @@
       <div class="col-md-4">
         <div class="stat-card green">
           <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p class="text-muted mb-1">الامتحانات النشطة</p>
-              <h2 class="fw-bold mb-0" id="e-cnt">-</h2>
-            </div>
+            <div><p class="text-muted mb-1">الامتحانات النشطة</p><h2 class="fw-bold mb-0" id="e-cnt">0</h2></div>
             <div class="stat-icon bg-soft-green"><i class="fas fa-file-alt"></i></div>
           </div>
         </div>
@@ -169,10 +142,7 @@
       <div class="col-md-4">
         <div class="stat-card orange">
           <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p class="text-muted mb-1">الأكواد المتوفرة</p>
-              <h2 class="fw-bold mb-0" id="c-cnt">-</h2>
-            </div>
+            <div><p class="text-muted mb-1">الأكواد المتوفرة</p><h2 class="fw-bold mb-0" id="c-cnt">0</h2></div>
             <div class="stat-icon bg-soft-orange"><i class="fas fa-barcode"></i></div>
           </div>
         </div>
@@ -223,7 +193,7 @@
            <label class="mb-2">المستلمون:</label>
            <select id="msg-target" class="form-select mb-2 bg-white text-dark border-0">
              <option value="All">جميع الطلاب</option>
-             </select>
+           </select>
            
            <label class="mb-2">أو إرسال لطالب محدد (البريد):</label>
            <input id="msg-email-manual" class="form-control mb-3 bg-white text-dark border-0" placeholder="example@gmail.com">
@@ -358,7 +328,7 @@
       <div class="col-12">
         <div class="card p-4 border-0 shadow-sm border-start border-danger border-5">
           <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة التهيئة (حذف وإعادة بناء)</h5>
-          <p class="text-muted">تنبيه: هذا الخيار سيقوم بحذف جميع البيانات في الجداول المختارة وإعادتها لوضع المصنع. لا يمكن التراجع عن هذه الخطوة.</p>
+          <p class="text-muted">تنبيه: هذا الخيار سيقوم بحذف جميع البيانات في الجداول المختارة وإعادتها لوضع المصنع.</p>
           
           <div class="row" id="tables-checklist">
              <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Students" id="chk-std"><label class="form-check-label" for="chk-std">الطلاب (Students)</label></div></div>
@@ -387,7 +357,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ===========================================
-// ⚠️ هام: ضع الرابط الجديد هنا
+// ⚠️ هام: تأكد من أن الرابط هنا يطابق النشر الجديد للسيرفر
+// انسخ الرابط من New Deployment وضعه هنا
 const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec"; 
 // ===========================================
 
@@ -401,56 +372,70 @@ async function callApi(action, data = {}) {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         return await response.json();
     } catch (e) { 
-        Swal.fire('خطأ', 'فشل الاتصال بالسيرفر', 'error');
+        console.error(e);
+        // لا تظهر رسالة خطأ مزعجة في البداية، قد يكون مجرد تأخير
         return {success: false}; 
     }
 }
 
 function loadAllData() {
-    Swal.fire({title: 'جاري التحميل', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+    Swal.fire({title: 'جاري الاتصال بالنظام...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+    
     callApi('getAdminData').then(data => {
         Swal.close();
-        init(data);
+        if(data && data.stats) {
+            init(data);
+        } else {
+            Swal.fire('تنبيه', 'لم يتم تحميل البيانات بشكل صحيح، تأكد من نشر السكربت (New Deployment).', 'warning');
+        }
     });
 }
 
 function init(data) {
-  allData = data.codes;
-  document.getElementById('s-cnt').innerText = data.stats.students;
-  document.getElementById('e-cnt').innerText = data.stats.exams;
-  document.getElementById('c-cnt').innerText = data.stats.codes;
+  try {
+      allData = data.codes || [];
+      document.getElementById('s-cnt').innerText = data.stats.students || 0;
+      document.getElementById('e-cnt').innerText = data.stats.exams || 0;
+      document.getElementById('c-cnt').innerText = data.stats.codes || 0;
 
-  // Settings Fill
-  if(data.settings) {
-      if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
-      if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
-      if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
+      // Settings Fill
+      if(data.settings) {
+          if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
+          if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
+          if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
+      }
+      if(data.socials) {
+          document.getElementById('social-facebook').value = data.socials.facebook || '';
+          document.getElementById('social-instagram').value = data.socials.instagram || '';
+          document.getElementById('social-whatsapp').value = data.socials.whatsapp || '';
+          document.getElementById('social-youtube').value = data.socials.youtube || '';
+      }
+
+      // Populate Classes for Filter & Message Target
+      let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
+      
+      // تعبئة فلتر الأكواد وفلتر النتائج
+      ['f-cls', 'res-cls-filter'].forEach(id => {
+          let sel = document.getElementById(id);
+          if(sel) {
+              sel.innerHTML = '<option value="all">كل الصفوف</option>';
+              classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
+          }
+      });
+
+      // تعبئة قائمة إرسال الرسائل
+      let msgSel = document.getElementById('msg-target');
+      if(msgSel) {
+          msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
+          classes.forEach(c => {
+              let o = document.createElement('option'); o.value = c; o.innerText = "طلاب " + c; msgSel.appendChild(o);
+          });
+      }
+
+      render();
+  } catch(e) {
+      console.error("Init Error: ", e);
   }
-  if(data.socials) {
-      document.getElementById('social-facebook').value = data.socials.facebook || '';
-      document.getElementById('social-instagram').value = data.socials.instagram || '';
-      document.getElementById('social-whatsapp').value = data.socials.whatsapp || '';
-      document.getElementById('social-youtube').value = data.socials.youtube || '';
-  }
-
-  // Populate Classes for Filter & Message Target
-  let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
-  
-  // تعبئة فلتر الأكواد وفلتر النتائج
-  ['f-cls', 'res-cls-filter'].forEach(id => {
-      let sel = document.getElementById(id);
-      sel.innerHTML = '<option value="all">كل الصفوف</option>';
-      classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
-  });
-
-  // تعبئة قائمة إرسال الرسائل
-  let msgSel = document.getElementById('msg-target');
-  msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
-  classes.forEach(c => {
-      let o = document.createElement('option'); o.value = c; o.innerText = "طلاب " + c; msgSel.appendChild(o);
-  });
-
-  render();
 }
 
 function showTab(tabId, el) {
@@ -474,13 +459,18 @@ function toggleSidebar() { document.getElementById('sidebar').classList.toggle('
 
 // --- Codes ---
 function render() {
-  let cls = document.getElementById('f-cls').value;
-  let sts = document.getElementById('f-sts').value;
+  let clsElem = document.getElementById('f-cls');
+  let stsElem = document.getElementById('f-sts');
+  
+  let cls = clsElem ? clsElem.value : 'all';
+  let sts = stsElem ? stsElem.value : 'New'; // Default to New for better UX
+
+  if(!allData) return;
+
   let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
   let h = '';
   filtered.forEach(c => {
-    // ✅ إضافة بادج لتوضيح نوع الكود (تجريبي أو كامل)
-    let typeBadge = c.type === 'Trial' ? '<span class="badge bg-warning text-dark">تجريبي</span>' : '<span class="badge bg-primary">كامل</span>';
+    let typeBadge = c.type === 'Trial' ? '<span class="badge bg-warning text-dark" style="font-size:10px">تجريبي</span>' : '<span class="badge bg-primary" style="font-size:10px">كامل</span>';
     h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center;">
             <div class="fw-bold small text-muted">${c.cls}</div>
             <div class="fw-bold fs-5 my-1" style="letter-spacing:2px">${c.code}</div>
@@ -490,22 +480,21 @@ function render() {
             </div>
           </div>`;
   });
-  document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا توجد بيانات</div>';
+  document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا توجد بيانات (جرب تغيير الفلتر)</div>';
 }
 
 function generate() {
   let count = document.getElementById('gen-count').value;
   let cls = document.getElementById('gen-cls').value;
-  // ✅ قراءة القيم الجديدة: النوع والمدة
   let type = document.getElementById('gen-type').value;
   let dur = document.getElementById('gen-dur').value;
 
   if(!count || !cls || !dur) return Swal.fire('تنبيه', 'أدخل جميع البيانات', 'warning');
   
+  Swal.fire({title: 'جاري التوليد...', didOpen: () => Swal.showLoading()});
   callApi('generateNewCodes', {count:count, cls:cls, type:type, duration:dur})
     .then(res => { 
-        Swal.fire('تم', res, 'success'); 
-        setTimeout(location.reload, 1500); 
+        Swal.fire('تم', res, 'success').then(() => location.reload()); 
     });
 }
 
@@ -534,7 +523,7 @@ function sendMsg() {
 function loadIds() {
     document.getElementById('ids-grid').innerHTML = '<div class="text-center w-100"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i></div>';
     callApi('getStudentsForCards').then(list => {
-        allStudents = list;
+        allStudents = list || [];
         let h = '';
         if(!list || list.length === 0) h = '<div class="alert alert-info w-100">لا يوجد طلاب مسجلين بعد</div>';
         else list.forEach(s => {
@@ -553,10 +542,8 @@ function loadIds() {
     });
 }
 
-// طباعة البطاقات بشكل احترافي A4
 function printCards() {
     if(!allStudents.length) return Swal.fire('تنبيه', 'لا يوجد طلاب للطباعة', 'info');
-    
     let h = '';
     allStudents.forEach(s => {
         let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(s.email);
@@ -570,7 +557,6 @@ function printCards() {
                  <img src="${qr}" class="id-qr">
               </div>`;
     });
-    
     document.getElementById('print-area').innerHTML = h;
     window.print();
 }
@@ -591,7 +577,7 @@ function printCodes() {
 function resetPass(){ let e = document.getElementById('m-email').value, p = document.getElementById('m-pass').value; if(!e || !p) return Swal.fire('نقص', 'البيانات ناقصة', 'warning'); callApi('adminResetPass', {email:e, newPass:p}).then(res => Swal.fire('تم', res, 'success')); }
 function delStudent(){ let e = document.getElementById('m-email').value; if(!e) return; Swal.fire({title:'حذف نهائي؟', icon:'warning', showCancelButton:true}).then(r=>{ if(r.isConfirmed) callApi('deleteStudent', {email:e}).then(res => Swal.fire('تم', res, 'success')); }); }
 
-function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data; renderResults(data); }); }
+function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data || []; renderResults(data || []); }); }
 function renderResults(data) {
     let tbody = document.getElementById('res-body');
     if(!data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد نتائج</td></tr>'; return; }
@@ -617,7 +603,7 @@ function exportToExcel() {
 function loadLibrary() {
     callApi('getLibraryForAdmin').then(list => {
         let h = '';
-        list.forEach(i => {
+        (list || []).forEach(i => {
             h += `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls||'الكل'}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
         });
         document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">المكتبة فارغة</td></tr>';
@@ -633,7 +619,7 @@ function delLib(id) { if(confirm('حذف؟')) callApi('deleteLibraryItem', {rowI
 function loadAssign() {
     callApi('getAssignmentsForAdmin').then(list => {
         let h = '';
-        list.forEach(i => {
+        (list || []).forEach(i => {
             h += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.type}</td><td><a href="${i.link}" target="_blank" class="btn btn-sm btn-primary">عرض</a></td><td><input id="g-${i.rowId}" value="${i.grade}" style="width:60px" class="form-control form-control-sm"></td><td><button onclick="saveGrade(${i.rowId})" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button></td></tr>`;
         });
         document.getElementById('ass-body').innerHTML = h || '<tr><td colspan="6" class="text-center text-muted">لا توجد واجبات</td></tr>';
@@ -644,7 +630,7 @@ function saveGrade(id) { let g = document.getElementById('g-'+id).value; callApi
 function loadComp() {
     callApi('getComplaintsForAdmin').then(list => {
         let h = '';
-        list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><div class="input-group"><input class="form-control form-control-sm" id="r-${i.rowId}" placeholder="الرد..." value="${i.reply||''}"><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-primary">إرسال</button></div></td></tr>`; });
+        (list || []).forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><div class="input-group"><input class="form-control form-control-sm" id="r-${i.rowId}" placeholder="الرد..." value="${i.reply||''}"><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-primary">إرسال</button></div></td></tr>`; });
         document.getElementById('comp-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا توجد شكاوى</td></tr>';
     });
 }
@@ -670,7 +656,6 @@ function saveSettings() {
     callApi('saveGeneralSettings', {s:s}).then(res => Swal.fire('تم', res, 'success'));
 }
 
-// دالة التهيئة (Reset)
 function performReset() {
     let selected = [];
     document.querySelectorAll('.table-chk:checked').forEach(c => selected.push(c.value));
