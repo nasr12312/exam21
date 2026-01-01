@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة القيادة المركزية | Admin Pro</title>
+<title>منصة نبراس | لوحة الإدارة</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,7 +27,9 @@
     background: var(--dark); color: white; transition: 0.3s; z-index: 1000;
     padding-top: 20px;
   }
-  .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+  .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
+  .logo-img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid var(--warning); }
+  
   .nav-link {
     color: #94a3b8; padding: 12px 20px; display: flex; align-items: center; gap: 12px;
     font-weight: 500; transition: 0.3s; border-radius: 8px; margin: 0 10px 5px; cursor: pointer;
@@ -113,7 +115,8 @@
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <h4 class="mb-0 fw-bold"><i class="fas fa-layer-group text-primary"></i> العربية لغتي</h4>
+    <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="logo-img">
+    <h4 class="mb-0 fw-bold">منصة نبراس</h4>
     <small class="text-white-50">لوحة الإدارة V2.0</small>
   </div>
   <div class="nav flex-column">
@@ -371,8 +374,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ===========================================
-// ⚠️ تأكد من أن هذا الرابط هو رابط الـ Deployment الصحيح
-const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec";
+// ⚠️ هام: ضع الرابط الجديد هنا
+const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; 
 // ===========================================
 
 let allData=[], allResults=[], allStudents=[];
@@ -487,12 +490,19 @@ function deleteUsedCodes(){
 
 // --- Messaging ---
 function sendMsg() {
+  // التحقق هل كتب الإيميل يدوياً أم اختار من القائمة
   let manualEmail = document.getElementById('msg-email-manual').value;
-  let t = manualEmail ? manualEmail.trim() : document.getElementById('msg-target').value;
+  let target = manualEmail ? manualEmail.trim() : document.getElementById('msg-target').value;
   let m = document.getElementById('msg-text').value;
   
-  if(!m) return Swal.fire('تنبيه', 'اكتب نص الرسالة', 'warning');
-  callApi('sendTargetedMessage', {target:t, msg:m}).then(res => Swal.fire('تم', 'تم إرسال الإشعار بنجاح', 'success'));
+  if(!m) return Swal.fire('تنبيه', 'اكتب الرسالة', 'warning');
+  
+  // استدعاء السيرفر
+  callApi('sendTargetedMessage', {target:target, msg:m}).then(res => {
+      Swal.fire('تم', 'تم الإرسال بنجاح', 'success');
+      document.getElementById('msg-text').value = '';
+      document.getElementById('msg-email-manual').value = '';
+  });
 }
 
 // --- Students & Cards Printing ---
@@ -680,4 +690,3 @@ function performReset() {
 </script>
 </body>
 </html>
-
