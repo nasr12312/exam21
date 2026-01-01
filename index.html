@@ -68,6 +68,9 @@
   }
   .exam-item:hover { border-color: var(--blue); background: rgba(59,130,246,0.1); transform: translateY(-5px); }
   .exam-icon { font-size: 30px; color: var(--gold); margin-bottom: 10px; display: block; }
+  .folder-item { background: rgba(59, 130, 246, 0.1); border-color: var(--blue); }
+  .folder-item .exam-icon { color: var(--blue); }
+  
   .lib-item { 
     display:flex; align-items:center; background:rgba(128,128,128,0.05); padding:15px; border-radius:12px; 
     margin-bottom:10px; transition:0.3s; text-decoration:none; color:inherit; border:1px solid transparent; 
@@ -184,7 +187,9 @@
         <div id="badges-area" style="margin-top:5px"></div>
       </div>
     </div>
-    <button class="btn btn-o" style="width:auto; color:var(--red); border-color:var(--red)" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
+    <div style="display:flex; flex-direction:column; gap:5px">
+        <button class="btn btn-o" style="width:auto; color:var(--red); border-color:var(--red)" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
+    </div>
   </div>
   
   <div class="nav-tabs">
@@ -198,8 +203,7 @@
   </div>
 
   <div id="tab-exams">
-      <h3 style="text-align:right; color:var(--blue); margin-top:10px"><i class="fas fa-clipboard-list"></i> الامتحانات المتاحة</h3>
-      <div id="exams-list" class="grid"></div>
+      <div id="exams-container" class="grid"></div>
   </div>
   
   <div id="tab-assign" class="hidden">
@@ -344,9 +348,10 @@ const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j
 const DEF_IMG = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 let token = localStorage.getItem('tk');
 let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
+let allSubjects = []; // لتخزين المواد
+
 const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
 
-// === دالة الاتصال المحسنة (إصلاح مشكلة التعليق) ===
 async function callApi(action, data = {}) {
     data.action = action;
     try {
@@ -373,20 +378,13 @@ function cleanUrlAndDash() {
 
 window.onload = function() {
   document.getElementById('stamp-img').src = STAMP_URL;
-
   const urlParams = new URLSearchParams(window.location.search);
   const examParam = urlParams.get('exam');
-
   if (examParam) {
       sessionStorage.setItem('pending', examParam);
       window.history.replaceState({}, document.title, window.location.pathname);
   }
-
-  if(token) {
-      checkPending(); 
-  } else {
-      document.getElementById('v-login').classList.remove('hidden');
-  }
+  if(token) checkPending(); else document.getElementById('v-login').classList.remove('hidden');
   
   document.addEventListener("visibilitychange", () => {
     if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
@@ -438,7 +436,6 @@ function readP(i){
   } 
 }
 
-// === AUTH ===
 function login(){
   let e=document.getElementById('le').value, p=document.getElementById('lp').value;
   ld(1); 
@@ -466,7 +463,7 @@ function sv(r){
 function checkPending(){ let p=sessionStorage.getItem('pending'); if(p){ sessionStorage.removeItem('pending'); start(p); } else loadDash(); }
 function logout(){ localStorage.clear(); location.reload(); }
 
-// === DASHBOARD ===
+// === DASHBOARD & EXAMS DISPLAY ===
 function loadDash(){
   document.getElementById('v-login').classList.add('hidden'); 
   document.getElementById('v-exam').classList.add('hidden'); 
@@ -478,16 +475,8 @@ function loadDash(){
 
   ld(1);
   callApi('getExamsList', {token:token}).then(r=>{
-    let h=''; 
-    if(!r.exams || !r.exams.length) h='<p style="color:#94a3b8">لا توجد امتحانات متاحة حالياً</p>';
-    else r.exams.forEach(x=>{
-      h+=`<div class="exam-item" onclick="start('${x.title}')">
-            <i class="fas fa-file-alt exam-icon"></i>
-            <h3 style="margin:0;color:var(--text)">${x.title}</h3>
-            <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
-          </div>`;
-    });
-    document.getElementById('exams-list').innerHTML=h;
+    allSubjects = r.subjects || [];
+    renderSubjects();
     ld(0);
   });
 
@@ -505,7 +494,7 @@ function loadDash(){
       } else h = '<p style="color:#94a3b8; text-align:center">لا توجد مصادر تعليمية حالياً</p>';
       document.getElementById('lib-content').innerHTML = h;
   });
-
+  
   callApi('getLeaderboard', {token:token}).then(r=>{
     let h='';
     if(r.list) {
@@ -526,12 +515,129 @@ function loadDash(){
         document.getElementById('res-list').innerHTML=h;
     }
   });
-  
+
   loadStats(); 
   checkMsgs();
 }
 
-// === EXAMS ===
+function renderSubjects() {
+    let h = '';
+    if(allSubjects.length === 0) {
+        h = '<p style="color:#94a3b8; text-align:center;">لا توجد امتحانات متاحة حالياً.</p>';
+    } else {
+        h += `<h3 style="text-align:right; color:var(--blue); margin-top:10px"><i class="fas fa-folder-open"></i> المواد الدراسية</h3>`;
+        allSubjects.forEach((sub, idx) => {
+            h += `<div class="exam-item folder-item" onclick="openSubject(${idx})">
+                    <i class="fas fa-book exam-icon"></i>
+                    <h3 style="margin:0;color:var(--text)">${sub.name}</h3>
+                    <div style="font-size:13px; color:#94a3b8; margin-top:5px">${sub.exams.length} امتحان</div>
+                  </div>`;
+        });
+    }
+    document.getElementById('exams-container').innerHTML = h;
+}
+
+function openSubject(idx) {
+    let sub = allSubjects[idx];
+    let h = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--gold); margin:0;">${sub.name}</h3>
+                <button class="btn btn-o" style="width:auto; padding:5px 10px;" onclick="renderSubjects()">↩ عودة</button>
+             </div>`;
+    
+    sub.exams.forEach(x => {
+        h += `<div class="exam-item" onclick="start('${x.title}')">
+                <i class="fas fa-file-alt exam-icon"></i>
+                <h3 style="margin:0;color:var(--text)">${x.title}</h3>
+                <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
+              </div>`;
+    });
+    document.getElementById('exams-container').innerHTML = h;
+}
+
+function editProfile() {
+    Swal.fire({
+        title: 'تعديل الملف الشخصي',
+        html: `
+            <div style="margin-bottom:15px; border:2px dashed #ccc; padding:10px; cursor:pointer;" onclick="document.getElementById('sw-file').click()">
+                <i class="fas fa-camera"></i> تغيير الصورة
+                <input type="file" id="sw-file" hidden onchange="readP_SW(this)">
+            </div>
+            <input id="sw-pass" type="password" class="swal2-input" placeholder="كلمة المرور الجديدة (اختياري)">
+            <button class="btn btn-r" style="margin-top:10px" onclick="deleteMyAccount()">❌ حذف حسابي نهائياً</button>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'حفظ التعديلات',
+        cancelButtonText: 'إلغاء',
+        preConfirm: () => {
+            return {
+                pass: document.getElementById('sw-pass').value,
+                photo: window.tempPhoto
+            };
+        }
+    }).then((res) => {
+        if(res.isConfirmed) {
+            ld(1);
+            callApi('updateProfile', {token:token, newPass:res.value.pass, newPhoto:res.value.photo}).then(r => {
+                ld(0);
+                if(r.success) { 
+                    if(res.value.photo) {
+                        localStorage.setItem('ph', res.value.photo);
+                        document.getElementById('u-img').src = res.value.photo;
+                    }
+                    Swal.fire('تم', r.message, 'success'); 
+                }
+            });
+        }
+        window.tempPhoto = null;
+    });
+}
+
+function readP_SW(input) {
+    if(input.files && input.files[0]) {
+        let r = new FileReader();
+        r.onload = function(e) {
+            // Resize logic
+            let img = new Image(); img.src = e.target.result;
+            img.onload = function() {
+                let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
+                let MAX_W = 150; let scale = MAX_W / img.width;
+                canvas.width = MAX_W; canvas.height = img.height * scale;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                window.tempPhoto = canvas.toDataURL('image/jpeg', 0.7);
+                Swal.showValidationMessage('تم اختيار الصورة! اضغط حفظ.');
+            }
+        };
+        r.readAsDataURL(input.files[0]);
+    }
+}
+
+function deleteMyAccount() {
+    Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "سيتم حذف حسابك ولن تتمكن من الدخول مجدداً!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'نعم، احذف حسابي',
+        cancelButtonText: 'تراجع'
+    }).then((r) => {
+        if(r.isConfirmed) {
+            ld(1);
+            callApi('softDeleteAccount', {token:token}).then(res => {
+                ld(0);
+                if(res.success) {
+                    Swal.fire('تم الحذف', res.message, 'success').then(logout);
+                } else {
+                    Swal.fire('خطأ', res.message, 'error');
+                }
+            });
+        }
+    });
+}
+
+// ... (Rest of exam start, submit, stats functions remain largely the same, ensuring loadStats renders social icons)
+
+// === EXAMS (Standard) ===
 function start(t){
   ld(1); 
   callApi('getExamQuestions', {token:token, name:t}).then(r=>{
@@ -716,7 +822,7 @@ function loadStats() {
         }
         if(r.teacher && r.teacher.name) document.getElementById('t-name').innerText = r.teacher.name;
         
-        // === Render Social Icons (تم الإضافة هنا) ===
+        // === Render Social Icons ===
         if(r.socials) {
             let sHtml = '';
             if(r.socials.whatsapp) {
@@ -741,27 +847,6 @@ function genReport() {
     let el = document.getElementById('tab-history');
     html2canvas(el).then(canvas => {
        let a=document.createElement('a'); a.download='Report.png'; a.href=canvas.toDataURL(); a.click();
-    });
-}
-
-function editProfile() {
-    Swal.fire({
-        title: 'تعديل الملف الشخصي',
-        html: '<input id="sw-pass" type="password" placeholder="كلمة المرور الجديدة">',
-        showCancelButton: true,
-        confirmButtonText: 'حفظ',
-        cancelButtonText: 'إلغاء',
-        preConfirm: () => {
-            return document.getElementById('sw-pass').value;
-        }
-    }).then((res) => {
-        if(res.isConfirmed && res.value) {
-            ld(1);
-            callApi('updateProfile', {token:token, newPass:res.value, newPhoto:null}).then(r => {
-                ld(0);
-                if(r.success) Swal.fire('تم', r.message, 'success');
-            });
-        }
     });
 }
 
@@ -812,4 +897,3 @@ function loadMsgHistory() {
 </script>
 </body>
 </html>
-
