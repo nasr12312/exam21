@@ -358,13 +358,11 @@ async function callApi(action, data = {}) {
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify(data),
-            // إزالة headers معينة تسمح لجوجل بالتعامل مع الطلب كـ Simple Request وتجنب CORS
         });
         const result = await response.json();
         return result;
     } catch (e) {
         console.error(e);
-        // في حال فشل الاتصال، ارجع رسالة خطأ بدلاً من ترك اللودر معلقاً
         return { success: false, message: 'تعذر الاتصال بالخادم، تأكد من تحديث الرابط.' };
     }
 }
@@ -436,13 +434,34 @@ function readP(i){
   } 
 }
 
-// === AUTH ===
+// === AUTH (Login Updated) ===
 function login(){
   let e=document.getElementById('le').value, p=document.getElementById('lp').value;
   ld(1); 
   callApi('loginUser', {email:e, pass:p}).then(r=>{ 
       ld(0); 
-      if(r.success){ sv(r); checkPending(); } else Swal.fire('خطأ',r.message,'error'); 
+      if(r.success){ 
+          sv(r); checkPending(); 
+      } else {
+          // ✅ تعديل: التحقق إذا كان الاشتراك منتهي
+          if(r.isExpired) {
+              Swal.fire({
+                  title: 'انتهى الاشتراك',
+                  text: r.message,
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'تجديد الاشتراك عبر واتساب',
+                  cancelButtonText: 'إغلاق',
+                  confirmButtonColor: '#25D366'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      window.open(r.whatsapp, '_blank');
+                  }
+              });
+          } else {
+              Swal.fire('خطأ',r.message,'error'); 
+          }
+      }
   });
 }
 
@@ -538,6 +557,7 @@ function renderSubjects() {
     document.getElementById('exams-container').innerHTML = h;
 }
 
+// ✅ تعديل: عرض الامتحانات المغلقة للتجريبي
 function openSubject(idx) {
     let sub = allSubjects[idx];
     let h = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -546,13 +566,34 @@ function openSubject(idx) {
              </div>`;
     
     sub.exams.forEach(x => {
-        h += `<div class="exam-item" onclick="start('${x.title}')">
-                <i class="fas fa-file-alt exam-icon"></i>
-                <h3 style="margin:0;color:var(--text)">${x.title}</h3>
-                <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
+        if(x.isLocked) {
+             h += `<div class="exam-item" style="opacity:0.7; border-color:var(--red);" onclick="buyFull()">
+                <i class="fas fa-lock exam-icon" style="color:var(--red)"></i>
+                <h3 style="margin:0;color:var(--red)">${x.title}</h3>
+                <div style="font-size:13px; color:#94a3b8; margin-top:5px">انقر للشراء</div>
               </div>`;
+        } else {
+            h += `<div class="exam-item" onclick="start('${x.title}')">
+                    <i class="fas fa-file-alt exam-icon"></i>
+                    <h3 style="margin:0;color:var(--text)">${x.title}</h3>
+                    <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
+                  </div>`;
+        }
     });
     document.getElementById('exams-container').innerHTML = h;
+}
+
+// ✅ إضافة: دالة الشراء عند الضغط على المقفول
+function buyFull() {
+    Swal.fire({
+        title: 'اشتراك تجريبي',
+        text: 'لقد استنفذت عدد الامتحانات المجانية. اشترك الآن للحصول على النسخة الكاملة!',
+        icon: 'info',
+        confirmButtonText: 'تواصل للشراء',
+        confirmButtonColor: '#25D366'
+    }).then(r => {
+        if(r.isConfirmed) document.getElementById('wa-btn').click();
+    });
 }
 
 function editProfile() {
@@ -635,8 +676,6 @@ function deleteMyAccount() {
         }
     });
 }
-
-// ... (Rest of exam start, submit, stats functions remain largely the same, ensuring loadStats renders social icons)
 
 // === EXAMS (Standard) ===
 function start(t){
