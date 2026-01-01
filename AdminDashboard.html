@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة نبراس | لوحة القيادة المركزية</title>
+    <title>منصة نبراس | لوحة الإدارة المركزية</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     
@@ -734,50 +734,78 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ===========================================
-// ⚠️ هام: تأكد من أن الرابط هنا يطابق النشر الجديد للسيرفر
-// انسخ الرابط من New Deployment وضعه هنا
+// ======================================================================
+// 🔴🔴 هام جداً: ضع رابط النشر الجديد هنا بين علامتي التنصيص 🔴🔴
 const API_URL = "https://script.google.com/macros/s/AKfycbyfF_pkwka9-aTWrJme-tzqnEstDabGYg1XrQF7TGvhoo8f48asvUjeSC1AOWFflcv5/exec"; 
-// ===========================================
+// ======================================================================
 
 let allData=[], allResults=[], allStudents=[];
 
-// التحميل التلقائي عند فتح الصفحة
-window.onload = function() { loadAllData(); };
+// تشغيل عند التحميل
+window.onload = function() { 
+    if(API_URL.includes("ضع_الرابط")) {
+        Swal.fire('تنبيه هام', 'لم تقم بوضع رابط السيرفر في الكود!<br>يرجى نسخ الرابط من Deploy ووضعه مكان API_URL', 'warning');
+    } else {
+        loadAllData(); 
+    }
+};
 
-// دالة الاتصال بالسيرفر العامة
+// دالة الاتصال بالسيرفر
 async function callApi(action, data = {}) {
     data.action = action;
     try {
-        const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+        const response = await fetch(API_URL + '?t=' + new Date().getTime(), {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
         return await response.json();
-    } catch (e) { 
+    } catch (e) {
         console.error(e);
-        // في حال فشل الاتصال الأولي لا نزعج المستخدم، لكن في العمليات الأخرى نظهر خطأ
-        return {success: false, message: "فشل الاتصال"}; 
+        return {success: false, message: "Network Error"};
     }
 }
 
-// تحميل كافة بيانات لوحة التحكم
+// تحميل البيانات مع حماية من التجمد
 function loadAllData() {
+    // 1. مؤقت أمان: يغلق التحميل إجبارياً بعد 8 ثوانٍ
+    const safetyTimer = setTimeout(() => {
+        if(Swal.isVisible()) {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'فشل الاتصال',
+                text: 'اللوحة لا تستجيب. تأكد من:\n1. أنك قمت بعمل New Deployment.\n2. اخترت Anyone في الصلاحيات.\n3. نسخت الرابط الجديد.',
+                footer: '<button class="btn btn-sm btn-primary" onclick="location.reload()">إعادة المحاولة</button>'
+            });
+        }
+    }, 8000); 
+
     Swal.fire({
         title: 'جاري الاتصال بالنظام...', 
         allowOutsideClick: false, 
         didOpen: () => Swal.showLoading()
     });
     
+    // 2. محاولة الاتصال
     callApi('getAdminData').then(data => {
+        clearTimeout(safetyTimer); // إلغاء مؤقت الأمان لأن الاتصال نجح
         Swal.close();
+        
         if(data && data.stats) {
             init(data);
         } else {
+            // في حال كانت البيانات فارغة (يحدث عند أول تشغيل قبل التهيئة)
             Swal.fire({
-                icon: 'warning',
-                title: 'تنبيه',
-                text: 'لم يتم استلام البيانات. تأكد من تحديث رابط النشر (Deployment URL).',
-                footer: '<a href="#">كيف أقوم بالتحديث؟</a>'
+                icon: 'info',
+                title: 'مرحباً بك',
+                text: 'يبدو أن النظام جديد. يرجى الذهاب لتبويب "الإعدادات" ثم الضغط على "تهيئة المحددة" لإنشاء الجداول.',
             });
+            init({codes:[], stats:{students:0, exams:0, codes:0}, settings:{}, socials:{}});
         }
+    }).catch(e => {
+        clearTimeout(safetyTimer);
+        Swal.close();
+        Swal.fire('خطأ برمجي', 'حدث خطأ أثناء جلب البيانات.', 'error');
     });
 }
 
@@ -894,7 +922,11 @@ function generate() {
   Swal.fire({title: 'جاري التوليد...', didOpen: () => Swal.showLoading()});
   callApi('generateNewCodes', {count:count, cls:cls, type:type, duration:dur})
     .then(res => { 
-        Swal.fire('تم', res, 'success').then(() => location.reload()); 
+        if(res.success !== false) {
+             Swal.fire('تم', res, 'success').then(() => location.reload()); 
+        } else {
+             Swal.fire('خطأ', 'فشل التوليد', 'error');
+        }
     });
 }
 
