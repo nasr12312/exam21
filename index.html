@@ -144,7 +144,7 @@
 
 <div id="v-login" class="container" style="max-width:400px; margin-top:60px">
   <div class="card" style="text-align:center">
-    <div style="width:80px; height:80px; background:var(--blue); border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:35px; color:white"><i class="fas fa-graduation-cap"></i></div>
+    <a href="https://ibb.co/GBnqrS6"><img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Gemini-Generated-Image-u0u4kwu0u4kwu0u4" border="0" style="width:120px; height:120px; border-radius:50%; margin-bottom:15px; object-fit:cover; border:3px solid var(--gold)"></a>
     <h1 style="color:var(--text); font-family:'Amiri'; margin:0">نبراس </h1>
     <p style="color:#94a3b8; margin-bottom:25px">بوابة الطالب الإلكترونية</p>
     
@@ -311,6 +311,7 @@
   <div class="cert-scaler">
     <div class="cert-box" id="cert-node">
       <div style="text-align: center; margin-bottom: 10px;">
+          <a href="https://ibb.co/GBnqrS6"><img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Gemini-Generated-Image-u0u4kwu0u4kwu0u4" border="0" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #f59e0b"></a>
           <h2 style="color:#1e3a8a; margin:0; font-family:'Amiri'; font-size: 32px;">منصة نبراس </h2>
           <p style="color:#d97706; margin:0; font-size: 16px;">للتميز والإبداع</p>
       </div>
@@ -441,7 +442,26 @@ function login(){
   ld(1); 
   callApi('loginUser', {email:e, pass:p}).then(r=>{ 
       ld(0); 
-      if(r.success){ sv(r); checkPending(); } else Swal.fire('خطأ',r.message,'error'); 
+      if(r.success){ 
+          sv(r); checkPending(); 
+      } else {
+          // التعامل مع انتهاء الاشتراك
+          if(r.message === 'EXPIRED') {
+               Swal.fire({
+                  icon: 'warning',
+                  title: 'انتهى اشتراكك',
+                  text: 'لقد انتهت فترة صلاحية حسابك (4 شهور). يرجى التجديد للاستمرار.',
+                  confirmButtonText: 'تجديد الاشتراك الآن عبر الواتساب',
+                  confirmButtonColor: '#25D366',
+                  showCancelButton: true,
+                  cancelButtonText: 'إغلاق'
+               }).then((res) => {
+                   if(res.isConfirmed) window.open(r.wa, '_blank');
+               });
+          } else {
+               Swal.fire('خطأ',r.message,'error'); 
+          }
+      }
   });
 }
 
@@ -463,6 +483,7 @@ function sv(r){
 function checkPending(){ let p=sessionStorage.getItem('pending'); if(p){ sessionStorage.removeItem('pending'); start(p); } else loadDash(); }
 function logout(){ localStorage.clear(); location.reload(); }
 
+// ... (بقية دوال الواجهة كما هي، لا تغييرات جذرية في العرض والامتحان) ...
 // === DASHBOARD & EXAMS DISPLAY ===
 function loadDash(){
   document.getElementById('v-login').classList.add('hidden'); 
