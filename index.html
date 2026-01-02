@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة  نبراس | الطالب</title>
+<title>منصة نبراس | الطالب</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -144,7 +144,7 @@
 
 <div id="v-login" class="container" style="max-width:400px; margin-top:60px">
   <div class="card" style="text-align:center">
-    <a href="https://ibb.co/GBnqrS6"><img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Gemini-Generated-Image-u0u4kwu0u4kwu0u4" border="0" style="width:120px; height:120px; border-radius:50%; margin-bottom:15px; object-fit:cover; border:3px solid var(--gold)"></a>
+    <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Logo" style="width:120px; height:120px; border-radius:50%; margin-bottom:15px; object-fit:cover; border:3px solid var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
     <h1 style="color:var(--text); font-family:'Amiri'; margin:0">نبراس </h1>
     <p style="color:#94a3b8; margin-bottom:25px">بوابة الطالب الإلكترونية</p>
     
@@ -311,7 +311,7 @@
   <div class="cert-scaler">
     <div class="cert-box" id="cert-node">
       <div style="text-align: center; margin-bottom: 10px;">
-          <a href="https://ibb.co/GBnqrS6"><img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Gemini-Generated-Image-u0u4kwu0u4kwu0u4" border="0" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #f59e0b"></a>
+          <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Logo" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #f59e0b">
           <h2 style="color:#1e3a8a; margin:0; font-family:'Amiri'; font-size: 32px;">منصة نبراس </h2>
           <p style="color:#d97706; margin:0; font-size: 16px;">للتميز والإبداع</p>
       </div>
@@ -450,7 +450,7 @@ function login(){
                Swal.fire({
                   icon: 'warning',
                   title: 'انتهى اشتراكك',
-                  text: 'لقد انتهت فترة صلاحية حسابك (4 شهور). يرجى التجديد للاستمرار.',
+                  text: 'لقد انتهت فترة صلاحية حسابك. يرجى التجديد للاستمرار.',
                   confirmButtonText: 'تجديد الاشتراك الآن عبر الواتساب',
                   confirmButtonColor: '#25D366',
                   showCancelButton: true,
@@ -483,7 +483,7 @@ function sv(r){
 function checkPending(){ let p=sessionStorage.getItem('pending'); if(p){ sessionStorage.removeItem('pending'); start(p); } else loadDash(); }
 function logout(){ localStorage.clear(); location.reload(); }
 
-// ... (بقية دوال الواجهة كما هي، لا تغييرات جذرية في العرض والامتحان) ...
+// ... (بقية الوظائف كما هي، تم الاحتفاظ بها كاملة) ...
 // === DASHBOARD & EXAMS DISPLAY ===
 function loadDash(){
   document.getElementById('v-login').classList.add('hidden'); 
