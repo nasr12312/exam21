@@ -183,14 +183,9 @@
       <div class="col-md-8 mb-4">
         <div class="card border-0 shadow-sm p-4 h-100">
           <h5 class="fw-bold mb-3"><i class="fas fa-plus-circle text-primary"></i> توليد أكواد تفعيل</h5>
-          
           <div class="row g-2">
-             <div class="col-md-3">
-                <input id="gen-count" type="number" class="form-control" placeholder="العدد">
-             </div>
-             <div class="col-md-3">
-                <input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع)">
-             </div>
+             <div class="col-md-3"><input id="gen-count" type="number" class="form-control" placeholder="العدد"></div>
+             <div class="col-md-3"><input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع)"></div>
              <div class="col-md-3">
                 <select id="gen-days" class="form-select" style="font-size:14px">
                    <option value="120" selected>اشتراك فصلي (4 شهور)</option>
@@ -199,13 +194,9 @@
                    <option value="7">تجريبي (أسبوع)</option>
                 </select>
              </div>
-             <div class="col-md-3">
-                <button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button>
-             </div>
+             <div class="col-md-3"><button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button></div>
           </div>
-
           <hr class="my-4">
-          
           <div class="d-flex justify-content-between align-items-center mb-3">
              <h6 class="fw-bold m-0">الأكواد الحالية</h6>
              <div class="d-flex gap-2">
@@ -223,18 +214,14 @@
         <div class="card border-0 shadow-sm p-4 h-100 bg-dark text-white" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
            <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane text-warning"></i> إرسال إشعار</h5>
            <p class="text-white-50">إرسال تنبيه للطلاب عبر التطبيق.</p>
-           
            <label class="mb-2">المستلمون:</label>
            <select id="msg-target" class="form-select mb-2 bg-white text-dark border-0">
              <option value="All">جميع الطلاب</option>
-             </select>
-           
+           </select>
            <label class="mb-2">أو إرسال لطالب محدد (البريد):</label>
            <input id="msg-email-manual" class="form-control mb-3 bg-white text-dark border-0" placeholder="example@gmail.com">
-           
            <label class="mb-2">نص الرسالة:</label>
            <textarea id="msg-text" class="form-control mb-3" rows="3" placeholder="اكتب رسالتك هنا..."></textarea>
-           
            <button onclick="sendMsg()" class="btn btn-warning w-100 fw-bold">إرسال الإشعار</button>
         </div>
       </div>
@@ -246,7 +233,6 @@
         <h4 class="fw-bold">بطاقات الطلاب</h4>
         <button onclick="printCards()" class="btn btn-success"><i class="fas fa-print"></i> طباعة البطاقات (A4)</button>
      </div>
-     
      <div class="card p-3 mb-4 no-print">
         <div class="row g-2">
             <div class="col-md-4"><input id="m-email" class="form-control" placeholder="بحث بالبريد الإلكتروني"></div>
@@ -255,7 +241,6 @@
             <div class="col-md-2"><button onclick="delStudent()" class="btn btn-danger w-100">حذف الحساب</button></div>
         </div>
      </div>
-
      <div id="ids-grid" class="row g-3 no-print"></div>
   </div>
 
@@ -363,7 +348,6 @@
         <div class="card p-4 border-0 shadow-sm border-start border-danger border-5">
           <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة التهيئة (حذف وإعادة بناء)</h5>
           <p class="text-muted">تنبيه: هذا الخيار سيقوم بحذف جميع البيانات في الجداول المختارة وإعادتها لوضع المصنع. لا يمكن التراجع عن هذه الخطوة.</p>
-          
           <div class="row" id="tables-checklist">
              <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Students" id="chk-std"><label class="form-check-label" for="chk-std">الطلاب (Students)</label></div></div>
              <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Exams" id="chk-exm"><label class="form-check-label" for="chk-exm">الامتحانات (Exams)</label></div></div>
@@ -375,7 +359,6 @@
              <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Complaints" id="chk-com"><label class="form-check-label" for="chk-com">الشكاوى (Complaints)</label></div></div>
              <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Notifications" id="chk-not"><label class="form-check-label" for="chk-not">الإشعارات (Notifications)</label></div></div>
           </div>
-          
           <div class="mt-4">
             <button onclick="performReset()" class="btn btn-danger fw-bold"><i class="fas fa-trash-alt"></i> تهيئة الجداول المحددة</button>
           </div>
@@ -405,8 +388,8 @@ async function callApi(action, data = {}) {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         return await response.json();
     } catch (e) { 
-        Swal.fire('خطأ', 'فشل الاتصال بالسيرفر', 'error');
-        return {success: false}; 
+        console.error("Connection Error:", e);
+        return {success: false, message: 'فشل الاتصال'}; 
     }
 }
 
@@ -414,70 +397,80 @@ function loadAllData() {
     Swal.fire({title: 'جاري التحميل', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
     callApi('getAdminData').then(data => {
         Swal.close();
+        if (!data || !data.stats) {
+            Swal.fire({
+                icon: 'error', 
+                title: 'خطأ في الاتصال', 
+                text: 'لم يتم جلب البيانات. تأكد من صحة الرابط API_URL ونشر الكود (Code 1) بصلاحية Anyone.'
+            });
+            return;
+        }
         init(data);
+    }).catch(e => {
+        Swal.close();
+        Swal.fire('خطأ', 'حدث خطأ غير متوقع', 'error');
     });
 }
 
 function init(data) {
-  allData = data.codes;
-  document.getElementById('s-cnt').innerText = data.stats.students;
-  document.getElementById('e-cnt').innerText = data.stats.exams;
-  document.getElementById('c-cnt').innerText = data.stats.codes;
+  try {
+      allData = data.codes || [];
+      document.getElementById('s-cnt').innerText = data.stats.students;
+      document.getElementById('e-cnt').innerText = data.stats.exams;
+      document.getElementById('c-cnt').innerText = data.stats.codes;
 
-  // Settings Fill
-  if(data.settings) {
-      if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
-      if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
-      if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
-  }
-  if(data.socials) {
-      document.getElementById('social-facebook').value = data.socials.facebook || '';
-      document.getElementById('social-instagram').value = data.socials.instagram || '';
-      document.getElementById('social-whatsapp').value = data.socials.whatsapp || '';
-      document.getElementById('social-youtube').value = data.socials.youtube || '';
-  }
+      if(data.settings) {
+          if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
+          if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
+          if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
+      }
+      if(data.socials) {
+          document.getElementById('social-facebook').value = data.socials.facebook || '';
+          document.getElementById('social-instagram').value = data.socials.instagram || '';
+          document.getElementById('social-whatsapp').value = data.socials.whatsapp || '';
+          document.getElementById('social-youtube').value = data.socials.youtube || '';
+      }
 
-  // Populate Classes for Filter & Message Target
-  // جلب الصفوف من الأكواد لتعبئة القوائم
-  let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
-  
-  // تعبئة فلتر الأكواد وفلتر النتائج
-  ['f-cls', 'res-cls-filter'].forEach(id => {
-      let sel = document.getElementById(id);
-      sel.innerHTML = '<option value="all">كل الصفوف</option>';
-      classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
-  });
+      let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
+      ['f-cls', 'res-cls-filter'].forEach(id => {
+          let sel = document.getElementById(id);
+          if(sel) {
+              sel.innerHTML = '<option value="all">كل الصفوف</option>';
+              classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
+          }
+      });
 
-  // تعبئة قائمة إرسال الرسائل (أهم نقطة لظهور الرسائل حسب الصف)
-  let msgSel = document.getElementById('msg-target');
-  msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
-  classes.forEach(c => {
-      let o = document.createElement('option'); o.value = c; o.innerText = "طلاب " + c; msgSel.appendChild(o);
-  });
+      let msgSel = document.getElementById('msg-target');
+      if(msgSel) {
+          msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
+          classes.forEach(c => {
+              let o = document.createElement('option'); o.value = c; o.innerText = "طلاب " + c; msgSel.appendChild(o);
+          });
+      }
 
-  render();
+      render();
+  } catch(e) { console.error(e); }
 }
 
 function showTab(tabId, el) {
     document.querySelectorAll('.section-tab').forEach(d => d.classList.add('d-none'));
-    document.getElementById('tab-'+tabId).classList.remove('d-none');
-    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
-    el.classList.add('active');
+    let target = document.getElementById('tab-'+tabId);
+    if(target) target.classList.remove('d-none');
     
-    // Load specific data on tab switch
+    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+    if(el) el.classList.add('active');
+    
     if(tabId === 'students') loadIds();
     if(tabId === 'results') loadResults();
     if(tabId === 'library') loadLibrary();
     if(tabId === 'assign') loadAssign();
     if(tabId === 'complaints') loadComp();
     
-    // On mobile, hide sidebar after click
     if(window.innerWidth < 992) document.getElementById('sidebar').classList.remove('active');
 }
 
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
-// --- Codes ---
 function render() {
   let cls = document.getElementById('f-cls').value;
   let sts = document.getElementById('f-sts').value;
@@ -485,17 +478,15 @@ function render() {
   let h = '';
   
   filtered.forEach(c => {
-    // تحديد نوع الكود وعرضه كشارة (Badge)
-    let typeLabel = "";
-    if(c.days) {
-        if(c.days < 30) typeLabel = `<span style="font-size:10px; background:#ef4444; color:white; padding:1px 5px; border-radius:4px">تجريبي ${c.days} يوم</span>`;
-        else typeLabel = `<span style="font-size:10px; background:#3b82f6; color:white; padding:1px 5px; border-radius:4px">اشتراك كامل</span>`;
-    }
+    let d = c.days ? parseInt(c.days) : 120;
+    let typeLabel = d < 30 ? 
+        `<span style="font-size:10px; background:#ef4444; color:white; padding:1px 5px; border-radius:4px">تجريبي ${d} يوم</span>` : 
+        `<span style="font-size:10px; background:#3b82f6; color:white; padding:1px 5px; border-radius:4px">اشتراك ${d} يوم</span>`;
 
     h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center; position:relative">
             <div class="fw-bold small text-muted">${c.cls}</div>
             <div class="fw-bold fs-5 my-1" style="letter-spacing:2px; color:#1e293b">${c.code}</div>
-            <div style="display:flex; justify-content:center; gap:5px; align-items:center">
+            <div style="display:flex; justify-content:center; gap:5px; align-items:center; margin-top:5px">
                 <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
                 ${typeLabel}
             </div>
@@ -507,13 +498,19 @@ function render() {
 function generate() {
   let count = document.getElementById('gen-count').value;
   let cls = document.getElementById('gen-cls').value;
-  let days = document.getElementById('gen-days').value; // قراءة المدة
+  let days = document.getElementById('gen-days').value;
   
   if(!count || !cls) return Swal.fire('تنبيه', 'أدخل العدد والصف', 'warning');
   
+  Swal.fire({title: 'جاري التوليد...', didOpen: () => Swal.showLoading()});
   callApi('generateNewCodes', {count:count, cls:cls, days:days}).then(res => { 
-      Swal.fire('تم', res, 'success'); 
-      setTimeout(location.reload, 1500); 
+      Swal.close();
+      if(res.success !== false) {
+          Swal.fire('تم', res, 'success'); 
+          setTimeout(location.reload, 1500); 
+      } else {
+          Swal.fire('خطأ', 'فشل التوليد: ' + (res.message || ''), 'error');
+      }
   });
 }
 
@@ -523,16 +520,11 @@ function deleteUsedCodes(){
    });
 }
 
-// --- Messaging ---
 function sendMsg() {
-  // التحقق هل كتب الإيميل يدوياً أم اختار من القائمة
   let manualEmail = document.getElementById('msg-email-manual').value;
   let target = manualEmail ? manualEmail.trim() : document.getElementById('msg-target').value;
   let m = document.getElementById('msg-text').value;
-  
   if(!m) return Swal.fire('تنبيه', 'اكتب الرسالة', 'warning');
-  
-  // استدعاء السيرفر
   callApi('sendTargetedMessage', {target:target, msg:m}).then(res => {
       Swal.fire('تم', 'تم الإرسال بنجاح', 'success');
       document.getElementById('msg-text').value = '';
@@ -540,14 +532,13 @@ function sendMsg() {
   });
 }
 
-// --- Students & Cards Printing ---
 function loadIds() {
     document.getElementById('ids-grid').innerHTML = '<div class="text-center w-100"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i></div>';
     callApi('getStudentsForCards').then(list => {
-        allStudents = list;
+        allStudents = list || [];
         let h = '';
-        if(!list || list.length === 0) h = '<div class="alert alert-info w-100">لا يوجد طلاب مسجلين بعد</div>';
-        else list.forEach(s => {
+        if(!allStudents.length) h = '<div class="alert alert-info w-100">لا يوجد طلاب مسجلين بعد</div>';
+        else allStudents.forEach(s => {
             let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(s.email);
             h += `<div class="col-md-4 col-lg-3">
                     <div class="card p-3 shadow-sm text-center h-100 position-relative">
@@ -563,10 +554,8 @@ function loadIds() {
     });
 }
 
-// طباعة البطاقات بشكل احترافي A4
 function printCards() {
     if(!allStudents.length) return Swal.fire('تنبيه', 'لا يوجد طلاب للطباعة', 'info');
-    
     let h = '';
     allStudents.forEach(s => {
         let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(s.email);
@@ -580,7 +569,6 @@ function printCards() {
                  <img src="${qr}" class="id-qr">
               </div>`;
     });
-    
     document.getElementById('print-area').innerHTML = h;
     window.print();
 }
@@ -588,23 +576,18 @@ function printCards() {
 function printCodes() {
    let content = document.getElementById('code-container').innerHTML;
    let win = window.open('', '', 'height=700,width=900');
-   win.document.write('<html><head><title>طباعة الأكواد</title>');
-   win.document.write('<style>body{font-family:sans-serif; direction:rtl} .grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px} div{border:1px solid #000; padding:10px; text-align:center}</style>');
-   win.document.write('</head><body>');
-   win.document.write('<div class="grid">' + content + '</div>');
-   win.document.write('</body></html>');
+   win.document.write('<html><head><title>طباعة الأكواد</title><style>body{font-family:sans-serif; direction:rtl} .grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px} div{border:1px solid #000; padding:10px; text-align:center}</style></head><body><div class="grid">' + content + '</div></body></html>');
    win.document.close();
    win.print();
 }
 
-// --- Other Logic ---
 function resetPass(){ let e = document.getElementById('m-email').value, p = document.getElementById('m-pass').value; if(!e || !p) return Swal.fire('نقص', 'البيانات ناقصة', 'warning'); callApi('adminResetPass', {email:e, newPass:p}).then(res => Swal.fire('تم', res, 'success')); }
 function delStudent(){ let e = document.getElementById('m-email').value; if(!e) return; Swal.fire({title:'حذف نهائي؟', icon:'warning', showCancelButton:true}).then(r=>{ if(r.isConfirmed) callApi('deleteStudent', {email:e}).then(res => Swal.fire('تم', res, 'success')); }); }
 
-function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data; renderResults(data); }); }
+function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data || []; renderResults(allResults); }); }
 function renderResults(data) {
     let tbody = document.getElementById('res-body');
-    if(!data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد نتائج</td></tr>'; return; }
+    if(!data || !data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد نتائج</td></tr>'; return; }
     let h = '';
     data.forEach(r => {
         h += `<tr><td>${r.date}</td><td class="fw-bold">${r.name}</td><td>${r.cls}</td><td>${r.exam}</td><td><span class="badge ${parseInt(r.score)>=50?'bg-success':'bg-danger'}">${r.score}</span></td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteRes(${r.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
@@ -627,7 +610,7 @@ function exportToExcel() {
 function loadLibrary() {
     callApi('getLibraryForAdmin').then(list => {
         let h = '';
-        list.forEach(i => {
+        if(list) list.forEach(i => {
             h += `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls||'الكل'}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
         });
         document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">المكتبة فارغة</td></tr>';
@@ -643,7 +626,7 @@ function delLib(id) { if(confirm('حذف؟')) callApi('deleteLibraryItem', {rowI
 function loadAssign() {
     callApi('getAssignmentsForAdmin').then(list => {
         let h = '';
-        list.forEach(i => {
+        if(list) list.forEach(i => {
             h += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.type}</td><td><a href="${i.link}" target="_blank" class="btn btn-sm btn-primary">عرض</a></td><td><input id="g-${i.rowId}" value="${i.grade}" style="width:60px" class="form-control form-control-sm"></td><td><button onclick="saveGrade(${i.rowId})" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button></td></tr>`;
         });
         document.getElementById('ass-body').innerHTML = h || '<tr><td colspan="6" class="text-center text-muted">لا توجد واجبات</td></tr>';
@@ -654,7 +637,7 @@ function saveGrade(id) { let g = document.getElementById('g-'+id).value; callApi
 function loadComp() {
     callApi('getComplaintsForAdmin').then(list => {
         let h = '';
-        list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><div class="input-group"><input class="form-control form-control-sm" id="r-${i.rowId}" placeholder="الرد..." value="${i.reply||''}"><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-primary">إرسال</button></div></td></tr>`; });
+        if(list) list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><div class="input-group"><input class="form-control form-control-sm" id="r-${i.rowId}" placeholder="الرد..." value="${i.reply||''}"><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-primary">إرسال</button></div></td></tr>`; });
         document.getElementById('comp-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا توجد شكاوى</td></tr>';
     });
 }
@@ -680,28 +663,26 @@ function saveSettings() {
     callApi('saveGeneralSettings', {s:s}).then(res => Swal.fire('تم', res, 'success'));
 }
 
-// دالة التهيئة (Reset)
 function performReset() {
     let selected = [];
     document.querySelectorAll('.table-chk:checked').forEach(c => selected.push(c.value));
-    
     if(selected.length === 0) return Swal.fire('تنبيه', 'الرجاء اختيار جدول واحد على الأقل', 'warning');
 
     Swal.fire({
         title: 'هل أنت متأكد تماماً؟',
-        text: "سيتم حذف جميع البيانات في الجداول: (" + selected.join(', ') + ") وإعادة إنشائها فارغة. هذا الإجراء لا يمكن التراجع عنه!",
+        text: "سيتم حذف جميع البيانات في الجداول: (" + selected.join(', ') + ") وإعادة إنشائها فارغة.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'نعم، احذف واعمل تهيئة',
+        confirmButtonText: 'نعم، تهيئة',
         cancelButtonText: 'إلغاء'
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({
-                title: 'أدخل كلمة مرور التأكيد',
+                title: 'تأكيد الحماية',
                 input: 'password',
-                inputLabel: 'للأمان، اكتب: admin',
+                inputLabel: 'اكتب: admin',
                 inputPlaceholder: 'كلمة المرور',
                 showCancelButton: true
             }).then((passResult) => {
