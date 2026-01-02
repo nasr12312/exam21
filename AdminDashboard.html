@@ -26,8 +26,8 @@
   /* شريط الحالة للاتصال */
   #connection-status {
     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-    text-align: center; padding: 5px; font-weight: bold; font-size: 14px; color: white;
-    transition: all 0.3s ease;
+    text-align: center; padding: 10px; font-weight: bold; font-size: 14px; color: white;
+    transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
   }
   .status-connecting { background-color: #f59e0b; }
   .status-connected { background-color: #10b981; }
@@ -37,7 +37,7 @@
   .sidebar {
     width: 260px; height: 100vh; position: fixed; right: 0; top: 0;
     background: var(--dark); color: white; transition: 0.3s; z-index: 1000;
-    padding-top: 40px; /* زيادة المسافة العلوية بسبب شريط الحالة */
+    padding-top: 60px; /* زيادة المسافة العلوية بسبب شريط الحالة */
   }
   .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
   .logo-img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid var(--warning); object-fit: cover; }
@@ -50,7 +50,7 @@
   .nav-link i { width: 20px; text-align: center; }
 
   /* Main Content */
-  .main-content { margin-right: 260px; padding: 30px; transition: 0.3s; padding-top: 50px; }
+  .main-content { margin-right: 260px; padding: 30px; transition: 0.3s; padding-top: 70px; }
   
   /* Cards */
   .stat-card {
@@ -116,7 +116,11 @@
 </head>
 <body>
 
-<div id="connection-status" class="status-connecting">جاري الاتصال بالسيرفر...</div>
+<div id="connection-status" class="status-connecting">
+    <span id="status-text">جاري الاتصال بالسيرفر...</span>
+    <button id="retry-btn" class="btn btn-sm btn-light text-dark d-none" onclick="checkConnection()">إعادة المحاولة</button>
+    <button id="bypass-btn" class="btn btn-sm btn-outline-light d-none" onclick="forceLoad()">تجاوز الفحص والدخول</button>
+</div>
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
@@ -381,31 +385,63 @@ window.onload = function() {
     checkConnection();
 };
 
-function updateStatus(msg, type) {
+function updateStatus(msg, type, details) {
     let el = document.getElementById('connection-status');
-    el.innerText = msg;
+    let txt = document.getElementById('status-text');
+    let btnRetry = document.getElementById('retry-btn');
+    let btnBypass = document.getElementById('bypass-btn');
+    
+    txt.innerText = msg;
     el.className = '';
-    if(type=='success') el.classList.add('status-connected');
-    else if(type=='error') el.classList.add('status-error');
-    else el.classList.add('status-connecting');
+    
+    if(type=='success') {
+        el.classList.add('status-connected');
+        btnRetry.classList.add('d-none');
+        btnBypass.classList.add('d-none');
+    } else if(type=='error') {
+        el.classList.add('status-error');
+        btnRetry.classList.remove('d-none');
+        btnBypass.classList.remove('d-none');
+        if(details) console.error("تفاصيل الخطأ:", details);
+    } else {
+        el.classList.add('status-connecting');
+        btnRetry.classList.add('d-none');
+        btnBypass.classList.add('d-none');
+    }
 }
 
 function checkConnection() {
-    // محاولة اتصال أولية للتأكد من الرابط
+    updateStatus("جاري الاتصال بالسيرفر...", "connecting");
+    
+    // فحص الرابط إذا كان ينتهي بـ /dev
+    if(API_URL.includes("/dev")) {
+        updateStatus("خطأ: الرابط ينتهي بـ /dev وهذا يتطلب إذن مطور. استخدم /exec", "error");
+        return;
+    }
+
     fetch(API_URL)
     .then(res => {
-        if(res.ok) {
+        if(res.ok || res.status === 405) { // 405 أحياناً تعني أن الرابط يعمل لكن الطريقة GET غير مسموحة (وهذا جيد)
             updateStatus("✅ متصل بالسيرفر بنجاح", "success");
-            setTimeout(() => document.getElementById('connection-status').style.display='none', 3000);
-            loadAllData(); // البدء في جلب البيانات إذا نجح الاتصال
+            setTimeout(() => document.getElementById('connection-status').style.display='none', 2000);
+            loadAllData();
         } else {
-            updateStatus("❌ السيرفر لا يستجيب (404/500)", "error");
+            updateStatus("❌ خطأ من السيرفر: " + res.status, "error");
         }
     })
     .catch(e => {
-        updateStatus("❌ فشل الاتصال! تأكد من الرابط وصلاحيات النشر (Anyone)", "error");
-        console.error(e);
+        let msg = "فشل الاتصال";
+        if(e.message.includes("Failed to fetch")) msg += ": (Network Error / CORS)";
+        updateStatus("❌ " + msg + " - تأكد من الرابط", "error", e);
     });
+}
+
+function forceLoad() {
+    updateStatus("⚠️ تم تجاوز الفحص، جاري التحميل...", "connecting");
+    setTimeout(() => {
+        document.getElementById('connection-status').style.display='none';
+        loadAllData();
+    }, 1000);
 }
 
 async function callApi(action, data = {}) {
