@@ -3,126 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة نبراس | لوحة الإدارة</title>
+<title>منصة نبراس | لوحة الإدارة Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-  :root {
-    --primary: #4f46e5;
-    --secondary: #64748b;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --dark: #1e293b;
-    --light: #f8fafc;
-  }
+  :root { --primary: #4f46e5; --secondary: #64748b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --dark: #1e293b; --light: #f8fafc; }
   body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; min-height: 100vh; overflow-x: hidden; }
-  
-  /* Sidebar */
-  .sidebar {
-    width: 260px; height: 100vh; position: fixed; right: 0; top: 0;
-    background: var(--dark); color: white; transition: 0.3s; z-index: 1000;
-    padding-top: 20px;
-  }
+  .sidebar { width: 260px; height: 100vh; position: fixed; right: 0; top: 0; background: var(--dark); color: white; transition: 0.3s; z-index: 1000; padding-top: 20px; }
   .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
   .logo-img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid var(--warning); object-fit: cover; }
-  
-  .nav-link {
-    color: #94a3b8; padding: 12px 20px; display: flex; align-items: center; gap: 12px;
-    font-weight: 500; transition: 0.3s; border-radius: 8px; margin: 0 10px 5px; cursor: pointer;
-  }
+  .nav-link { color: #94a3b8; padding: 12px 20px; display: flex; align-items: center; gap: 12px; font-weight: 500; transition: 0.3s; border-radius: 8px; margin: 0 10px 5px; cursor: pointer; }
   .nav-link:hover, .nav-link.active { background: var(--primary); color: white; transform: translateX(-5px); }
-  .nav-link i { width: 20px; text-align: center; }
-
-  /* Main Content */
   .main-content { margin-right: 260px; padding: 30px; transition: 0.3s; }
-  
-  /* Cards */
-  .stat-card {
-    background: white; border-radius: 16px; padding: 25px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: none;
-    position: relative; overflow: hidden; height: 100%;
-  }
-  .stat-card::after {
-    content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%;
-  }
-  .stat-card.blue::after { background: var(--primary); }
-  .stat-card.green::after { background: var(--success); }
-  .stat-card.orange::after { background: var(--warning); }
-  
-  .stat-icon {
-    width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center;
-    justify-content: center; font-size: 24px; margin-bottom: 15px;
-  }
+  .stat-card { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden; height: 100%; }
+  .stat-card.blue::after { content:''; position:absolute; top:0; right:0; width:4px; height:100%; background: var(--primary); }
+  .stat-card.green::after { content:''; position:absolute; top:0; right:0; width:4px; height:100%; background: var(--success); }
+  .stat-card.orange::after { content:''; position:absolute; top:0; right:0; width:4px; height:100%; background: var(--warning); }
+  .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 15px; }
   .bg-soft-blue { background: #e0e7ff; color: var(--primary); }
   .bg-soft-green { background: #d1fae5; color: var(--success); }
   .bg-soft-orange { background: #fef3c7; color: var(--warning); }
-
-  /* Tables */
   .custom-table { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
   .custom-table th { background: #f8fafc; color: var(--secondary); font-weight: 700; padding: 15px; border-bottom: 2px solid #e2e8f0; }
   .custom-table td { padding: 15px; vertical-align: middle; color: var(--dark); border-bottom: 1px solid #f1f5f9; }
-
-  /* Forms */
-  .form-control, .form-select {
-    padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;
-    box-shadow: none; font-size: 14px;
-  }
+  .form-control, .form-select { padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: none; font-size: 14px; }
   .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
   .btn-primary { background: var(--primary); border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; }
-  .btn-primary:hover { background: #4338ca; }
-
-  /* ID Card Printing Styling - Professional A4 */
-  #print-area { display: none; }
+  #connection-status { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; text-align: center; padding: 5px; font-weight: bold; font-size: 14px; color: white; }
+  .status-connecting { background-color: #f59e0b; }
+  .status-connected { background-color: #10b981; }
+  .status-error { background-color: #ef4444; }
   
-  @media print {
-    body { background: white; -webkit-print-color-adjust: exact; }
-    .sidebar, .no-print, .header-area, .btn { display: none !important; }
-    .main-content { margin: 0; padding: 0; width: 100%; }
-    #print-area { 
-      display: grid !important; 
-      grid-template-columns: repeat(2, 1fr); /* بطاقتين بالعرض */
-      gap: 15px; 
-      padding: 20px;
-    }
-    .id-card-print {
-      border: 1px solid #000;
-      border-radius: 10px;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      page-break-inside: avoid;
-      background: white;
-      height: 180px; /* ارتفاع ثابت */
-    }
-    .id-photo { width: 100px; height: 100px; object-fit: cover; border: 2px solid #333; }
-    .id-info { flex: 1; text-align: right; }
-    .id-qr { width: 90px; height: 90px; }
-  }
-
-  @media (max-width: 992px) {
-    .sidebar { transform: translateX(100%); }
-    .sidebar.active { transform: translateX(0); }
-    .main-content { margin-right: 0; }
-  }
+  @media print { .sidebar, .no-print, #connection-status { display: none !important; } .main-content { margin: 0; width: 100%; } }
+  @media (max-width: 992px) { .sidebar { transform: translateX(100%); } .sidebar.active { transform: translateX(0); } .main-content { margin-right: 0; } }
 </style>
 </head>
 <body>
+
+<div id="connection-status" class="status-connecting">جاري الاتصال بالسيرفر...</div>
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="logo-img">
     <h4 class="mb-0 fw-bold">منصة نبراس</h4>
-    <small class="text-white-50">لوحة الإدارة V2.0</small>
+    <small class="text-white-50">Admin Panel Pro</small>
   </div>
   <div class="nav flex-column">
     <div class="nav-link active" onclick="showTab('home', this)"><i class="fas fa-home"></i> الرئيسية</div>
-    <div class="nav-link" onclick="showTab('students', this)"><i class="fas fa-users"></i> الطلاب والبطاقات</div>
-    <div class="nav-link" onclick="showTab('results', this)"><i class="fas fa-chart-bar"></i> النتائج والتقارير</div>
+    <div class="nav-link" onclick="showTab('students', this)"><i class="fas fa-users"></i> الطلاب</div>
+    <div class="nav-link" onclick="showTab('results', this)"><i class="fas fa-chart-bar"></i> النتائج</div>
     <div class="nav-link" onclick="showTab('library', this)"><i class="fas fa-book"></i> المكتبة</div>
     <div class="nav-link" onclick="showTab('assign', this)"><i class="fas fa-tasks"></i> الواجبات</div>
     <div class="nav-link" onclick="showTab('complaints', this)"><i class="fas fa-envelope"></i> الشكاوى</div>
@@ -132,257 +64,116 @@
 
 <div class="main-content">
   <div class="d-flex justify-content-between align-items-center mb-4 header-area no-print">
-    <div>
-      <h3 class="fw-bold text-dark mb-1">لوحة القيادة</h3>
-      <p class="text-muted mb-0">نظرة عامة على أداء المنصة</p>
-    </div>
-    <div class="d-flex gap-2">
-      <button onclick="location.reload()" class="btn btn-light"><i class="fas fa-sync-alt"></i> تحديث</button>
-      <button class="btn btn-primary d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-    </div>
+    <div><h3 class="fw-bold text-dark mb-1">لوحة القيادة</h3><p class="text-muted mb-0">نظرة عامة</p></div>
+    <div class="d-flex gap-2"><button onclick="location.reload()" class="btn btn-light"><i class="fas fa-sync-alt"></i> تحديث</button><button class="btn btn-primary d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button></div>
   </div>
 
   <div id="tab-home" class="section-tab">
-    <div class="row g-4 mb-4 no-print">
-      <div class="col-md-4">
-        <div class="stat-card blue">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p class="text-muted mb-1">إجمالي الطلاب</p>
-              <h2 class="fw-bold mb-0" id="s-cnt">-</h2>
-            </div>
-            <div class="stat-icon bg-soft-blue"><i class="fas fa-user-graduate"></i></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="stat-card green">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p class="text-muted mb-1">الامتحانات النشطة</p>
-              <h2 class="fw-bold mb-0" id="e-cnt">-</h2>
-            </div>
-            <div class="stat-icon bg-soft-green"><i class="fas fa-file-alt"></i></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="stat-card orange">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <p class="text-muted mb-1">الأكواد المتوفرة</p>
-              <h2 class="fw-bold mb-0" id="c-cnt">-</h2>
-            </div>
-            <div class="stat-icon bg-soft-orange"><i class="fas fa-barcode"></i></div>
-          </div>
-        </div>
-      </div>
+    <div class="row g-4 mb-4">
+      <div class="col-md-4"><div class="stat-card blue"><div class="d-flex justify-content-between"><div><p class="text-muted mb-1">الطلاب</p><h2 class="fw-bold mb-0" id="s-cnt">...</h2></div><div class="stat-icon bg-soft-blue"><i class="fas fa-user-graduate"></i></div></div></div></div>
+      <div class="col-md-4"><div class="stat-card green"><div class="d-flex justify-content-between"><div><p class="text-muted mb-1">الامتحانات</p><h2 class="fw-bold mb-0" id="e-cnt">...</h2></div><div class="stat-icon bg-soft-green"><i class="fas fa-file-alt"></i></div></div></div></div>
+      <div class="col-md-4"><div class="stat-card orange"><div class="d-flex justify-content-between"><div><p class="text-muted mb-1">الأكواد</p><h2 class="fw-bold mb-0" id="c-cnt">...</h2></div><div class="stat-icon bg-soft-orange"><i class="fas fa-barcode"></i></div></div></div></div>
     </div>
-
-    <div class="row no-print">
+    
+    <div class="row">
       <div class="col-md-8 mb-4">
         <div class="card border-0 shadow-sm p-4 h-100">
-          <h5 class="fw-bold mb-3"><i class="fas fa-plus-circle text-primary"></i> توليد أكواد تفعيل</h5>
+          <h5 class="fw-bold mb-3">توليد أكواد</h5>
           <div class="row g-2">
              <div class="col-md-3"><input id="gen-count" type="number" class="form-control" placeholder="العدد"></div>
-             <div class="col-md-3"><input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع)"></div>
-             <div class="col-md-3">
-                <select id="gen-days" class="form-select" style="font-size:14px">
-                   <option value="120" selected>اشتراك فصلي (4 شهور)</option>
-                   <option value="365">اشتراك سنوي (سنة)</option>
-                   <option value="3">تجريبي (3 أيام)</option>
-                   <option value="7">تجريبي (أسبوع)</option>
-                </select>
-             </div>
-             <div class="col-md-3"><button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button></div>
+             <div class="col-md-3"><input id="gen-cls" class="form-control" placeholder="الصف"></div>
+             <div class="col-md-3"><select id="gen-days" class="form-select"><option value="120">4 شهور</option><option value="365">سنة</option><option value="7">أسبوع</option></select></div>
+             <div class="col-md-3"><button onclick="generate()" class="btn btn-primary w-100">توليد</button></div>
           </div>
-          <hr class="my-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-             <h6 class="fw-bold m-0">الأكواد الحالية</h6>
-             <div class="d-flex gap-2">
-               <select id="f-cls" class="form-select form-select-sm" style="width:110px" onchange="render()"><option value="all">كل الصفوف</option></select>
-               <select id="f-sts" class="form-select form-select-sm" style="width:100px" onchange="render()"><option value="New">جديدة</option><option value="Used">مستخدمة</option><option value="all">الكل</option></select>
-               <button onclick="deleteUsedCodes()" class="btn btn-sm btn-outline-danger" title="حذف المستخدم"><i class="fas fa-trash"></i></button>
-               <button onclick="printCodes()" class="btn btn-sm btn-outline-dark" title="طباعة"><i class="fas fa-print"></i></button>
-             </div>
-          </div>
-          <div id="code-container" style="max-height:400px; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px"></div>
+          <hr>
+          <div class="d-flex justify-content-between mb-3"><h6 class="fw-bold m-0">الأكواد</h6><div class="d-flex gap-2"><select id="f-cls" class="form-select form-select-sm" style="width:100px" onchange="render()"><option value="all">الكل</option></select><button onclick="deleteUsedCodes()" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> تنظيف</button><button onclick="printCodes()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i></button></div></div>
+          <div id="code-container" style="max-height:400px; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px"></div>
         </div>
       </div>
-      
       <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm p-4 h-100 bg-dark text-white" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
-           <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane text-warning"></i> إرسال إشعار</h5>
-           <p class="text-white-50">إرسال تنبيه للطلاب عبر التطبيق.</p>
-           <label class="mb-2">المستلمون:</label>
-           <select id="msg-target" class="form-select mb-2 bg-white text-dark border-0">
-             <option value="All">جميع الطلاب</option>
-           </select>
-           <label class="mb-2">أو إرسال لطالب محدد (البريد):</label>
-           <input id="msg-email-manual" class="form-control mb-3 bg-white text-dark border-0" placeholder="example@gmail.com">
-           <label class="mb-2">نص الرسالة:</label>
-           <textarea id="msg-text" class="form-control mb-3" rows="3" placeholder="اكتب رسالتك هنا..."></textarea>
-           <button onclick="sendMsg()" class="btn btn-warning w-100 fw-bold">إرسال الإشعار</button>
+        <div class="card border-0 shadow-sm p-4 h-100 bg-dark text-white">
+           <h5 class="fw-bold mb-3">إرسال إشعار</h5>
+           <select id="msg-target" class="form-select mb-2"><option value="All">الجميع</option></select>
+           <textarea id="msg-text" class="form-control mb-3" rows="3" placeholder="الرسالة..."></textarea>
+           <button onclick="sendMsg()" class="btn btn-warning w-100 fw-bold">إرسال</button>
         </div>
       </div>
     </div>
   </div>
 
   <div id="tab-students" class="section-tab d-none">
-     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
-        <h4 class="fw-bold">بطاقات الطلاب</h4>
-        <button onclick="printCards()" class="btn btn-success"><i class="fas fa-print"></i> طباعة البطاقات (A4)</button>
-     </div>
-     <div class="card p-3 mb-4 no-print">
-        <div class="row g-2">
-            <div class="col-md-4"><input id="m-email" class="form-control" placeholder="بحث بالبريد الإلكتروني"></div>
-            <div class="col-md-3"><input id="m-pass" class="form-control" placeholder="كلمة المرور الجديدة"></div>
-            <div class="col-md-2"><button onclick="resetPass()" class="btn btn-warning w-100">تغيير الباس</button></div>
-            <div class="col-md-2"><button onclick="delStudent()" class="btn btn-danger w-100">حذف الحساب</button></div>
-        </div>
-     </div>
-     <div id="ids-grid" class="row g-3 no-print"></div>
+     <div class="d-flex justify-content-between mb-3"><h4 class="fw-bold">الطلاب</h4><button onclick="printCards()" class="btn btn-success"><i class="fas fa-print"></i> طباعة</button></div>
+     <div class="card p-3 mb-3"><div class="row g-2"><div class="col-md-4"><input id="m-email" class="form-control" placeholder="البريد"></div><div class="col-md-3"><input id="m-pass" class="form-control" placeholder="الباس الجديد"></div><div class="col-md-2"><button onclick="resetPass()" class="btn btn-warning w-100">تغيير</button></div><div class="col-md-2"><button onclick="delStudent()" class="btn btn-danger w-100">حذف</button></div></div></div>
+     <div id="ids-grid" class="row g-3"></div>
   </div>
 
   <div id="tab-results" class="section-tab d-none">
-     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
-        <h4 class="fw-bold">سجل النتائج</h4>
-        <div class="d-flex gap-2">
-           <input type="text" id="res-search" class="form-control" placeholder="بحث..." onkeyup="filterResults()">
-           <select id="res-cls-filter" class="form-select" onchange="filterResults()"><option value="all">الكل</option></select>
-           <button onclick="exportToExcel()" class="btn btn-success text-nowrap"><i class="fas fa-file-excel"></i> اكسل</button>
-        </div>
-     </div>
-     <div class="custom-table">
-        <table class="table table-hover mb-0" id="res-table">
-           <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>الامتحان</th><th>الدرجة</th><th>إجراء</th></tr></thead>
-           <tbody id="res-body"></tbody>
-        </table>
-     </div>
+     <div class="d-flex justify-content-between mb-3"><h4 class="fw-bold">النتائج</h4><button onclick="exportToExcel()" class="btn btn-success">Excel</button></div>
+     <div class="custom-table"><table class="table table-hover mb-0"><thead><tr><th>التاريخ</th><th>الطالب</th><th>الامتحان</th><th>الدرجة</th><th>حذف</th></tr></thead><tbody id="res-body"></tbody></table></div>
   </div>
 
   <div id="tab-library" class="section-tab d-none">
-     <div class="row">
-       <div class="col-md-4">
-         <div class="card p-4 border-0 shadow-sm">
-            <h5 class="fw-bold mb-3">إضافة محتوى</h5>
-            <input id="lib-title" class="form-control mb-2" placeholder="عنوان الدرس">
-            <select id="lib-type" class="form-select mb-2"><option value="PDF">ملف PDF</option><option value="Video">فيديو يوتيوب</option></select>
-            <input id="lib-cls" class="form-control mb-2" placeholder="الصف (اتركه فارغاً للكل)">
-            <input id="lib-link" class="form-control mb-3" placeholder="الرابط المباشر">
-            <button onclick="addLib()" class="btn btn-primary w-100">نشر المحتوى</button>
-         </div>
-       </div>
-       <div class="col-md-8">
-         <div class="custom-table">
-           <table class="table mb-0">
-             <thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead>
-             <tbody id="lib-body"></tbody>
-           </table>
-         </div>
-       </div>
-     </div>
+     <div class="row"><div class="col-md-4"><div class="card p-4"><h5 class="fw-bold">إضافة</h5><input id="lib-title" class="form-control mb-2" placeholder="العنوان"><select id="lib-type" class="form-select mb-2"><option value="PDF">PDF</option><option value="Video">فيديو</option></select><input id="lib-link" class="form-control mb-3" placeholder="الرابط"><button onclick="addLib()" class="btn btn-primary w-100">نشر</button></div></div><div class="col-md-8"><div class="custom-table"><table class="table"><thead><tr><th>العنوان</th><th>النوع</th><th>حذف</th></tr></thead><tbody id="lib-body"></tbody></table></div></div></div>
   </div>
 
-  <div id="tab-assign" class="section-tab d-none">
-     <div class="custom-table">
-        <table class="table table-hover mb-0">
-           <thead><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>الملف</th><th>الدرجة</th><th>حفظ</th></tr></thead>
-           <tbody id="ass-body"></tbody>
-        </table>
-     </div>
-  </div>
-
-  <div id="tab-complaints" class="section-tab d-none">
-     <div class="custom-table">
-        <table class="table mb-0">
-           <thead><tr><th>التاريخ</th><th>الطالب</th><th>الرسالة</th><th>الرد الإداري</th></tr></thead>
-           <tbody id="comp-body"></tbody>
-        </table>
-     </div>
-  </div>
+  <div id="tab-assign" class="section-tab d-none"><div class="custom-table"><table class="table"><thead><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>رابط</th><th>الدرجة</th><th>رصد</th></tr></thead><tbody id="ass-body"></tbody></table></div></div>
+  <div id="tab-complaints" class="section-tab d-none"><div class="custom-table"><table class="table"><thead><tr><th>الطالب</th><th>الرسالة</th><th>الرد</th></tr></thead><tbody id="comp-body"></tbody></table></div></div>
 
   <div id="tab-settings" class="section-tab d-none">
     <div class="row g-4">
-      <div class="col-md-6">
-        <div class="card p-4 border-0 shadow-sm">
-          <h5 class="fw-bold mb-3"><i class="fas fa-user-cog text-primary"></i> بيانات المعلم والمنصة</h5>
-          <label class="form-label">اسم المعلم (يظهر في الشهادة):</label>
-          <input id="sett-name" class="form-control mb-3" placeholder="أ. فلان الفلاني">
-          <label class="form-label">رقم الواتساب الشخصي:</label>
-          <input id="sett-wa" class="form-control mb-3" placeholder="00962...">
-          <label class="form-label">حالة المنصة:</label>
-          <select id="sett-maint" class="form-select mb-3">
-             <option value="Off">🟢 تعمل بشكل طبيعي</option>
-             <option value="On">🔴 وضع الصيانة (مغلقة)</option>
-          </select>
-          <button onclick="saveSettings()" class="btn btn-primary w-100">حفظ الإعدادات</button>
-        </div>
-      </div>
-      <div class="col-md-6">
-         <div class="card p-4 border-0 shadow-sm">
-            <h5 class="fw-bold mb-3"><i class="fas fa-share-alt text-primary"></i> روابط التواصل الاجتماعي</h5>
-            <div class="mb-3">
-               <label><i class="fab fa-whatsapp text-success"></i> رابط مجموعة الواتساب:</label>
-               <input id="social-whatsapp" class="form-control" placeholder="https://chat.whatsapp.com/...">
-            </div>
-            <div class="mb-3">
-               <label><i class="fab fa-facebook text-primary"></i> صفحة الفيسبوك:</label>
-               <input id="social-facebook" class="form-control" placeholder="https://facebook.com/...">
-            </div>
-            <div class="mb-3">
-               <label><i class="fab fa-instagram text-danger"></i> انستجرام:</label>
-               <input id="social-instagram" class="form-control" placeholder="https://instagram.com/...">
-            </div>
-            <div class="mb-3">
-               <label><i class="fab fa-youtube text-danger"></i> يوتيوب:</label>
-               <input id="social-youtube" class="form-control" placeholder="https://youtube.com/...">
-            </div>
-            <button onclick="saveSocialLinks()" class="btn btn-success w-100">تحديث الروابط</button>
-         </div>
-      </div>
-    </div>
-    
-    <div class="row g-4 mt-2">
-      <div class="col-12">
-        <div class="card p-4 border-0 shadow-sm border-start border-danger border-5">
-          <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة التهيئة (حذف وإعادة بناء)</h5>
-          <p class="text-muted">تنبيه: هذا الخيار سيقوم بحذف جميع البيانات في الجداول المختارة وإعادتها لوضع المصنع. لا يمكن التراجع عن هذه الخطوة.</p>
-          <div class="row" id="tables-checklist">
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Students" id="chk-std"><label class="form-check-label" for="chk-std">الطلاب (Students)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Exams" id="chk-exm"><label class="form-check-label" for="chk-exm">الامتحانات (Exams)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Questions" id="chk-ques"><label class="form-check-label" for="chk-ques">الأسئلة (Questions)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Results" id="chk-res"><label class="form-check-label" for="chk-res">النتائج (Results)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Codes" id="chk-cod"><label class="form-check-label" for="chk-cod">الأكواد (Codes)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Assignments" id="chk-ass"><label class="form-check-label" for="chk-ass">الواجبات (Assignments)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Library" id="chk-lib"><label class="form-check-label" for="chk-lib">المكتبة (Library)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Complaints" id="chk-com"><label class="form-check-label" for="chk-com">الشكاوى (Complaints)</label></div></div>
-             <div class="col-md-3"><div class="form-check"><input class="form-check-input table-chk" type="checkbox" value="Notifications" id="chk-not"><label class="form-check-label" for="chk-not">الإشعارات (Notifications)</label></div></div>
-          </div>
-          <div class="mt-4">
-            <button onclick="performReset()" class="btn btn-danger fw-bold"><i class="fas fa-trash-alt"></i> تهيئة الجداول المحددة</button>
-          </div>
-        </div>
-      </div>
+      <div class="col-md-6"><div class="card p-4"><h5 class="fw-bold">الإعدادات</h5><input id="sett-name" class="form-control mb-3" placeholder="اسم المعلم"><input id="sett-wa" class="form-control mb-3" placeholder="واتساب"><select id="sett-maint" class="form-select mb-3"><option value="Off">تشغيل</option><option value="On">صيانة</option></select><button onclick="saveSettings()" class="btn btn-primary w-100">حفظ</button></div></div>
+      <div class="col-md-6"><div class="card p-4 border-danger"><h5 class="text-danger fw-bold">تهيئة (حذف البيانات)</h5><button onclick="performReset()" class="btn btn-danger w-100">تهيئة النظام بالكامل</button></div></div>
     </div>
   </div>
 
 </div>
-
 <div id="print-area"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ===========================================
-// ⚠️ هام جداً جداً:
-// يجب عليك نسخ رابط النشر (Web App URL) الجديد ولصقه هنا
-// وإلا ستبقى اللوحة جامدة ولا تعمل.
+// ⚠️ هام: ضع الرابط الجديد هنا بدلاً من النص
+// ===========================================
 const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
 // ===========================================
 
 let allData=[], allResults=[], allStudents=[];
 
-window.onload = function() { loadAllData(); };
+window.onload = function() {
+    // اختبار الاتصال فوراً
+    if(API_URL.includes("ضع_رابط")) {
+        updateStatus("⚠️ خطأ: لم يتم وضع الرابط في الكود!", "error");
+        return;
+    }
+    checkConnection();
+};
+
+function updateStatus(msg, type) {
+    let el = document.getElementById('connection-status');
+    el.innerText = msg;
+    el.className = '';
+    if(type=='success') el.classList.add('status-connected');
+    else if(type=='error') el.classList.add('status-error');
+    else el.classList.add('status-connecting');
+}
+
+function checkConnection() {
+    // نقوم بعمل طلب بسيط (GET) للتأكد من أن السكريبت يعمل
+    fetch(API_URL)
+    .then(res => {
+        if(res.ok) {
+            updateStatus("✅ متصل بالسيرفر بنجاح", "success");
+            setTimeout(() => document.getElementById('connection-status').style.display='none', 3000);
+            loadAllData(); // البدء في جلب البيانات
+        } else {
+            updateStatus("❌ السيرفر لا يستجيب (404/500)", "error");
+        }
+    })
+    .catch(e => {
+        updateStatus("❌ فشل الاتصال! تأكد من الرابط وصلاحيات النشر (Anyone)", "error");
+        console.error(e);
+    });
+}
 
 async function callApi(action, data = {}) {
     data.action = action;
@@ -390,316 +181,142 @@ async function callApi(action, data = {}) {
         const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         return await response.json();
     } catch (e) { 
-        console.error("Connection Error:", e);
-        return {success: false, message: 'فشل الاتصال: تأكد من تحديث رابط API_URL'}; 
+        console.error(e); return {success: false}; 
     }
 }
 
 function loadAllData() {
-    Swal.fire({title: 'جاري التحميل', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+    Swal.fire({title: 'جاري التحميل...', didOpen: () => Swal.showLoading()});
     callApi('getAdminData').then(data => {
         Swal.close();
-        if (!data || !data.stats) {
-            Swal.fire({
-                icon: 'error', 
-                title: 'خطأ في الاتصال', 
-                text: 'لم يتم جلب البيانات. تأكد من أنك قمت بنسخ رابط النشر (Web App URL) ووضعه في المتغير API_URL داخل الكود.'
-            });
-            return;
-        }
-        init(data);
-    }).catch(e => {
-        Swal.close();
-        Swal.fire('خطأ', 'حدث خطأ غير متوقع: ' + e, 'error');
+        if(data && data.stats) init(data);
+        else Swal.fire('تنبيه', 'لم يتم جلب بيانات صحيحة', 'warning');
     });
 }
 
 function init(data) {
-  try {
-      allData = data.codes || [];
-      document.getElementById('s-cnt').innerText = data.stats.students;
-      document.getElementById('e-cnt').innerText = data.stats.exams;
-      document.getElementById('c-cnt').innerText = data.stats.codes;
-
-      if(data.settings) {
-          if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
-          if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
-          if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
-      }
-      if(data.socials) {
-          document.getElementById('social-facebook').value = data.socials.facebook || '';
-          document.getElementById('social-instagram').value = data.socials.instagram || '';
-          document.getElementById('social-whatsapp').value = data.socials.whatsapp || '';
-          document.getElementById('social-youtube').value = data.socials.youtube || '';
-      }
-
-      let classes = [...new Set(allData.map(i=>i.cls).filter(c => c && c.trim() !== ""))];
-      ['f-cls', 'res-cls-filter'].forEach(id => {
-          let sel = document.getElementById(id);
-          if(sel) {
-              sel.innerHTML = '<option value="all">كل الصفوف</option>';
-              classes.forEach(c => { let o = document.createElement('option'); o.value = c; o.innerText = c; sel.appendChild(o); });
-          }
-      });
-
-      let msgSel = document.getElementById('msg-target');
-      if(msgSel) {
-          msgSel.innerHTML = '<option value="All">لجميع الطلاب</option>';
-          classes.forEach(c => {
-              let o = document.createElement('option'); o.value = c; o.innerText = "طلاب " + c; msgSel.appendChild(o);
-          });
-      }
-
-      render();
-  } catch(e) { console.error(e); }
+    allData = data.codes || [];
+    document.getElementById('s-cnt').innerText = data.stats.students;
+    document.getElementById('e-cnt').innerText = data.stats.exams;
+    document.getElementById('c-cnt').innerText = data.stats.codes;
+    
+    if(data.settings) {
+        if(data.settings['TeacherName']) document.getElementById('sett-name').value = data.settings['TeacherName'];
+        if(data.settings['WhatsApp']) document.getElementById('sett-wa').value = data.settings['WhatsApp'];
+        if(data.settings['Maintenance']) document.getElementById('sett-maint').value = data.settings['Maintenance'];
+    }
+    
+    // تعبئة قائمة الصفوف
+    let classes = [...new Set(allData.map(i=>i.cls).filter(c=>c))];
+    let sel = document.getElementById('f-cls'); sel.innerHTML = '<option value="all">الكل</option>';
+    classes.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+    
+    render();
 }
 
-function showTab(tabId, el) {
-    document.querySelectorAll('.section-tab').forEach(d => d.classList.add('d-none'));
-    let target = document.getElementById('tab-'+tabId);
-    if(target) target.classList.remove('d-none');
+function render() {
+    let cls = document.getElementById('f-cls').value;
+    let sts = document.getElementById('f-sts').value;
+    let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
+    let h = '';
+    filtered.forEach(c => {
+        h += `<div style="background:white; border:1px solid #ddd; padding:10px; border-radius:8px; text-align:center;">
+                <div class="fw-bold text-muted" style="font-size:12px">${c.cls}</div>
+                <div class="fw-bold text-primary my-1" style="font-size:18px; letter-spacing:1px">${c.code}</div>
+                <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status}</span>
+                <span class="badge bg-warning text-dark">${c.days} يوم</span>
+              </div>`;
+    });
+    document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا يوجد</div>';
+}
+
+function showTab(id, el) {
+    document.querySelectorAll('.section-tab').forEach(d=>d.classList.add('d-none'));
+    document.getElementById('tab-'+id).classList.remove('d-none');
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+    el.classList.add('active');
     
-    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
-    if(el) el.classList.add('active');
-    
-    if(tabId === 'students') loadIds();
-    if(tabId === 'results') loadResults();
-    if(tabId === 'library') loadLibrary();
-    if(tabId === 'assign') loadAssign();
-    if(tabId === 'complaints') loadComp();
+    if(id=='students') loadIds();
+    if(id=='results') loadResults();
+    if(id=='library') loadLib();
+    if(id=='assign') loadAss();
+    if(id=='complaints') loadComp();
     
     if(window.innerWidth < 992) document.getElementById('sidebar').classList.remove('active');
 }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('active'); }
 
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-
-function render() {
-  let cls = document.getElementById('f-cls').value;
-  let sts = document.getElementById('f-sts').value;
-  let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
-  let h = '';
-  
-  filtered.forEach(c => {
-    let d = c.days ? parseInt(c.days) : 120;
-    let typeLabel = d < 30 ? 
-        `<span style="font-size:10px; background:#ef4444; color:white; padding:1px 5px; border-radius:4px">تجريبي ${d} يوم</span>` : 
-        `<span style="font-size:10px; background:#3b82f6; color:white; padding:1px 5px; border-radius:4px">اشتراك ${d} يوم</span>`;
-
-    h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center; position:relative">
-            <div class="fw-bold small text-muted">${c.cls}</div>
-            <div class="fw-bold fs-5 my-1" style="letter-spacing:2px; color:#1e293b">${c.code}</div>
-            <div style="display:flex; justify-content:center; gap:5px; align-items:center; margin-top:5px">
-                <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
-                ${typeLabel}
-            </div>
-          </div>`;
-  });
-  document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا توجد بيانات</div>';
+// --- دوال التشغيل ---
+function generate(){
+    let c = document.getElementById('gen-count').value, cl = document.getElementById('gen-cls').value, d = document.getElementById('gen-days').value;
+    if(!c || !cl) return Swal.fire('خطأ','أدخل البيانات','error');
+    Swal.showLoading();
+    callApi('generateNewCodes', {count:c, cls:cl, days:d}).then(r=>{ Swal.close(); Swal.fire('تم',r,'success').then(()=>location.reload()); });
 }
-
-function generate() {
-  let count = document.getElementById('gen-count').value;
-  let cls = document.getElementById('gen-cls').value;
-  let days = document.getElementById('gen-days').value;
-  
-  if(!count || !cls) return Swal.fire('تنبيه', 'أدخل العدد والصف', 'warning');
-  
-  Swal.fire({title: 'جاري التوليد...', didOpen: () => Swal.showLoading()});
-  callApi('generateNewCodes', {count:count, cls:cls, days:days}).then(res => { 
-      Swal.close();
-      if(res.success !== false) {
-          Swal.fire('تم', res, 'success'); 
-          setTimeout(location.reload, 1500); 
-      } else {
-          Swal.fire('خطأ', 'فشل التوليد: ' + (res.message || ''), 'error');
-      }
-  });
+function deleteUsedCodes(){ callApi('deleteUsedCodes').then(r=>location.reload()); }
+function sendMsg(){
+    let t = document.getElementById('msg-target').value, m = document.getElementById('msg-text').value;
+    if(!m) return;
+    callApi('sendTargetedMessage', {target:t, msg:m}).then(r=>Swal.fire('تم','أرسلت','success'));
 }
-
-function deleteUsedCodes(){
-   Swal.fire({title:'تأكيد؟', text:'حذف الأكواد المستخدمة؟', icon:'warning', showCancelButton:true}).then(r=>{
-       if(r.isConfirmed) callApi('deleteUsedCodes').then(res => Swal.fire('تم', res, 'success'));
-   });
-}
-
-function sendMsg() {
-  let manualEmail = document.getElementById('msg-email-manual').value;
-  let target = manualEmail ? manualEmail.trim() : document.getElementById('msg-target').value;
-  let m = document.getElementById('msg-text').value;
-  if(!m) return Swal.fire('تنبيه', 'اكتب الرسالة', 'warning');
-  callApi('sendTargetedMessage', {target:target, msg:m}).then(res => {
-      Swal.fire('تم', 'تم الإرسال بنجاح', 'success');
-      document.getElementById('msg-text').value = '';
-      document.getElementById('msg-email-manual').value = '';
-  });
-}
-
-function loadIds() {
-    document.getElementById('ids-grid').innerHTML = '<div class="text-center w-100"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i></div>';
-    callApi('getStudentsForCards').then(list => {
-        allStudents = list || [];
-        let h = '';
-        if(!allStudents.length) h = '<div class="alert alert-info w-100">لا يوجد طلاب مسجلين بعد</div>';
-        else allStudents.forEach(s => {
-            let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(s.email);
-            h += `<div class="col-md-4 col-lg-3">
-                    <div class="card p-3 shadow-sm text-center h-100 position-relative">
-                        <img src="${s.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:70px;height:70px;border-radius:50%;margin:0 auto;object-fit:cover;border:2px solid var(--primary)">
-                        <h6 class="mt-2 fw-bold mb-1">${s.name}</h6>
-                        <span class="badge bg-soft-blue text-primary mb-2">${s.cls}</span>
-                        <div class="mt-auto"><img src="${qr}" style="width:80px"></div>
-                        <div class="small text-muted mt-1" style="font-size:10px">${s.email}</div>
-                    </div>
-                  </div>`;
+function loadIds(){
+    callApi('getStudentsForCards').then(l=>{
+        let h=''; l.forEach(s=>{ 
+            let qr = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(s.email)}`;
+            h+=`<div class="col-md-3"><div class="card p-2 text-center"><img src="${s.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:60px;height:60px;margin:0 auto;border-radius:50%"><div class="fw-bold">${s.name}</div><div class="small text-muted">${s.email}</div><img src="${qr}" style="width:60px;margin-top:5px"></div></div>`;
         });
         document.getElementById('ids-grid').innerHTML = h;
     });
 }
-
-function printCards() {
-    if(!allStudents.length) return Swal.fire('تنبيه', 'لا يوجد طلاب للطباعة', 'info');
-    let h = '';
-    allStudents.forEach(s => {
-        let qr = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(s.email);
-        h += `<div class="id-card-print">
-                 <img src="${s.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" class="id-photo">
-                 <div class="id-info">
-                    <h3 style="margin:0; font-weight:bold; color:#000;">${s.name}</h3>
-                    <p style="margin:5px 0; font-size:18px;">الصف: ${s.cls}</p>
-                    <p style="margin:0; font-size:12px; color:#555;">${s.email}</p>
-                 </div>
-                 <img src="${qr}" class="id-qr">
-              </div>`;
-    });
-    document.getElementById('print-area').innerHTML = h;
-    window.print();
+function printCards(){ window.print(); }
+function printCodes(){
+    let w=window.open(); w.document.write('<html><body style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center;font-family:sans-serif">'+document.getElementById('code-container').innerHTML+'</body></html>'); w.print();
 }
+function resetPass(){ let e=document.getElementById('m-email').value, p=document.getElementById('m-pass').value; callApi('adminResetPass',{email:e,newPass:p}).then(r=>Swal.fire(r)); }
+function delStudent(){ let e=document.getElementById('m-email').value; callApi('deleteStudent',{email:e}).then(r=>Swal.fire(r)); }
 
-function printCodes() {
-   let content = document.getElementById('code-container').innerHTML;
-   let win = window.open('', '', 'height=700,width=900');
-   win.document.write('<html><head><title>طباعة الأكواد</title><style>body{font-family:sans-serif; direction:rtl} .grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px} div{border:1px solid #000; padding:10px; text-align:center}</style></head><body><div class="grid">' + content + '</div></body></html>');
-   win.document.close();
-   win.print();
-}
-
-function resetPass(){ let e = document.getElementById('m-email').value, p = document.getElementById('m-pass').value; if(!e || !p) return Swal.fire('نقص', 'البيانات ناقصة', 'warning'); callApi('adminResetPass', {email:e, newPass:p}).then(res => Swal.fire('تم', res, 'success')); }
-function delStudent(){ let e = document.getElementById('m-email').value; if(!e) return; Swal.fire({title:'حذف نهائي؟', icon:'warning', showCancelButton:true}).then(r=>{ if(r.isConfirmed) callApi('deleteStudent', {email:e}).then(res => Swal.fire('تم', res, 'success')); }); }
-
-function loadResults() { callApi('getAllResultsForAdmin').then(data => { allResults = data || []; renderResults(allResults); }); }
-function renderResults(data) {
-    let tbody = document.getElementById('res-body');
-    if(!data || !data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد نتائج</td></tr>'; return; }
-    let h = '';
-    data.forEach(r => {
-        h += `<tr><td>${r.date}</td><td class="fw-bold">${r.name}</td><td>${r.cls}</td><td>${r.exam}</td><td><span class="badge ${parseInt(r.score)>=50?'bg-success':'bg-danger'}">${r.score}</span></td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteRes(${r.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
-    });
-    tbody.innerHTML = h;
-}
-function filterResults() {
-    let q = document.getElementById('res-search').value.toLowerCase();
-    let cls = document.getElementById('res-cls-filter').value;
-    let filtered = allResults.filter(r => (r.name.toLowerCase().includes(q) || r.exam.toLowerCase().includes(q)) && (cls === 'all' || r.cls === cls));
-    renderResults(filtered);
-}
-function deleteRes(rowId) { Swal.fire({title:'حذف النتيجة؟', icon:'warning', showCancelButton:true}).then(r=>{ if(r.isConfirmed) callApi('deleteResultRow', {rowId:rowId}).then(msg => { loadResults(); }); }); }
-function exportToExcel() {
-    let csv = "\uFEFFالتاريخ,الطالب,الصف,الامتحان,الدرجة\n";
-    allResults.forEach(r => { csv += `${r.date},${r.name},${r.cls},${r.exam},${r.score}\n`; });
-    let link = document.createElement("a"); link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv); link.download = "النتائج.csv"; link.click();
-}
-
-function loadLibrary() {
-    callApi('getLibraryForAdmin').then(list => {
-        let h = '';
-        if(list) list.forEach(i => {
-            h += `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls||'الكل'}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})"><i class="fas fa-trash"></i></button></td></tr>`;
-        });
-        document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">المكتبة فارغة</td></tr>';
+function loadResults(){
+    callApi('getAllResultsForAdmin').then(l=>{
+        let h=''; l.forEach(r=>{ h+=`<tr><td>${r.date}</td><td>${r.name}</td><td>${r.exam}</td><td>${r.score}</td><td><button class="btn btn-sm btn-danger" onclick="delRes(${r.rowId})">X</button></td></tr>`; });
+        document.getElementById('res-body').innerHTML = h;
     });
 }
-function addLib() {
-    let d = { title: document.getElementById('lib-title').value, type: document.getElementById('lib-type').value, cls: document.getElementById('lib-cls').value, link: document.getElementById('lib-link').value };
-    if(!d.title || !d.link) return Swal.fire('نقص', 'أكمل البيانات', 'warning');
-    callApi('addToLibrary', {d:d}).then(r=>{ Swal.fire('تم', r, 'success'); loadLibrary(); });
-}
-function delLib(id) { if(confirm('حذف؟')) callApi('deleteLibraryItem', {rowId:id}).then(r=>{ loadLibrary(); }); }
-
-function loadAssign() {
-    callApi('getAssignmentsForAdmin').then(list => {
-        let h = '';
-        if(list) list.forEach(i => {
-            h += `<tr><td>${i.date}</td><td>${i.name}</td><td>${i.type}</td><td><a href="${i.link}" target="_blank" class="btn btn-sm btn-primary">عرض</a></td><td><input id="g-${i.rowId}" value="${i.grade}" style="width:60px" class="form-control form-control-sm"></td><td><button onclick="saveGrade(${i.rowId})" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button></td></tr>`;
-        });
-        document.getElementById('ass-body').innerHTML = h || '<tr><td colspan="6" class="text-center text-muted">لا توجد واجبات</td></tr>';
+function delRes(id){ callApi('deleteResultRow',{rowId:id}).then(()=>loadResults()); }
+function loadLib(){
+    callApi('getLibraryForAdmin').then(l=>{
+        let h=''; l.forEach(i=>{ h+=`<tr><td>${i.title}</td><td>${i.type}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">X</button></td></tr>`; });
+        document.getElementById('lib-body').innerHTML=h;
     });
 }
-function saveGrade(id) { let g = document.getElementById('g-'+id).value; callApi('gradeAssignment', {rowId:id, grade:g}).then(r => Swal.fire('تم', r, 'success')); }
-
-function loadComp() {
-    callApi('getComplaintsForAdmin').then(list => {
-        let h = '';
-        if(list) list.forEach(i => { h += `<tr><td>${i.date}</td><td class="fw-bold">${i.name}</td><td>${i.msg}</td><td><div class="input-group"><input class="form-control form-control-sm" id="r-${i.rowId}" placeholder="الرد..." value="${i.reply||''}"><button onclick="replyComp(${i.rowId})" class="btn btn-sm btn-primary">إرسال</button></div></td></tr>`; });
-        document.getElementById('comp-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا توجد شكاوى</td></tr>';
+function addLib(){
+    let d={title:document.getElementById('lib-title').value, type:document.getElementById('lib-type').value, link:document.getElementById('lib-link').value, cls:document.getElementById('lib-cls').value};
+    callApi('addToLibrary',{d:d}).then(()=>loadLib());
+}
+function delLib(id){ callApi('deleteLibraryItem',{rowId:id}).then(()=>loadLib()); }
+function loadAss(){
+    callApi('getAssignmentsForAdmin').then(l=>{
+        let h=''; l.forEach(a=>{ h+=`<tr><td>${a.date}</td><td>${a.name}</td><td>${a.type}</td><td><a href="${a.link}" target="_blank">رابط</a></td><td><input id="g-${a.rowId}" value="${a.grade}" size="3"></td><td><button onclick="saveGrade(${a.rowId})">حفظ</button></td></tr>`; });
+        document.getElementById('ass-body').innerHTML=h;
     });
 }
-function replyComp(id) {
-    let r = document.getElementById('r-'+id).value;
-    if(r) callApi('replyToComplaint', {rowId:id, reply:r}).then(res => Swal.fire('تم', res, 'success'));
-}
-
-function saveSocialLinks() {
-    let links = {
-        'Facebook': document.getElementById('social-facebook').value,
-        'Instagram': document.getElementById('social-instagram').value,
-        'WhatsApp_Link': document.getElementById('social-whatsapp').value,
-        'Youtube': document.getElementById('social-youtube').value
-    };
-    callApi('saveSocialLinks', {links:links}).then(r => {
-        if(r.success) Swal.fire('تم', r.message, 'success');
+function saveGrade(id){ callApi('gradeAssignment',{rowId:id, grade:document.getElementById('g-'+id).value}); }
+function loadComp(){
+    callApi('getComplaintsForAdmin').then(l=>{
+        let h=''; l.forEach(c=>{ h+=`<tr><td>${c.name}</td><td>${c.msg}</td><td><input id="rep-${c.rowId}" value="${c.reply}"><button onclick="reply(${c.rowId})">رد</button></td></tr>`; });
+        document.getElementById('comp-body').innerHTML=h;
     });
 }
-
-function saveSettings() {
-    let s = { 'TeacherName': document.getElementById('sett-name').value, 'WhatsApp': document.getElementById('sett-wa').value, 'Maintenance': document.getElementById('sett-maint').value };
-    callApi('saveGeneralSettings', {s:s}).then(res => Swal.fire('تم', res, 'success'));
+function reply(id){ callApi('replyToComplaint',{rowId:id, reply:document.getElementById('rep-'+id).value}); }
+function saveSettings(){
+    let s={TeacherName:document.getElementById('sett-name').value, WhatsApp:document.getElementById('sett-wa').value, Maintenance:document.getElementById('sett-maint').value};
+    callApi('saveGeneralSettings',{s:s}).then(r=>Swal.fire('تم الحفظ'));
 }
-
-function performReset() {
-    let selected = [];
-    document.querySelectorAll('.table-chk:checked').forEach(c => selected.push(c.value));
-    if(selected.length === 0) return Swal.fire('تنبيه', 'الرجاء اختيار جدول واحد على الأقل', 'warning');
-
-    Swal.fire({
-        title: 'هل أنت متأكد تماماً؟',
-        text: "سيتم حذف جميع البيانات في الجداول: (" + selected.join(', ') + ") وإعادة إنشائها فارغة.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'نعم، تهيئة',
-        cancelButtonText: 'إلغاء'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: 'تأكيد الحماية',
-                input: 'password',
-                inputLabel: 'اكتب: admin',
-                inputPlaceholder: 'كلمة المرور',
-                showCancelButton: true
-            }).then((passResult) => {
-                if (passResult.value === 'admin') { 
-                    Swal.fire({title: 'جاري التهيئة...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-                    callApi('resetSpecificTables', {tables: selected}).then(r => {
-                        Swal.close();
-                        if(r.success) {
-                            Swal.fire('نجاح', r.message, 'success').then(() => location.reload());
-                        } else {
-                            Swal.fire('خطأ', r.message, 'error');
-                        }
-                    });
-                } else if (passResult.isConfirmed) {
-                    Swal.fire('خطأ', 'كلمة المرور غير صحيحة', 'error');
+function performReset(){
+    Swal.fire({title:'تأكد؟',text:'حذف كل البيانات؟',icon:'warning',showCancelButton:true}).then(r=>{
+        if(r.isConfirmed) {
+            Swal.fire({input:'password', title:'كلمة المرور'}).then(pass=>{
+                if(pass.value=='admin') {
+                    callApi('fullSystemSetup').then(res=>Swal.fire(res.message).then(()=>location.reload()));
                 }
             });
         }
