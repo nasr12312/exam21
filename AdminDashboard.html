@@ -183,22 +183,39 @@
       <div class="col-md-8 mb-4">
         <div class="card border-0 shadow-sm p-4 h-100">
           <h5 class="fw-bold mb-3"><i class="fas fa-plus-circle text-primary"></i> توليد أكواد تفعيل</h5>
-          <div class="row g-3">
-             <div class="col-md-4"><input id="gen-count" type="number" class="form-control" placeholder="عدد الأكواد"></div>
-             <div class="col-md-4"><input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع أ)"></div>
-             <div class="col-md-4"><button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button></div>
+          
+          <div class="row g-2">
+             <div class="col-md-3">
+                <input id="gen-count" type="number" class="form-control" placeholder="العدد">
+             </div>
+             <div class="col-md-3">
+                <input id="gen-cls" class="form-control" placeholder="الصف (مثال: التاسع)">
+             </div>
+             <div class="col-md-3">
+                <select id="gen-days" class="form-select" style="font-size:14px">
+                   <option value="120" selected>اشتراك فصلي (4 شهور)</option>
+                   <option value="365">اشتراك سنوي (سنة)</option>
+                   <option value="3">تجريبي (3 أيام)</option>
+                   <option value="7">تجريبي (أسبوع)</option>
+                </select>
+             </div>
+             <div class="col-md-3">
+                <button onclick="generate()" class="btn btn-primary w-100">توليد وحفظ</button>
+             </div>
           </div>
+
           <hr class="my-4">
+          
           <div class="d-flex justify-content-between align-items-center mb-3">
              <h6 class="fw-bold m-0">الأكواد الحالية</h6>
              <div class="d-flex gap-2">
-               <select id="f-cls" class="form-select form-select-sm" style="width:120px" onchange="render()"><option value="all">كل الصفوف</option></select>
-               <select id="f-sts" class="form-select form-select-sm" style="width:120px" onchange="render()"><option value="New">جديدة</option><option value="Used">مستخدمة</option><option value="all">الكل</option></select>
-               <button onclick="deleteUsedCodes()" class="btn btn-sm btn-outline-danger">تنظيف المستخدم</button>
-               <button onclick="printCodes()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> طباعة القائمة</button>
+               <select id="f-cls" class="form-select form-select-sm" style="width:110px" onchange="render()"><option value="all">كل الصفوف</option></select>
+               <select id="f-sts" class="form-select form-select-sm" style="width:100px" onchange="render()"><option value="New">جديدة</option><option value="Used">مستخدمة</option><option value="all">الكل</option></select>
+               <button onclick="deleteUsedCodes()" class="btn btn-sm btn-outline-danger" title="حذف المستخدم"><i class="fas fa-trash"></i></button>
+               <button onclick="printCodes()" class="btn btn-sm btn-outline-dark" title="طباعة"><i class="fas fa-print"></i></button>
              </div>
           </div>
-          <div id="code-container" style="max-height:400px; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px"></div>
+          <div id="code-container" style="max-height:400px; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px"></div>
         </div>
       </div>
       
@@ -466,20 +483,38 @@ function render() {
   let sts = document.getElementById('f-sts').value;
   let filtered = allData.filter(c => (cls=='all'||c.cls==cls) && (sts=='all'||c.status==sts));
   let h = '';
+  
   filtered.forEach(c => {
-    h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center;">
+    // تحديد نوع الكود وعرضه كشارة (Badge)
+    let typeLabel = "";
+    if(c.days) {
+        if(c.days < 30) typeLabel = `<span style="font-size:10px; background:#ef4444; color:white; padding:1px 5px; border-radius:4px">تجريبي ${c.days} يوم</span>`;
+        else typeLabel = `<span style="font-size:10px; background:#3b82f6; color:white; padding:1px 5px; border-radius:4px">اشتراك كامل</span>`;
+    }
+
+    h += `<div style="background:white; border:1px solid #e2e8f0; padding:10px; border-radius:8px; text-align:center; position:relative">
             <div class="fw-bold small text-muted">${c.cls}</div>
-            <div class="fw-bold fs-5 my-1" style="letter-spacing:2px">${c.code}</div>
-            <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
+            <div class="fw-bold fs-5 my-1" style="letter-spacing:2px; color:#1e293b">${c.code}</div>
+            <div style="display:flex; justify-content:center; gap:5px; align-items:center">
+                <span class="badge ${c.status=='New'?'bg-success':'bg-secondary'}">${c.status=='New'?'جديد':'مستخدم'}</span>
+                ${typeLabel}
+            </div>
           </div>`;
   });
   document.getElementById('code-container').innerHTML = h || '<div class="text-center w-100 text-muted">لا توجد بيانات</div>';
 }
 
 function generate() {
-  let count = document.getElementById('gen-count').value, cls = document.getElementById('gen-cls').value;
+  let count = document.getElementById('gen-count').value;
+  let cls = document.getElementById('gen-cls').value;
+  let days = document.getElementById('gen-days').value; // قراءة المدة
+  
   if(!count || !cls) return Swal.fire('تنبيه', 'أدخل العدد والصف', 'warning');
-  callApi('generateNewCodes', {count:count, cls:cls}).then(res => { Swal.fire('تم', res, 'success'); setTimeout(location.reload, 1500); });
+  
+  callApi('generateNewCodes', {count:count, cls:cls, days:days}).then(res => { 
+      Swal.fire('تم', res, 'success'); 
+      setTimeout(location.reload, 1500); 
+  });
 }
 
 function deleteUsedCodes(){
