@@ -321,7 +321,7 @@
       <h2 id="c-name" style="color:black; font-size:38px; margin:5px 0; border-bottom:2px solid #ccc; display:inline-block; padding:0 40px; font-family:'Amiri'"></h2>
       <p style="margin-top:20px; font-size: 20px;">لاجتيازه اختبار <b id="c-ex" style="color:#d97706"></b> بنتيجة:</p>
       <h1 id="c-sc" style="color:#1e3a8a; font-size:60px; margin:10px 0; font-family:'Tajawal'"></h1>
-        
+       
       <div style="margin-top:60px; display:flex; justify-content:space-between; align-items:flex-end; padding: 0 30px;">
         <div style="text-align:right;">
           <p style="margin:0; font-weight:bold; color:#555; font-size:18px">مدير المنصة</p>
@@ -341,7 +341,9 @@
 
 <script>
 // ============================================
-// ⚠️ هام: ضع الرابط الجديد هنا
+// ⚠️⚠️⚠️ هام جداً جداً: 
+// يجب عليك نسخ الرابط الجديد (Web App URL) بعد عمل New Deployment
+// ولصقه مكان النص الموجود بالأسفل، وإلا ستظل المنصة "جامدة" ولا تعمل.
 const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
 // ============================================
 
@@ -366,7 +368,7 @@ async function callApi(action, data = {}) {
     } catch (e) {
         console.error(e);
         // في حال فشل الاتصال، ارجع رسالة خطأ بدلاً من ترك اللودر معلقاً
-        return { success: false, message: 'تعذر الاتصال بالخادم، تأكد من تحديث الرابط.' };
+        return { success: false, message: 'تعذر الاتصال بالخادم، تأكد من تحديث رابط API_URL' };
     }
 }
 
