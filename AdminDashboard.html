@@ -2,1049 +2,1071 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>منصة نبراس | المدير Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة نبراس | لوحة القيادة المتكاملة</title>
 
-<!-- =======================================================
-     المكتبات الخارجية (CDN)
-     ======================================================= -->
+<!-- المكتبات -->
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<!-- SweetAlert2 للتنبيهات -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Chart.js للرسوم البيانية -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- الرسوم البيانية -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- SheetJS لتصدير الاكسل -->
+<!-- التنبيهات -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- التصدير للإكسل -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
-  :root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --secondary: #64748b;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --dark: #0f172a;
-    --light: #f8fafc;
-    --glass: rgba(255, 255, 255, 0.95);
-    --sidebar-w: 280px;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4895ef;
+        --success: #06d6a0;
+        --warning: #ffd166;
+        --danger: #ef476f;
+        --dark: #1e1e2e;
+        --light: #f8f9fa;
+        --card-bg: #ffffff;
+        --text: #2b2d42;
+        --sidebar-w: 280px;
+        --shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
 
-  body { font-family: 'Tajawal', sans-serif; background-color: #f1f5f9; color: #334155; overflow-x: hidden; font-size: 14px; }
-  
-  /* === شاشة التحميل === */
-  #global-loader {
-    position: fixed; inset: 0; background: var(--glass); z-index: 99999;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    backdrop-filter: blur(5px); transition: opacity 0.3s;
-  }
-  .loader-spinner {
-    width: 50px; height: 50px; border: 5px solid #e2e8f0; border-top-color: var(--primary);
-    border-radius: 50%; animation: spin 1s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+    [data-theme="dark"] {
+        --primary: #4cc9f0;
+        --card-bg: #2d2d44;
+        --light: #181824;
+        --text: #edf2f4;
+        --shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
 
-  /* === التخطيط العام === */
-  .wrapper { display: flex; min-height: 100vh; }
-  
-  /* === الشريط الجانبي === */
-  .sidebar {
-    width: var(--sidebar-w); background: var(--dark); color: #fff;
-    position: fixed; height: 100vh; right: 0; top: 0; z-index: 1000;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-  }
-  .sidebar-header {
-    padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center;
-  }
-  .logo-box img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--warning); object-fit: cover; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
-  .user-info { margin-top: 10px; }
-  
-  .nav-menu { flex: 1; padding: 15px 10px; overflow-y: auto; }
-  .nav-item {
-    padding: 12px 15px; margin-bottom: 5px; border-radius: 10px; cursor: pointer;
-    color: #94a3b8; display: flex; align-items: center; gap: 12px; transition: all 0.2s;
-    font-weight: 500; font-size: 15px;
-  }
-  .nav-item:hover, .nav-item.active { background: var(--primary); color: white; transform: translateX(-5px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-  .nav-item i { width: 24px; text-align: center; font-size: 1.1em; }
-  
-  .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 12px; color: #64748b; }
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background-color: var(--light);
+        color: var(--text);
+        transition: 0.3s;
+        overflow-x: hidden;
+    }
 
-  /* === المحتوى الرئيسي === */
-  .main-content {
-    flex: 1; margin-right: var(--sidebar-w); padding: 30px; transition: margin 0.3s; width: 100%;
-  }
-  .top-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
-    background: white; padding: 15px 25px; border-radius: 15px; box-shadow: var(--shadow);
-  }
-  
-  /* === البطاقات الإحصائية === */
-  .stat-card {
-    background: white; border-radius: 16px; padding: 25px; position: relative; overflow: hidden;
-    box-shadow: var(--shadow); transition: transform 0.3s, box-shadow 0.3s; height: 100%; border: 1px solid #f1f5f9;
-  }
-  .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-  .stat-icon {
-    width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    font-size: 28px; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); opacity: 0.2;
-  }
-  .stat-info h3 { font-size: 2.5em; font-weight: 800; margin: 5px 0 0; color: #0f172a; }
-  .stat-info p { color: #64748b; font-size: 14px; margin: 0; font-weight: 600; }
-  
-  /* ألوان البطاقات */
-  .card-blue { border-bottom: 4px solid var(--primary); } .card-blue .stat-icon { background: var(--primary); color: var(--primary); opacity: 0.15; }
-  .card-green { border-bottom: 4px solid var(--success); } .card-green .stat-icon { background: var(--success); color: var(--success); opacity: 0.15; }
-  .card-orange { border-bottom: 4px solid var(--warning); } .card-orange .stat-icon { background: var(--warning); color: var(--warning); opacity: 0.15; }
-  .card-purple { border-bottom: 4px solid #8b5cf6; } .card-purple .stat-icon { background: #8b5cf6; color: #8b5cf6; opacity: 0.15; }
+    /* === Sidebar === */
+    .sidebar {
+        width: var(--sidebar-w);
+        height: 100vh;
+        position: fixed;
+        right: 0;
+        top: 0;
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid rgba(0,0,0,0.05);
+    }
 
-  /* === الجداول المتقدمة === */
-  .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 20px; }
-  .table-header { padding: 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-  .table-responsive { overflow-x: auto; }
-  .custom-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-  .custom-table th { background: #f8fafc; padding: 15px 20px; text-align: right; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; }
-  .custom-table td { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-  .custom-table tr:hover td { background-color: #f8fafc; }
-  
-  /* === أكواد البطاقات === */
-  .code-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; max-height: 500px; overflow-y: auto; }
-  .code-card {
-    background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; text-align: center;
-    position: relative; transition: 0.2s; cursor: pointer; user-select: none;
-  }
-  .code-card:hover { border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1); }
-  .code-card.selected { background-color: #eff6ff; border-color: var(--primary); border-width: 2px; }
-  .code-val { font-family: 'Courier New', monospace; font-size: 1.4em; font-weight: 900; letter-spacing: 2px; color: var(--dark); margin: 10px 0; }
-  .code-meta { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; }
-  .code-chk { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; accent-color: var(--primary); }
+    .sidebar-header {
+        padding: 30px 20px;
+        text-align: center;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+    
+    .logo-img {
+        width: 80px; height: 80px; 
+        border-radius: 50%; 
+        border: 4px solid rgba(255,255,255,0.3);
+        margin-bottom: 10px;
+        object-fit: cover;
+    }
 
-  /* === النماذج والمدخلات === */
-  .form-control, .form-select { 
-    padding: 12px 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 14px; transition: 0.3s; box-shadow: none; 
-  }
-  .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-  .btn { padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-  .btn-primary { background: var(--primary); border: none; color: white; } .btn-primary:hover { background: var(--primary-dark); }
-  .btn-success { background: var(--success); border: none; color: white; }
-  .btn-danger { background: var(--danger); border: none; color: white; }
-  .btn-warning { background: var(--warning); border: none; color: white; }
+    .nav-menu {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 10px;
+    }
 
-  /* === الشارات (Badges) === */
-  .badge-custom { padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
-  .bg-soft-success { background: #dcfce7; color: #166534; }
-  .bg-soft-danger { background: #fee2e2; color: #991b1b; }
-  .bg-soft-warning { background: #fef3c7; color: #92400e; }
-  .bg-soft-primary { background: #dbeafe; color: #1e40af; }
+    .nav-item {
+        padding: 12px 20px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.2s;
+        color: var(--text);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        opacity: 0.8;
+    }
 
-  /* === التجاوب (Mobile) === */
-  @media (max-width: 992px) {
-    .sidebar { transform: translateX(100%); }
-    .sidebar.active { transform: translateX(0); }
-    .main-content { margin-right: 0; padding: 15px; }
-    .top-header { padding: 15px; }
-  }
+    .nav-item:hover, .nav-item.active {
+        background: var(--primary);
+        color: white;
+        opacity: 1;
+        transform: translateX(-5px);
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
 
-  /* === الطباعة === */
-  @media print {
-    .sidebar, .top-header, .no-print, #global-loader { display: none !important; }
-    .main-content { margin: 0; padding: 0; }
-    body { background: white; -webkit-print-color-adjust: exact; }
-  }
-  
-  .hidden { display: none !important; }
+    /* === Main Content === */
+    .main-content {
+        margin-right: var(--sidebar-w);
+        padding: 30px;
+        transition: 0.3s;
+        min-height: 100vh;
+    }
+
+    /* === Header & Stats === */
+    .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid rgba(128,128,128,0.1);
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        transition: 0.3s;
+        border: 1px solid rgba(128,128,128,0.1);
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    
+    .stat-icon {
+        width: 60px; height: 60px;
+        border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+        position: absolute;
+        top: 20px; left: 20px;
+        opacity: 0.2;
+    }
+    .st-blue { background: var(--primary); color: white; }
+    .st-green { background: var(--success); color: white; }
+    .st-orange { background: var(--warning); color: #333; }
+
+    /* === Advanced Tables === */
+    .pro-table-container {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+    
+    .table {
+        color: var(--text);
+        border-color: rgba(128,128,128,0.1);
+    }
+    .table thead th {
+        background: rgba(67, 97, 238, 0.05);
+        color: var(--primary);
+        font-weight: 700;
+        border: none;
+        padding: 15px;
+    }
+    .table td {
+        padding: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(128,128,128,0.1);
+    }
+
+    /* === Cards (Codes/Students) === */
+    .code-card {
+        background: var(--card-bg);
+        border: 1px dashed var(--primary);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .code-card.selected {
+        background: rgba(67, 97, 238, 0.1);
+        border-style: solid;
+        border-width: 2px;
+    }
+    .code-num { font-family: monospace; font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; color: var(--primary); }
+
+    /* === Mobile & Utility === */
+    .hidden { display: none !important; }
+    .loader-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.9); 
+        z-index: 9999; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; color: white;
+        transition: opacity 0.3s;
+    }
+    
+    #loader-actions {
+        margin-top: 20px;
+        display: none;
+        animation: fadeIn 0.5s;
+        text-align: center;
+    }
+
+    @media (max-width: 992px) {
+        .sidebar { transform: translateX(100%); width: 100%; max-width: 300px; }
+        .sidebar.active { transform: translateX(0); }
+        .main-content { margin-right: 0; padding: 15px; }
+        .mobile-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none;
+        }
+        .mobile-overlay.active { display: block; }
+    }
+
+    /* Animation */
+    @keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+    .view-section { animation: fadeIn 0.4s ease-out; }
+    
+    /* Social Inputs */
+    .social-input-group .input-group-text { width: 45px; justify-content: center; }
 </style>
 </head>
 <body>
 
-<!-- شاشة التحميل العامة -->
-<div id="global-loader">
-  <div class="loader-spinner"></div>
-  <h4 class="mt-3 fw-bold" style="color:var(--primary)">جاري الاتصال بقاعدة البيانات...</h4>
-  <p class="text-muted">يرجى الانتظار لحظات</p>
-  <div class="d-flex gap-2 mt-3">
-    <button id="retry-btn" class="btn btn-outline-danger hidden" onclick="location.reload()">
-        <i class="fas fa-sync-alt"></i> إعادة المحاولة
-    </button>
-    <button id="change-url-btn" class="btn btn-outline-secondary hidden" onclick="changeApiUrl()">
-        <i class="fas fa-link"></i> تغيير الرابط
-    </button>
-  </div>
+<!-- Loader -->
+<div id="loader" class="loader-overlay">
+    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+    <h5 id="loader-txt">جاري الاتصال بالنظام...</h5>
+    <div id="loader-actions">
+        <p class="text-white-50 small mb-2">استغرق الاتصال وقتاً طويلاً؟</p>
+        <button class="btn btn-outline-light btn-sm" onclick="location.reload()">تحديث الصفحة</button>
+        <button class="btn btn-danger btn-sm" onclick="forceChangeAPI()">تغيير رابط النظام</button>
+        <button class="btn btn-link text-white btn-sm d-block mx-auto mt-2" onclick="showLoader(false)">إغلاق قسري</button>
+    </div>
 </div>
 
-<!-- الحاوية الرئيسية -->
-<div class="wrapper">
-  
-  <!-- الشريط الجانبي -->
-  <nav class="sidebar" id="sidebar">
+<div class="mobile-overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="logo-box">
-        <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Logo">
-      </div>
-      <div class="user-info">
-        <h5 class="mb-0 fw-bold">لوحة الإدارة</h5>
-        <small class="text-white-50">Admin Pro v3.0</small>
-      </div>
+        <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="logo-img" alt="Logo">
+        <h5 class="mb-0 fw-bold">لوحة المدير</h5>
+        <small style="opacity:0.8">الإصدار الاحترافي 3.0</small>
     </div>
-    
     <div class="nav-menu">
-      <div class="nav-item active" onclick="navigate('home', this)">
-        <i class="fas fa-home"></i> <span>الرئيسية والأكواد</span>
-      </div>
-      <div class="nav-item" onclick="navigate('students', this)">
-        <i class="fas fa-user-graduate"></i> <span>الطلاب والأجهزة</span>
-      </div>
-      <div class="nav-item" onclick="navigate('exams', this)">
-        <i class="fas fa-file-alt"></i> <span>إدارة الامتحانات</span>
-      </div>
-      <div class="nav-item" onclick="navigate('results', this)">
-        <i class="fas fa-chart-bar"></i> <span>النتائج والتقارير</span>
-      </div>
-      <div class="nav-item" onclick="navigate('library', this)">
-        <i class="fas fa-book"></i> <span>المكتبة الرقمية</span>
-      </div>
-      <div class="nav-item" onclick="navigate('assignments', this)">
-        <i class="fas fa-tasks"></i> <span>الواجبات</span>
-      </div>
-      <div class="nav-item" onclick="navigate('complaints', this)">
-        <i class="fas fa-envelope-open-text"></i> <span>الشكاوى</span>
-      </div>
-      <div class="nav-item" onclick="navigate('settings', this)">
-        <i class="fas fa-cog"></i> <span>الإعدادات العامة</span>
-      </div>
+        <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-th-large"></i> الرئيسية</div>
+        <div class="nav-item" onclick="nav('students', this)"><i class="fas fa-user-graduate"></i> الطلاب</div>
+        <div class="nav-item" onclick="nav('codes', this)"><i class="fas fa-barcode"></i> الأكواد</div>
+        <div class="nav-item" onclick="nav('results', this)"><i class="fas fa-chart-pie"></i> النتائج</div>
+        <div class="nav-item" onclick="nav('library', this)"><i class="fas fa-book"></i> المكتبة</div>
+        <div class="nav-item" onclick="nav('assignments', this)"><i class="fas fa-tasks"></i> الواجبات</div>
+        <div class="nav-item" onclick="nav('complaints', this)"><i class="fas fa-envelope-open-text"></i> الشكاوى <span id="comp-badge" class="badge bg-danger rounded-pill ms-auto d-none">!</span></div>
+        <div class="nav-item" onclick="nav('settings', this)"><i class="fas fa-cog"></i> الإعدادات</div>
     </div>
-    
-    <div class="sidebar-footer">
-      &copy; 2024 منصة نبراس التعليمية
+    <div class="p-3">
+        <button class="btn btn-outline-danger w-100" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
     </div>
-  </nav>
+</aside>
 
-  <!-- المحتوى الرئيسي -->
-  <main class="main-content">
-    <!-- الشريط العلوي -->
-    <div class="top-header no-print">
-      <div>
-        <h4 class="mb-1 fw-bold">مرحباً، المدير 👋</h4>
-        <p class="text-muted mb-0">نظرة عامة على نشاط المنصة اليوم</p>
-      </div>
-      <div class="d-flex gap-2">
-        <button onclick="loadAllData()" class="btn btn-light text-primary border shadow-sm">
-          <i class="fas fa-sync-alt"></i> تحديث البيانات
-        </button>
-        <button class="btn btn-primary d-lg-none" onclick="document.getElementById('sidebar').classList.toggle('active')">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Top Bar -->
+    <div class="top-header">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-light d-lg-none shadow-sm" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div>
+                <h4 class="fw-bold mb-0">أهلاً بك، القائد 👋</h4>
+                <small class="text-muted">نظام إدارة المحتوى التعليمي</small>
+            </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn btn-light shadow-sm rounded-circle" onclick="toggleTheme()" title="الوضع الليلي">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            <button class="btn btn-primary shadow rounded-pill px-4" onclick="refreshAll()">
+                <i class="fas fa-sync-alt me-2"></i> تحديث
+            </button>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 1. الرئيسية وإدارة الأكواد (Home & Codes) -->
-    <!-- ============================================ -->
+    <!-- 1. HOME DASHBOARD -->
     <div id="view-home" class="view-section">
-      <!-- الإحصائيات -->
-      <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6">
-          <div class="stat-card card-blue">
-            <div class="stat-info">
-              <p>إجمالي الطلاب</p>
-              <h3 id="stat-students">0</h3>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h6 class="text-muted">إجمالي الطلاب</h6>
+                    <h2 class="fw-bold mb-0" id="st-total-std">0</h2>
+                    <div class="stat-icon st-blue"><i class="fas fa-users"></i></div>
+                </div>
             </div>
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="stat-card card-green">
-            <div class="stat-info">
-              <p>الأكواد النشطة</p>
-              <h3 id="stat-active-codes">0</h3>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h6 class="text-muted">الامتحانات النشطة</h6>
+                    <h2 class="fw-bold mb-0" id="st-total-exam">0</h2>
+                    <div class="stat-icon st-green"><i class="fas fa-file-alt"></i></div>
+                </div>
             </div>
-            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="stat-card card-orange">
-            <div class="stat-info">
-              <p>المبيعات المقدرة</p>
-              <h3 id="stat-sales">$0</h3>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h6 class="text-muted">الأكواد المتاحة</h6>
+                    <h2 class="fw-bold mb-0" id="st-total-code">0</h2>
+                    <div class="stat-icon st-orange"><i class="fas fa-ticket-alt"></i></div>
+                </div>
             </div>
-            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="stat-card card-purple">
-            <div class="stat-info">
-              <p>عدد الامتحانات</p>
-              <h3 id="stat-exams">0</h3>
-            </div>
-            <div class="stat-icon"><i class="fas fa-file-contract"></i></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- الرسوم البيانية -->
-      <div class="row g-4 mb-4">
-        <div class="col-lg-8">
-           <div class="table-container p-3 h-100">
-              <h6 class="fw-bold mb-3">تحليل الأكواد (جديد vs مستخدم)</h6>
-              <div style="height: 250px;"><canvas id="chart-codes"></canvas></div>
-           </div>
-        </div>
-        <div class="col-lg-4">
-           <div class="table-container p-3 h-100">
-              <h6 class="fw-bold mb-3">نسبة التفعيل</h6>
-              <div style="height: 250px; display:flex; justify-content:center"><canvas id="chart-users"></canvas></div>
-           </div>
-        </div>
-      </div>
-
-      <!-- إدارة الأكواد -->
-      <div class="row g-4">
-        <!-- التوليد -->
-        <div class="col-lg-12">
-          <div class="table-container">
-            <div class="table-header">
-               <h5 class="m-0 fw-bold text-primary"><i class="fas fa-barcode"></i> إدارة الأكواد</h5>
-            </div>
-            <div class="p-4">
-               <!-- نموذج التوليد -->
-               <div class="row g-3 align-items-end mb-4 bg-light p-3 rounded">
-                  <div class="col-md-3">
-                     <label class="form-label fw-bold">العدد:</label>
-                     <input type="number" id="gen-count" class="form-control" placeholder="مثلاً 50">
-                  </div>
-                  <div class="col-md-3">
-                     <label class="form-label fw-bold">الصف:</label>
-                     <input type="text" id="gen-cls" class="form-control" placeholder="مثلاً: العاشر">
-                  </div>
-                  <div class="col-md-3">
-                     <label class="form-label fw-bold">المدة:</label>
-                     <select id="gen-days" class="form-select">
-                        <option value="120" selected>فصل دراسي (120 يوم)</option>
-                        <option value="365">سنة كاملة (365 يوم)</option>
-                        <option value="30">شهر واحد</option>
-                        <option value="7">تجريبي (أسبوع)</option>
-                     </select>
-                  </div>
-                  <div class="col-md-3">
-                     <button onclick="generateCodes()" class="btn btn-primary w-100">
-                        <i class="fas fa-magic"></i> توليد وحفظ
-                     </button>
-                  </div>
-               </div>
-
-               <!-- أدوات التحكم -->
-               <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-                  <div class="d-flex gap-2 align-items-center">
-                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="select-all-codes" onchange="toggleAllCodes(this)">
-                        <label class="form-check-label fw-bold">تحديد الكل</label>
-                     </div>
-                     <span class="text-muted mx-2">|</span>
-                     <button onclick="printCodes('cards')" class="btn btn-dark btn-sm"><i class="fas fa-print"></i> طباعة بطاقات</button>
-                     <button onclick="printCodes('list')" class="btn btn-secondary btn-sm"><i class="fas fa-list"></i> طباعة قائمة</button>
-                     <button onclick="deleteSelectedCodes()" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> حذف المحدد</button>
-                  </div>
-                  <div class="d-flex gap-2">
-                     <input id="search-codes" class="form-control form-control-sm" placeholder="بحث عن كود..." onkeyup="renderCodes()">
-                     <select id="filter-codes-cls" class="form-select form-select-sm" onchange="renderCodes()"><option value="all">كل الصفوف</option></select>
-                     <select id="filter-codes-st" class="form-select form-select-sm" onchange="renderCodes()">
-                        <option value="all">الكل</option>
-                        <option value="New" selected>جديدة فقط</option>
-                        <option value="Used">مستخدمة</option>
-                     </select>
-                  </div>
-               </div>
-               
-               <!-- شبكة الأكواد -->
-               <div id="codes-grid" class="code-grid bg-light rounded border">
-                  <!-- سيتم الملء بواسطة JS -->
-               </div>
-            </div>
-          </div>
         </div>
 
-        <!-- إرسال الإشعارات -->
-        <div class="col-lg-12">
-            <div class="table-container p-4 bg-dark text-white" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-               <h5 class="mb-3"><i class="fas fa-bullhorn text-warning"></i> مركز الإشعارات</h5>
-               <div class="row g-3">
-                  <div class="col-md-3">
-                     <select id="notif-target" class="form-select"><option value="All">لجميع الطلاب</option></select>
-                  </div>
-                  <div class="col-md-3">
-                     <input id="notif-email" class="form-control" placeholder="أو لطالب محدد (البريد)">
-                  </div>
-                  <div class="col-md-4">
-                     <input id="notif-msg" class="form-control" placeholder="اكتب نص الرسالة هنا...">
-                  </div>
-                  <div class="col-md-2">
-                     <button onclick="sendNotification()" class="btn btn-warning w-100 fw-bold">إرسال</button>
-                  </div>
-               </div>
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="stat-card h-100">
+                    <h5 class="fw-bold mb-3">أداء الطلاب (متوسط الدرجات)</h5>
+                    <canvas id="chart-performance"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="stat-card h-100">
+                    <h5 class="fw-bold mb-3">توزيع الطلاب</h5>
+                    <canvas id="chart-students"></canvas>
+                </div>
             </div>
         </div>
-      </div>
+
+        <div class="stat-card">
+            <h5 class="fw-bold mb-3"><i class="fas fa-bullhorn text-warning"></i> إرسال إشعار عام</h5>
+            <div class="input-group">
+                <select class="form-select" id="notif-target" style="max-width: 200px;">
+                    <option value="All">الجميع</option>
+                </select>
+                <input type="text" class="form-control" id="notif-msg" placeholder="اكتب رسالتك هنا...">
+                <button class="btn btn-warning fw-bold" onclick="sendNotif()">إرسال 🚀</button>
+            </div>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 2. الطلاب (Students) -->
-    <!-- ============================================ -->
+    <!-- 2. STUDENTS VIEW -->
     <div id="view-students" class="view-section hidden">
-       <div class="table-container">
-          <div class="table-header">
-             <h5 class="m-0 fw-bold"><i class="fas fa-user-graduate"></i> قائمة الطلاب</h5>
-             <div class="d-flex gap-2">
-                <input id="search-std" class="form-control form-control-sm" placeholder="بحث بالاسم أو البريد..." onkeyup="renderStudents()">
-                <button onclick="printStudentIDs()" class="btn btn-success btn-sm"><i class="fas fa-id-card"></i> طباعة الهويات</button>
-             </div>
-          </div>
-          <div class="table-responsive">
-             <table class="custom-table table-hover">
-                <thead>
-                   <tr>
-                      <th>الصورة</th>
-                      <th>الاسم</th>
-                      <th>الصف</th>
-                      <th>البريد الإلكتروني</th>
-                      <th>آخر ظهور</th>
-                      <th>الجهاز</th>
-                      <th>إجراءات</th>
-                   </tr>
-                </thead>
-                <tbody id="students-body"></tbody>
-             </table>
-          </div>
-       </div>
+        <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+            <h4 class="fw-bold">إدارة الطلاب</h4>
+            <div class="d-flex gap-2">
+                <input type="text" id="search-std" class="form-control" placeholder="بحث بالاسم..." onkeyup="renderStudents()">
+                <button class="btn btn-success" onclick="printIDCards()"><i class="fas fa-id-card"></i> طباعة بطاقات</button>
+            </div>
+        </div>
+        <div class="row g-3" id="students-grid"></div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 3. إدارة الامتحانات (Exams) -->
-    <!-- ============================================ -->
-    <div id="view-exams" class="view-section hidden">
-       <div class="table-container">
-          <div class="table-header">
-             <h5 class="m-0 fw-bold"><i class="fas fa-file-alt"></i> الامتحانات المتاحة</h5>
-          </div>
-          <div class="table-responsive">
-             <table class="custom-table table-hover">
-                <thead><tr><th>اسم الامتحان</th><th>الصف</th><th>الحالة</th><th>تغيير الحالة</th></tr></thead>
-                <tbody id="exams-body"></tbody>
-             </table>
-          </div>
-       </div>
+    <!-- 3. CODES VIEW -->
+    <div id="view-codes" class="view-section hidden">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="stat-card">
+                    <h5 class="fw-bold mb-3 text-primary">توليد أكواد جديدة</h5>
+                    <div class="mb-3">
+                        <label>العدد:</label>
+                        <input type="number" id="gen-count" class="form-control" value="10">
+                    </div>
+                    <div class="mb-3">
+                        <label>الصف:</label>
+                        <input type="text" id="gen-cls" class="form-control" placeholder="مثال: العاشر">
+                    </div>
+                    <div class="mb-3">
+                        <label>المدة (أيام):</label>
+                        <select id="gen-days" class="form-select">
+                            <option value="120">فصل (120 يوم)</option>
+                            <option value="365">سنة (365 يوم)</option>
+                            <option value="7">تجريبي (7 أيام)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="generateCodes()">توليد وحفظ</button>
+                </div>
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between mb-3 align-items-center flex-wrap gap-2">
+                        <h5 class="fw-bold">الأكواد</h5>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <select id="filter-code-cls" class="form-select form-select-sm" style="width: auto;" onchange="renderCodes()">
+                                <option value="all">كل الصفوف</option>
+                            </select>
+                            <select id="filter-code-status" class="form-select form-select-sm" style="width: auto;" onchange="renderCodes()">
+                                <option value="all">كل الحالات</option>
+                                <option value="New">جديد</option>
+                                <option value="Used">مستخدم</option>
+                            </select>
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-print"></i> خيارات الطباعة
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="printFilteredCodes('selected')">طباعة المحدد فقط</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="printFilteredCodes('view')">طباعة المعروض حالياً</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="printFilteredCodes('new')">طباعة كل الجديد</a></li>
+                                </ul>
+                            </div>
+                            
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteSelectedCodes()">حذف المحدد</button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                         <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check-all-codes" onchange="toggleAllCodes(this)">
+                            <label class="form-check-label user-select-none" for="check-all-codes">تحديد الكل</label>
+                        </div>
+                        <span class="text-muted small" id="codes-count-badge">0 كود</span>
+                    </div>
+
+                    <div id="codes-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-height: 70vh; overflow-y: auto; padding: 5px;">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 4. النتائج (Results) -->
-    <!-- ============================================ -->
+    <!-- 4. RESULTS VIEW -->
     <div id="view-results" class="view-section hidden">
-       <div class="table-container">
-          <div class="table-header">
-             <h5 class="m-0 fw-bold"><i class="fas fa-poll"></i> سجل العلامات</h5>
-             <div class="d-flex gap-2">
-                <input id="search-res" class="form-control form-control-sm" placeholder="بحث..." onkeyup="renderResults()">
-                <button onclick="exportToExcel()" class="btn btn-success btn-sm"><i class="fas fa-file-excel"></i> تصدير Excel</button>
-             </div>
-          </div>
-          <div class="table-responsive">
-             <table class="custom-table table-hover">
-                <thead><tr><th>التاريخ</th><th>الطالب</th><th>الصف</th><th>الامتحان</th><th>النتيجة</th><th>محاولات غش</th><th>حذف</th></tr></thead>
-                <tbody id="results-body"></tbody>
-             </table>
-          </div>
-       </div>
+        <div class="d-flex justify-content-between mb-3 align-items-center">
+            <h4 class="fw-bold">سجل النتائج</h4>
+            <button class="btn btn-success" onclick="exportToExcel('results-table')"><i class="fas fa-file-excel"></i> تصدير Excel</button>
+        </div>
+        <div class="mb-3 row g-2">
+            <div class="col-md-8"><input id="search-res" class="form-control" placeholder="بحث باسم الطالب أو الامتحان..." onkeyup="renderResults()"></div>
+            <div class="col-md-4">
+                <select id="filter-res-cls" class="form-select" onchange="renderResults()">
+                    <option value="all">الكل</option>
+                </select>
+            </div>
+        </div>
+        <div class="pro-table-container">
+            <div class="table-responsive" style="max-height: 70vh;">
+                <table class="table table-hover mb-0" id="results-table">
+                    <thead><tr><th>التاريخ</th><th>الطالب</th><th>الامتحان</th><th>الدرجة</th><th>غش؟</th><th>إجراء</th></tr></thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 5. المكتبة (Library) -->
-    <!-- ============================================ -->
+    <!-- 5. LIBRARY VIEW -->
     <div id="view-library" class="view-section hidden">
-       <div class="row g-4">
-          <div class="col-md-4">
-             <div class="table-container p-4">
-                <h5 class="fw-bold mb-3 text-primary">إضافة محتوى</h5>
-                <div class="mb-3"><label>العنوان:</label><input id="lib-title" class="form-control"></div>
-                <div class="mb-3"><label>النوع:</label><select id="lib-type" class="form-select"><option value="PDF">ملف PDF</option><option value="Video">فيديو يوتيوب</option></select></div>
-                <div class="mb-3"><label>الصف:</label><input id="lib-cls" class="form-control" placeholder="اتركه فارغاً للكل"></div>
-                <div class="mb-3"><label>الرابط:</label><input id="lib-link" class="form-control" placeholder="https://..."></div>
-                <button onclick="addToLibrary()" class="btn btn-primary w-100">نشر</button>
-             </div>
-          </div>
-          <div class="col-md-8">
-             <div class="table-container">
-                <div class="table-header"><h5 class="m-0">المحتوى الحالي</h5></div>
-                <table class="custom-table"><thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead><tbody id="library-body"></tbody></table>
-             </div>
-          </div>
-       </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h5 class="fw-bold mb-3 text-primary">إضافة محتوى</h5>
+                    <input id="lib-title" class="form-control mb-2" placeholder="عنوان الدرس">
+                    <select id="lib-type" class="form-select mb-2"><option value="PDF">ملف PDF</option><option value="Video">فيديو</option></select>
+                    <input id="lib-cls" class="form-control mb-2" placeholder="الصف (اختياري)">
+                    <input id="lib-link" class="form-control mb-3" placeholder="الرابط">
+                    <button class="btn btn-primary w-100" onclick="addToLib()">نشر</button>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="pro-table-container">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead>
+                        <tbody id="lib-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 6. الواجبات (Assignments) -->
-    <!-- ============================================ -->
+    <!-- 6. ASSIGNMENTS VIEW -->
     <div id="view-assignments" class="view-section hidden">
-       <div class="table-container">
-          <div class="table-header"><h5 class="m-0 fw-bold">تسليمات الواجبات</h5></div>
-          <div class="table-responsive">
-             <table class="custom-table table-hover">
-                <thead><tr><th>التاريخ</th><th>الطالب</th><th>نوع الواجب</th><th>الملف</th><th>الدرجة</th><th>رصد</th></tr></thead>
-                <tbody id="assignments-body"></tbody>
-             </table>
-          </div>
-       </div>
+        <h4 class="fw-bold mb-3">الواجبات المرسلة</h4>
+        <div class="pro-table-container">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>الملف</th><th>الدرجة</th><th>رصد</th></tr></thead>
+                <tbody id="assign-body"></tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 7. الشكاوى (Complaints) -->
-    <!-- ============================================ -->
+    <!-- 7. COMPLAINTS VIEW -->
     <div id="view-complaints" class="view-section hidden">
-       <div class="table-container">
-          <div class="table-header"><h5 class="m-0 fw-bold">البريد الوارد</h5></div>
-          <div class="table-responsive">
-             <table class="custom-table">
-                <thead><tr><th>التاريخ</th><th>الطالب</th><th>الرسالة</th><th>الرد الحالي</th><th>إجراء</th></tr></thead>
-                <tbody id="complaints-body"></tbody>
-             </table>
-          </div>
-       </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold">صندوق الشكاوى</h4>
+            <button class="btn btn-sm btn-light" onclick="refreshAll()"><i class="fas fa-sync"></i> تحديث</button>
+        </div>
+        <div class="pro-table-container">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>التاريخ</th><th>الاسم</th><th>البريد الإلكتروني</th><th>الرسالة</th><th>الرد</th></tr></thead>
+                    <tbody id="comp-body">
+                        <tr><td colspan="5" class="text-center text-muted">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- 8. الإعدادات (Settings) -->
-    <!-- ============================================ -->
+    <!-- 8. SETTINGS VIEW -->
     <div id="view-settings" class="view-section hidden">
-       <div class="row g-4">
-          <div class="col-md-6">
-             <div class="table-container p-4">
-                <h5 class="fw-bold mb-3 text-primary">إعدادات المنصة</h5>
-                <div class="mb-3"><label>اسم المعلم (للشهادات):</label><input id="set-name" class="form-control"></div>
-                <div class="mb-3"><label>رقم الواتساب (للدعم):</label><input id="set-wa" class="form-control"></div>
-                <div class="mb-3"><label>وضع الصيانة:</label>
-                   <select id="set-maint" class="form-select">
-                      <option value="Off">🟢 الموقع يعمل</option>
-                      <option value="On">🔴 الموقع مغلق للصيانة</option>
-                   </select>
+        <div class="row g-4">
+            <!-- General Settings -->
+            <div class="col-md-6">
+                <div class="stat-card mb-3">
+                    <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-sliders-h"></i> إعدادات أساسية</h5>
+                    <div class="mb-3"><label>اسم المعلم (للشهادات):</label><input id="set-name" class="form-control"></div>
+                    <div class="mb-3"><label>رقم الواتساب (للتواصل العام):</label><input id="set-wa" class="form-control"></div>
+                    <div class="mb-3"><label>حالة النظام:</label>
+                        <select id="set-maint" class="form-select"><option value="Off">يعمل</option><option value="On">صيانة</option></select>
+                    </div>
                 </div>
-                <button onclick="saveSettings()" class="btn btn-primary w-100">حفظ الإعدادات</button>
-             </div>
-          </div>
-          <div class="col-md-6">
-             <div class="table-container p-4 border-danger" style="border-right: 5px solid #ef4444;">
-                <h5 class="fw-bold text-danger">⚠️ منطقة الخطر (تهيئة البيانات)</h5>
-                <p class="text-muted small">حدد الجداول التي تريد مسح بياناتها نهائياً:</p>
-                <div class="row g-2 mb-3" id="reset-checkboxes">
-                   <!-- Checkboxes generated via JS -->
+
+                <div class="stat-card">
+                    <h5 class="fw-bold mb-3 text-success"><i class="fas fa-link"></i> روابط التواصل & التجديد</h5>
+                    <div class="social-input-group mb-2 input-group">
+                        <span class="input-group-text"><i class="fab fa-whatsapp text-success"></i></span>
+                        <input id="soc-wa" class="form-control" placeholder="رابط واتساب التجديد (عند انتهاء الاشتراك)">
+                    </div>
+                    <div class="social-input-group mb-2 input-group">
+                        <span class="input-group-text"><i class="fab fa-facebook text-primary"></i></span>
+                        <input id="soc-fb" class="form-control" placeholder="رابط الفيسبوك">
+                    </div>
+                    <div class="social-input-group mb-2 input-group">
+                        <span class="input-group-text"><i class="fab fa-instagram text-danger"></i></span>
+                        <input id="soc-ig" class="form-control" placeholder="رابط الانستجرام">
+                    </div>
+                    <div class="social-input-group mb-2 input-group">
+                        <span class="input-group-text"><i class="fab fa-youtube text-danger"></i></span>
+                        <input id="soc-yt" class="form-control" placeholder="رابط اليوتيوب">
+                    </div>
                 </div>
-                <button onclick="resetSystem()" class="btn btn-outline-danger w-100">تنفيذ التهيئة (حذف)</button>
-             </div>
-          </div>
-       </div>
+                <button class="btn btn-primary w-100 mt-3" onclick="saveSettings()">حفظ كافة التغييرات</button>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="col-md-6">
+                <div class="stat-card border-danger border">
+                    <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة الخطر</h5>
+                    <p class="text-muted small">حدد الجداول المراد حذف بياناتها نهائياً (إعادة ضبط المصنع)</p>
+                    <div class="row" id="reset-boxes">
+                        <!-- JS populated -->
+                    </div>
+                    <button class="btn btn-danger w-100 mt-3" onclick="resetSystem()">تنفيذ الحذف</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-  </main>
-</div>
+</main>
 
-<!-- ======================= -->
-<!-- JS Logic (Backend Connection) -->
-<!-- ======================= -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Hidden print area -->
+<div id="print-area" class="d-none"></div>
+
 <script>
-// =======================================================
+// ============================================
 // ⚠️ هام: ضع رابط النشر (Web App URL) هنا
-// =======================================================
-let API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
-// =======================================================
+// تأكد أن الرابط ينتهي بـ /exec
+let API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec";
+// ============================================
 
-// مخزن البيانات المحلي
-let db = { codes:[], students:[], exams:[], results:[], library:[], assignments:[], complaints:[] };
+// Local State
+let DB = { students: [], exams: [], codes: [], results: [], library: [], assignments: [], complaints: [] };
+let CHARTS = {};
+let loadTimer = null;
 
-// عند التحميل
+// Initialization
 window.onload = function() {
     let savedUrl = localStorage.getItem('api_url');
     if(savedUrl) API_URL = savedUrl;
     
-    // إعداد checkboxes التهيئة
-    let tables = ['Students', 'Exams', 'Questions', 'Results', 'Codes', 'Assignments', 'Library', 'Complaints'];
-    let h = '';
-    tables.forEach(t => h += `<div class="col-6"><div class="form-check"><input class="form-check-input chk-reset" type="checkbox" value="${t}"><label class="form-check-label small">${t}</label></div></div>`);
-    document.getElementById('reset-checkboxes').innerHTML = h;
+    // Check Theme
+    if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 
-    // بدء التحميل مباشرة (Direct Call)
-    loadAllData();
+    // Load Data
+    refreshAll();
+    
+    // Init Danger Zone
+    let tables = ['Students', 'Codes', 'Results', 'Library', 'Assignments', 'Complaints'];
+    let h = '';
+    tables.forEach(t => h+=`<div class="col-4"><div class="form-check"><input type="checkbox" class="form-check-input r-chk" value="${t}" id="r-${t}"><label class="form-check-label small" for="r-${t}">${t}</label></div></div>`);
+    document.getElementById('reset-boxes').innerHTML = h;
 };
 
-function updateStatus(msg, type, details) {
-    let el = document.getElementById('global-loader');
-    let txt = el.querySelector('h4');
-    let subTxt = el.querySelector('p');
-    let btnRetry = document.getElementById('retry-btn');
-    let btnChange = document.getElementById('change-url-btn');
-
-    txt.innerText = msg;
+// --- CORE FUNCTIONS ---
+function showLoader(s) { 
+    let l = document.getElementById('loader');
+    let acts = document.getElementById('loader-actions');
     
-    if(type=='success') {
-        el.style.display = 'none';
-        btnRetry.classList.add('hidden');
-        btnChange.classList.add('hidden');
-    } else if(type=='error') {
-        el.style.display = 'flex';
-        subTxt.innerText = details || "تحقق من الرابط والإنترنت";
-        btnRetry.classList.remove('hidden');
-        btnChange.classList.remove('hidden');
+    if(s) {
+        l.style.display = 'flex';
+        // Show emergency buttons if it takes too long
+        clearTimeout(loadTimer);
+        acts.style.display = 'none';
+        loadTimer = setTimeout(() => {
+            if(l.style.display !== 'none') acts.style.display = 'block';
+        }, 5000); // 5 seconds
     } else {
-        el.style.display = 'flex';
-        btnRetry.classList.add('hidden');
-        btnChange.classList.add('hidden');
+        l.style.display = 'none';
+        clearTimeout(loadTimer);
     }
 }
 
-// إضافة زر تغيير الرابط في HTML ديناميكياً
-document.getElementById('retry-btn').insertAdjacentHTML('afterend', 
-    `<button id="change-url-btn" class="btn btn-outline-secondary mt-3 hidden" onclick="changeApiUrl()" style="margin-right:10px">
-        <i class="fas fa-link"></i> تغيير الرابط
-    </button>`
-);
-
-function changeApiUrl() {
-    let newUrl = prompt("الرجاء إدخال رابط Web App URL الجديد:", API_URL);
-    if (newUrl && newUrl.trim() !== "") {
-        localStorage.setItem('api_url', newUrl.trim());
+function forceChangeAPI() {
+    let u = prompt('أدخل رابط السكريبت الجديد (Web App URL):', API_URL);
+    if(u && u.startsWith('http')) {
+        localStorage.setItem('api_url', u);
         location.reload();
     }
 }
 
-// دالة الاتصال الرئيسية (مبسطة لتعمل مباشرة)
-async function api(action, payload={}) {
+async function callApi(action, payload={}) {
+    showLoader(true);
     payload.action = action;
-    try {
-        // لا نستخدم مؤقت قصير جداً لتجنب قطع الاتصال في الانترنت البطيء
-        const response = await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify(payload)
-        });
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-        return await response.json();
+    try {
+        let res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!res.ok) throw new Error("HTTP Error");
+        
+        let data = await res.json();
+        showLoader(false);
+        return data;
     } catch(e) {
+        clearTimeout(timeoutId);
+        showLoader(false);
         console.error(e);
-        return { success: false, message: "Network Error" };
+        return null;
     }
 }
 
-// دالة التحميل الشاملة
-async function loadAllData() {
-    updateStatus("جاري الاتصال بالسيرفر...", "connecting");
-    
-    if(API_URL.includes("/dev")) {
-        updateStatus("خطأ: الرابط ينتهي بـ /dev", "error", "استخدم رابط /exec");
-        return;
-    }
-
-    // استدعاء مباشر دون فحوصات مسبقة
-    let data = await api('getAdminData');
-    
-    if(data && data.codes) {
-        db.codes = data.codes;
-        // تحديث الإحصائيات
-        document.getElementById('stat-students').innerText = data.stats.students;
-        document.getElementById('stat-exams').innerText = data.stats.exams;
-        document.getElementById('stat-active-codes').innerText = data.stats.codes;
+async function refreshAll() {
+    showLoader(true);
+    try {
+        let d = await callApi('getAdminData_V2'); 
         
-        let used = db.codes.filter(c => c.status === 'Used').length;
-        document.getElementById('stat-sales').innerText = '$' + (used * 5); // تقديري 5$
-
-        // إعدادات
-        if(data.settings) {
-            if(document.getElementById('set-name')) document.getElementById('set-name').value = data.settings['TeacherName']||'';
-            if(document.getElementById('set-wa')) document.getElementById('set-wa').value = data.settings['WhatsApp']||'';
-            if(document.getElementById('set-maint')) document.getElementById('set-maint').value = data.settings['Maintenance']||'Off';
+        if (!d || !d.stats) {
+            console.warn("V2 failed or missing stats, trying V1...");
+            d = await callApi('getAdminData');
         }
 
-        // تحديث الفلاتر
-        updateFilters();
-        
-        // رسم الجداول والمخططات
-        renderCodes();
-        initCharts(used, db.codes.length - used);
-        
-        updateStatus("تم التحميل", "success");
-    } else {
-        let errorMsg = data && data.message ? data.message : "بيانات غير صالحة";
-        updateStatus("فشل الاتصال!", "error", errorMsg);
+        if(d && d.stats) {
+            DB.codes = Array.isArray(d.codes) ? d.codes : [];
+            
+            // Parallel loading for better performance
+            await Promise.all([
+                loadSection('getStudentsForCards', d => { DB.students = Array.isArray(d) ? d : []; renderStudents(); }),
+                loadSection('getAllResultsForAdmin', d => { DB.results = Array.isArray(d) ? d : []; renderResults(); }),
+                loadSection('getComplaintsForAdmin', d => { DB.complaints = Array.isArray(d) ? d : []; renderComp(); })
+            ]);
+            
+            updateCharts();
+
+            document.getElementById('st-total-code').innerText = DB.codes.length;
+            document.getElementById('st-total-exam').innerText = d.stats.exams || 0;
+            document.getElementById('st-total-std').innerText = d.stats.students || 0;
+            
+            if(d.settings) {
+                if(document.getElementById('set-name')) document.getElementById('set-name').value = d.settings['TeacherName'] || '';
+                if(document.getElementById('set-wa')) document.getElementById('set-wa').value = d.settings['WhatsApp'] || '';
+                if(document.getElementById('set-maint')) document.getElementById('set-maint').value = d.settings['Maintenance'] || 'Off';
+            }
+
+            if(d.socials) {
+                 if(document.getElementById('soc-wa')) document.getElementById('soc-wa').value = d.socials.whatsapp || '';
+                 if(document.getElementById('soc-fb')) document.getElementById('soc-fb').value = d.socials.facebook || '';
+                 if(document.getElementById('soc-ig')) document.getElementById('soc-ig').value = d.socials.instagram || '';
+                 if(document.getElementById('soc-yt')) document.getElementById('soc-yt').value = d.socials.youtube || '';
+            }
+
+            renderCodes();
+            populateFilters();
+        } else {
+             // Fallback
+             document.getElementById('st-total-code').innerText = "0";
+             document.getElementById('st-total-exam').innerText = "0";
+             document.getElementById('st-total-std').innerText = "0";
+        }
+    } catch(err) {
+        console.error("Critical Error in refreshAll:", err);
+    } finally {
+        showLoader(false);
     }
 }
 
-// التنقل
-function navigate(view, el) {
-    document.querySelectorAll('.view-section').forEach(d => d.classList.add('hidden'));
+async function loadSection(act, cb) {
+    let d = await callApi(act);
+    if(d) cb(d);
+}
+
+// --- NAVIGATION ---
+function nav(view, el) {
+    document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
     document.getElementById('view-'+view).classList.remove('hidden');
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     el.classList.add('active');
     
-    // تحميل بيانات الأقسام الفرعية عند الطلب لتقليل الضغط عند البدء
-    if(view === 'students') api('getStudentsForCards').then(d => { db.students = d; renderStudents(); });
-    if(view === 'exams') api('getExamsForAdminControl').then(d => { db.exams = d; renderExams(); });
-    if(view === 'results') api('getAllResultsForAdmin').then(d => { db.results = d; renderResults(); });
-    if(view === 'library') api('getLibraryForAdmin').then(d => { db.library = d; renderLibrary(); });
-    if(view === 'assignments') api('getAssignmentsForAdmin').then(d => { db.assignments = d; renderAssignments(); });
-    if(view === 'complaints') api('getComplaintsForAdmin').then(d => { db.complaints = d; renderComplaints(); });
+    // Lazy Load with checks
+    if(view === 'library') loadSection('getLibraryForAdmin', d => { DB.library = Array.isArray(d) ? d : []; renderLib(); });
+    if(view === 'assignments') loadSection('getAssignmentsForAdmin', d => { DB.assignments = Array.isArray(d) ? d : []; renderAssign(); });
+    // Complaints are now loaded in refreshAll to show badge if needed
     
-    if(window.innerWidth < 992) document.getElementById('sidebar').classList.remove('active');
+    if(window.innerWidth < 992) toggleSidebar();
 }
 
-// === Charts ===
-function initCharts(used, brandNew) {
-    const ctx1 = document.getElementById('chart-codes').getContext('2d');
-    new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: ['جديدة', 'مستخدمة'],
-            datasets: [{ label: 'الأكواد', data: [brandNew, used], backgroundColor: ['#10b981', '#64748b'] }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.querySelector('.mobile-overlay').classList.toggle('active');
+}
+
+function toggleTheme() {
+    let b = document.body;
+    if(b.getAttribute('data-theme') === 'dark') {
+        b.removeAttribute('data-theme'); localStorage.setItem('theme', 'light');
+    } else {
+        b.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark');
+    }
+}
+
+// --- CHARTS ---
+function updateCharts() {
+    let classes = {};
+    if(DB.students) DB.students.forEach(s => { classes[s.cls] = (classes[s.cls]||0) + 1; });
     
-    const ctx2 = document.getElementById('chart-users').getContext('2d');
-    new Chart(ctx2, {
+    let filterCls = document.getElementById('notif-target');
+    filterCls.innerHTML = '<option value="All">الجميع</option>';
+    Object.keys(classes).forEach(c => {
+        filterCls.innerHTML += `<option value="${c}">طلاب ${c}</option>`;
+    });
+
+    if(CHARTS.std) CHARTS.std.destroy();
+    CHARTS.std = new Chart(document.getElementById('chart-students'), {
         type: 'doughnut',
         data: {
-            labels: ['مفعل', 'غير مفعل'],
-            datasets: [{ data: [used, brandNew], backgroundColor: ['#2563eb', '#cbd5e1'] }]
+            labels: Object.keys(classes),
+            datasets: [{
+                data: Object.values(classes),
+                backgroundColor: ['#4361ee', '#3f37c9', '#4895ef', '#4cc9f0', '#f72585']
+            }]
+        }
+    });
+
+    let scores = {}; let counts = {};
+    if(DB.results) DB.results.forEach(r => {
+        let c = r.cls || 'غير محدد';
+        scores[c] = (scores[c]||0) + parseFloat(r.score);
+        counts[c] = (counts[c]||0) + 1;
+    });
+    let avgLabels = [], avgData = [];
+    Object.keys(scores).forEach(k => {
+        avgLabels.push(k);
+        avgData.push(Math.round(scores[k] / counts[k]));
+    });
+
+    if(CHARTS.perf) CHARTS.perf.destroy();
+    CHARTS.perf = new Chart(document.getElementById('chart-performance'), {
+        type: 'bar',
+        data: {
+            labels: avgLabels,
+            datasets: [{
+                label: 'متوسط الدرجات',
+                data: avgData,
+                backgroundColor: '#06d6a0',
+                borderRadius: 5
+            }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: { scales: { y: { beginAtZero: true, max: 100 } } }
     });
 }
 
-// === 1. Codes Management ===
-function updateFilters() {
-    let classes = [...new Set(db.codes.map(c=>c.cls).filter(c=>c))];
-    let opts = '<option value="all">كل الصفوف</option>';
-    classes.forEach(c => opts += `<option value="${c}">${c}</option>`);
-    
-    ['filter-codes-cls', 'notif-target'].forEach(id => {
-        let el = document.getElementById(id);
-        if(el) {
-             if(id==='notif-target') el.innerHTML = '<option value="All">للجميع</option>' + opts.replace('كل الصفوف','');
-             else el.innerHTML = opts;
-        }
+// --- RENDERERS ---
+
+function renderStudents() {
+    let s = document.getElementById('search-std').value.toLowerCase();
+    let div = document.getElementById('students-grid');
+    div.innerHTML = '';
+    if(DB.students) DB.students.filter(x => String(x.name||'').toLowerCase().includes(s)).forEach(st => {
+        div.innerHTML += `
+        <div class="col-md-6 col-lg-4">
+            <div class="stat-card d-flex align-items-center gap-3 p-3">
+                <img src="${st.photo && st.photo.length > 20 ? st.photo : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" 
+                     style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--primary)">
+                <div class="flex-grow-1 overflow-hidden">
+                    <h6 class="fw-bold mb-1 text-truncate">${st.name}</h6>
+                    <span class="badge bg-light text-dark border">${st.cls}</span>
+                    <small class="d-block text-muted text-truncate mt-1">${st.email}</small>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item text-danger" onclick="delStudent('${st.email}')">حذف</a></li>
+                        <li><a class="dropdown-item text-warning" onclick="resetDev('${st.email}')">فك حظر الجهاز</a></li>
+                        <li><a class="dropdown-item" onclick="changePass('${st.email}')">تغيير السر</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>`;
     });
 }
 
 function renderCodes() {
-    let s = document.getElementById('search-codes').value.toLowerCase();
-    let cls = document.getElementById('filter-codes-cls').value;
-    let st = document.getElementById('filter-codes-st').value;
+    let div = document.getElementById('codes-container');
+    let fCls = document.getElementById('filter-code-cls').value;
+    let fStats = document.getElementById('filter-code-status').value;
     
-    let filtered = db.codes.filter(c => {
-        return (cls === 'all' || c.cls === cls) &&
-               (st === 'all' || c.status === st) &&
-               (c.code.toString().includes(s) || (c.email && c.email.includes(s)));
-    });
-
-    let h = '';
-    if(filtered.length === 0) h = '<div class="text-center p-3 w-100">لا توجد نتائج</div>';
+    div.innerHTML = '';
     
-    filtered.forEach(c => {
-        let badge = c.status === 'New' ? '<span class="badge bg-soft-success">جديد</span>' : '<span class="badge bg-secondary">مستخدم</span>';
-        let dayBadge = c.days < 30 ? '<span class="badge bg-soft-danger">تجريبي</span>' : `<span class="badge bg-soft-primary">${c.days} يوم</span>`;
+    let filtered = [];
+    if(DB.codes) {
+        filtered = DB.codes.filter(c => (fCls === 'all' || c.cls === fCls) && (fStats === 'all' || (fStats === 'New' && c.status === 'New') || (fStats === 'Used' && c.status !== 'New')));
         
-        h += `
-        <div class="code-card ${c.status==='Used'?'bg-light':''}" onclick="toggleCode(this)">
-           <input type="checkbox" class="code-chk form-check-input" value="${c.code}" onclick="event.stopPropagation()">
-           <div class="code-meta">
-              <span>${c.cls}</span>
-              <span>${c.status}</span>
-           </div>
-           <div class="code-val">${c.code}</div>
-           <div class="d-flex justify-content-center gap-1 mb-2">${badge} ${dayBadge}</div>
-           ${c.email ? `<div class="small text-truncate text-muted" title="${c.email}">${c.email}</div>` : ''}
-        </div>`;
-    });
-    document.getElementById('codes-grid').innerHTML = h;
+        filtered.forEach(c => {
+            let used = c.status !== 'New';
+            div.innerHTML += `
+            <div class="code-card ${used ? 'opacity-50' : ''}" onclick="selectCode(this)">
+                <input type="checkbox" class="form-check-input position-absolute top-0 end-0 m-2 code-chk" value="${c.code}">
+                <div class="code-num">${c.code}</div>
+                <div class="d-flex justify-content-between mt-2 small">
+                    <span class="badge ${used ? 'bg-secondary' : 'bg-success'}">${used ? 'مستخدم' : 'جديد'}</span>
+                    <span class="text-muted">${c.cls}</span>
+                </div>
+                ${c.days ? `<span class="badge bg-warning text-dark mt-1" style="font-size:10px">${c.days} يوم</span>` : ''}
+            </div>`;
+        });
+    }
+    document.getElementById('codes-count-badge').innerText = filtered.length + ' كود';
 }
 
-function toggleCode(el) {
+function renderResults() {
+    let s = document.getElementById('search-res').value.toLowerCase();
+    let f = document.getElementById('filter-res-cls').value;
+    let tb = document.getElementById('results-body');
+    tb.innerHTML = '';
+    if(DB.results) DB.results.filter(r => (f==='all' || r.cls===f) && (String(r.name||'').toLowerCase().includes(s) || String(r.exam||'').toLowerCase().includes(s))).forEach(r => {
+        tb.innerHTML += `
+        <tr>
+            <td>${r.date}</td>
+            <td class="fw-bold">${r.name}</td>
+            <td>${r.exam}</td>
+            <td><span class="badge ${r.score>=50?'bg-success':'bg-danger'}">${r.score}%</span></td>
+            <td>${r.cheats > 0 ? `<span class="text-danger fw-bold">${r.cheats}</span>` : '-'}</td>
+            <td><button class="btn btn-sm btn-outline-danger" onclick="delRes(${r.rowId})"><i class="fas fa-trash"></i></button></td>
+        </tr>`;
+    });
+}
+
+function renderLib() {
+    let h=''; if(DB.library) DB.library.forEach(i => h+=`<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`);
+    document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا يوجد محتوى</td></tr>';
+}
+function renderAssign() {
+    let h=''; if(DB.assignments) DB.assignments.forEach(a => h+=`<tr><td>${a.date}</td><td>${a.name}</td><td>${a.type}</td><td><a href="${a.link}" target="_blank" class="btn btn-sm btn-info">عرض</a></td><td>${a.grade}</td><td><button class="btn btn-sm btn-primary" onclick="gradeAss(${a.rowId})">رصد</button></td></tr>`);
+    document.getElementById('assign-body').innerHTML = h || '<tr><td colspan="6" class="text-center text-muted">لا توجد واجبات</td></tr>';
+}
+function renderComp() {
+    let h=''; 
+    if(DB.complaints && DB.complaints.length > 0) {
+        DB.complaints.forEach(c => {
+             h+=`<tr>
+                <td>${c.date}</td>
+                <td>${c.name}</td>
+                <td>${c.email}</td>
+                <td><div style="max-width:300px; white-space:normal;">${c.msg}</div></td>
+                <td>${c.reply || `<button class="btn btn-sm btn-warning" onclick="replyComp(${c.rowId})">رد</button>`}</td>
+             </tr>`;
+        });
+    } else {
+        h = '<tr><td colspan="5" class="text-center text-muted">لا توجد رسائل</td></tr>';
+    }
+    document.getElementById('comp-body').innerHTML = h;
+}
+
+// --- ACTIONS ---
+
+async function generateCodes() {
+    let n = document.getElementById('gen-count').value;
+    let c = document.getElementById('gen-cls').value;
+    let d = document.getElementById('gen-days').value;
+    if(!c) return Swal.fire('خطأ', 'أدخل الصف', 'warning');
+    await callApi('generateNewCodes', {count:n, cls:c, days:d});
+    Swal.fire('تم', 'تم توليد الأكواد', 'success');
+    refreshAll();
+}
+
+function selectCode(el) {
     let chk = el.querySelector('.code-chk');
     chk.checked = !chk.checked;
     el.classList.toggle('selected', chk.checked);
 }
-function toggleAllCodes(m) {
-    document.querySelectorAll('.code-chk').forEach(c => {
-        c.checked = m.checked;
-        c.closest('.code-card').classList.toggle('selected', m.checked);
-    });
-}
 
-async function generateCodes() {
-    let count = document.getElementById('gen-count').value;
-    let cls = document.getElementById('gen-cls').value;
-    let days = document.getElementById('gen-days').value;
-    
-    if(!count || !cls) return Swal.fire('تنبيه','أدخل العدد والصف','warning');
-    
-    Swal.fire({title:'جاري التوليد...', didOpen:()=>Swal.showLoading()});
-    let res = await api('generateNewCodes', {count:count, cls:cls, days:days});
-    Swal.close();
-    if(res.success !== false) { Swal.fire('تم',res,'success').then(loadAllData); }
-    else Swal.fire('خطأ',res.message,'error');
+function toggleAllCodes(source) {
+    document.querySelectorAll('.code-chk').forEach(c => {
+        c.checked = source.checked;
+        c.parentElement.classList.toggle('selected', source.checked);
+    });
 }
 
 async function deleteSelectedCodes() {
-    let sel = Array.from(document.querySelectorAll('.code-chk:checked')).map(c=>c.value);
-    if(!sel.length) return Swal.fire('تنبيه','حدد أكواد للحذف','info');
-    
-    if(confirm(`حذف ${sel.length} كود؟`)) {
-        Swal.fire({title:'جاري الحذف...', didOpen:()=>Swal.showLoading()});
-        await api('cleanDatabase', {tables:['Codes']}); 
-        Swal.close();
-        Swal.fire('تم','تمت العملية','success').then(loadAllData);
+    let selected = [...document.querySelectorAll('.code-chk:checked')].map(c => c.value);
+    if(selected.length == 0) return;
+    if(confirm('حذف الأكواد المحددة؟')) {
+        await callApi('deleteUsedCodes'); 
+        Swal.fire('تم', 'تم تنظيف الأكواد المستخدمة', 'info');
+        refreshAll();
     }
 }
 
-// === Printing ===
-function printCodes(mode) {
-    let sel = Array.from(document.querySelectorAll('.code-chk:checked')).map(c=>c.value);
-    let list = sel.length ? db.codes.filter(c=>sel.includes(String(c.code))) : db.codes.filter(c=>c.status==='New'); 
-    
-    if(!list.length) return Swal.fire('تنبيه','لا توجد بيانات','info');
-    
-    let content = '';
-    if(mode === 'cards') {
-        content = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-family:Tajawal">';
-        list.forEach(c => {
-            content += `
-            <div style="border:2px dashed #333; padding:15px; text-align:center; height:140px; page-break-inside:avoid; display:flex; flex-direction:column; justify-content:center; border-radius:10px; background:#f8fafc">
-               <h4 style="margin:0; color:#2563eb">منصة نبراس التعليمية</h4>
-               <div style="font-size:24px; font-weight:900; letter-spacing:2px; margin:5px 0; border:1px solid #ccc; background:white">${c.code}</div>
-               <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold">
-                  <span>${c.cls}</span> <span>${c.days} يوم</span>
-               </div>
-               <div style="font-size:10px; color:#666">لتفعيل الاشتراك</div>
-            </div>`;
-        });
-        content += '</div>';
-    } else {
-        content = '<table style="width:100%; border-collapse:collapse; text-align:center; font-family:Tajawal" border="1"><thead><tr><th>الكود</th><th>الصف</th><th>الحالة</th></tr></thead><tbody>';
-        list.forEach(c => content += `<tr><td>${c.code}</td><td>${c.cls}</td><td>${c.status}</td></tr>`);
-        content += '</tbody></table>';
-    }
-    
-    let w = window.open('','','width=900,height=700');
-    w.document.write(`<html><head><title>طباعة</title></head><body dir="rtl">${content}</body></html>`);
-    w.document.close();
-    setTimeout(()=>w.print(), 500);
-}
-
-// === 2. Students & Devices ===
-function renderStudents() {
-    let s = document.getElementById('search-std').value.toLowerCase();
-    let body = document.getElementById('students-body');
-    let h = '';
-    
-    db.students.forEach(st => {
-        if(st.name.toLowerCase().includes(s) || st.email.includes(s)) {
-            let statusBadge = st.deviceId ? '<span class="badge bg-success">مرتبط</span>' : '<span class="badge bg-secondary">غير مرتبط</span>';
-            h += `<tr>
-                <td><img src="${st.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" width="40" height="40" style="border-radius:50%"></td>
-                <td class="fw-bold">${st.name}</td>
-                <td><span class="badge bg-soft-primary">${st.cls}</span></td>
-                <td class="text-muted small">${st.email}</td>
-                <td class="small">Active</td>
-                <td>${statusBadge}</td>
-                <td>
-                   <div class="btn-group">
-                      <button onclick="resetPass('${st.email}')" class="btn btn-sm btn-light border" title="تغيير كلمة المرور"><i class="fas fa-key"></i></button>
-                      <button onclick="resetDevice('${st.email}')" class="btn btn-sm btn-warning text-white" title="فك ربط الجهاز"><i class="fas fa-mobile-alt"></i></button>
-                      <button onclick="delStd('${st.email}')" class="btn btn-sm btn-danger" title="حذف"><i class="fas fa-trash"></i></button>
-                   </div>
-                </td>
-            </tr>`;
-        }
-    });
-    body.innerHTML = h;
-}
-
-// Actions
-async function resetDevice(email) {
-    if(confirm('هل تريد فك ربط الجهاز لهذا الطالب ليتمكن من الدخول بجهاز جديد؟')) {
-        let r = await api('resetStudentDevice', {email:email});
-        Swal.fire(r.success?'تم':'خطأ', r.message, r.success?'success':'error');
-    }
-}
-async function resetPass(email) {
-    let p = prompt("كلمة المرور الجديدة:");
-    if(p) await api('adminResetPass', {email:email, newPass:p}).then(r=>Swal.fire('تم',r,'success'));
-}
-async function delStd(email) {
-    if(confirm('حذف الطالب نهائياً؟')) { await api('deleteStudent', {email:email}); navTo('students', document.querySelectorAll('.nav-item')[1]); }
-}
-
-function printStudentIDs() {
-    let h = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; font-family:Tajawal; direction:rtl">';
-    db.students.forEach(s => {
-        h += `<div style="border:2px solid #000; padding:10px; display:flex; align-items:center; gap:15px; border-radius:10px; page-break-inside:avoid">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(s.email)}" width="80">
-                <div>
-                   <h3 style="margin:0">${s.name}</h3>
-                   <p style="margin:5px 0">الصف: ${s.cls}</p>
-                   <small>${s.email}</small>
-                </div>
-              </div>`;
-    });
-    h += '</div>';
-    let w = window.open('','','width=900'); w.document.write(h); w.document.close(); setTimeout(()=>w.print(), 500);
-}
-
-// === 3. Exams Control ===
-function renderExams() {
-    let body = document.getElementById('exams-body');
-    let h = '';
-    if(db.exams) {
-        db.exams.forEach(ex => {
-            let btnClass = ex.status === 'Hidden' ? 'btn-secondary' : 'btn-success';
-            let btnText = ex.status === 'Hidden' ? 'مخفي (إظهار)' : 'نشط (إخفاء)';
-            let newStatus = ex.status === 'Hidden' ? 'Active' : 'Hidden';
-            
-            h += `<tr>
-                    <td class="fw-bold">${ex.title}</td>
-                    <td>${ex.cls || 'عام'}</td>
-                    <td><span class="badge ${ex.status==='Hidden'?'bg-secondary':'bg-success'}">${ex.status||'Active'}</span></td>
-                    <td><button onclick="toggleExam('${ex.title}', '${newStatus}')" class="btn btn-sm ${btnClass}">${btnText}</button></td>
-                  </tr>`;
-        });
-    }
-    body.innerHTML = h || '<tr><td colspan="4" class="text-center">لا توجد امتحانات</td></tr>';
-}
-async function toggleExam(t, s) {
-    await api('toggleExamVisibility', {title:t, status:s});
-    navTo('exams', document.querySelectorAll('.nav-item')[2]);
-}
-
-// === 4. Results ===
-function renderResults() {
-    let s = document.getElementById('search-res').value.toLowerCase();
-    let h = '';
-    db.results.forEach(r => {
-        if(r.name.toLowerCase().includes(s) || r.exam.toLowerCase().includes(s)) {
-            h += `<tr>
-                <td>${r.date}</td>
-                <td class="fw-bold">${r.name}</td>
-                <td><span class="badge bg-light text-dark border">${r.cls}</span></td>
-                <td>${r.exam}</td>
-                <td><span class="badge ${parseInt(r.score)>=50?'bg-success':'bg-danger'}">${r.score}</span></td>
-                <td>${r.cheats || 0}</td>
-                <td><button onclick="delRes(${r.rowId})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
-            </tr>`;
-        }
-    });
-    document.getElementById('results-body').innerHTML = h;
-}
-async function delRes(id) { if(confirm('حذف؟')) { await api('deleteResultRow',{rowId:id}); navTo('results', document.querySelectorAll('.nav-item')[3]); } }
-
-function exportToExcel() {
-    let data = db.results.map(r => ({ "التاريخ":r.date, "الطالب":r.name, "الصف":r.cls, "الامتحان":r.exam, "الدرجة":r.score }));
-    let ws = XLSX.utils.json_to_sheet(data);
-    let wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Results");
-    XLSX.writeFile(wb, "النتائج.xlsx");
-}
-
-// === 5. Library ===
-function renderLibrary() {
-    let h = '';
-    db.library.forEach(i => {
-        h += `<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls}</td><td><button onclick="delLib(${i.rowId})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td></tr>`;
-    });
-    document.getElementById('library-body').innerHTML = h;
-}
-async function addToLibrary() {
+async function addToLib() {
     let d = {
         title: document.getElementById('lib-title').value,
         type: document.getElementById('lib-type').value,
         cls: document.getElementById('lib-cls').value,
         link: document.getElementById('lib-link').value
     };
-    if(!d.title) return;
-    await api('addToLibrary', {d:d});
-    Swal.fire('تم','','success');
-    navTo('library', document.querySelectorAll('.nav-item')[4]);
-}
-async function delLib(id) { if(confirm('حذف؟')) { await api('deleteLibraryItem', {rowId:id}); navTo('library', document.querySelectorAll('.nav-item')[4]); } }
-
-// === 6. Assignments ===
-function renderAssignments() {
-    let h = '';
-    db.assignments.forEach(a => {
-        h += `<tr>
-            <td>${a.date}</td>
-            <td class="fw-bold">${a.name}</td>
-            <td>${a.type}</td>
-            <td><a href="${a.link}" target="_blank" class="btn btn-sm btn-outline-primary">عرض</a></td>
-            <td>${a.grade}</td>
-            <td><button onclick="gradeAss(${a.rowId})" class="btn btn-sm btn-primary">رصد</button></td>
-        </tr>`;
-    });
-    document.getElementById('assignments-body').innerHTML = h;
-}
-async function gradeAss(id) { let g=prompt('الدرجة:'); if(g) await api('gradeAssignment',{rowId:id, grade:g}); }
-
-// === 7. Complaints ===
-function renderComplaints() {
-    let h = '';
-    db.complaints.forEach(c => {
-        h += `<tr>
-            <td>${c.date}</td>
-            <td class="fw-bold">${c.name}</td>
-            <td>${c.msg}</td>
-            <td>${c.reply || '<span class="text-muted">لم يتم الرد</span>'}</td>
-            <td><button onclick="replyComp(${c.rowId})" class="btn btn-sm btn-info text-white">رد</button></td>
-        </tr>`;
-    });
-    document.getElementById('complaints-body').innerHTML = h;
-}
-async function replyComp(id) { let r=prompt('الرد:'); if(r) await api('replyToComplaint',{rowId:id, reply:r}); }
-
-// === 8. Settings & Notification ===
-async function saveSettings() {
-    let s = { 
-        'TeacherName': document.getElementById('set-name').value, 
-        'WhatsApp': document.getElementById('set-wa').value, 
-        'Maintenance': document.getElementById('set-maint').value 
-    };
-    await api('saveGeneralSettings', {s:s});
-    Swal.fire('تم الحفظ','','success');
+    await callApi('addToLibrary', {d:d});
+    Swal.fire('تم', 'تم النشر', 'success');
+    nav('library', document.querySelectorAll('.nav-item')[4]);
 }
 
-async function sendNotification() {
+async function sendNotif() {
     let t = document.getElementById('notif-target').value;
-    let e = document.getElementById('notif-email').value;
     let m = document.getElementById('notif-msg').value;
-    if(!m) return Swal.fire('تنبيه','اكتب الرسالة','warning');
+    if(!m) return;
+    await callApi('sendTargetedMessage', {target:t, msg:m});
+    Swal.fire('تم', 'تم الإرسال', 'success');
+}
+
+async function delStudent(e) { if(confirm('حذف؟')) { await callApi('deleteStudent', {email:e}); refreshAll(); } }
+async function resetDev(e) { await callApi('resetStudentDevice', {email:e}); Swal.fire('تم', 'تم فك حظر الجهاز للطالب', 'success'); }
+async function changePass(e) { let p = prompt('كلمة المرور الجديدة:'); if(p) await callApi('adminResetPass', {email:e, newPass:p}); }
+async function delRes(id) { if(confirm('حذف؟')) { await callApi('deleteResultRow', {rowId:id}); refreshAll(); } }
+async function delLib(id) { if(confirm('حذف؟')) { await callApi('deleteLibraryItem', {rowId:id}); nav('library', document.querySelectorAll('.nav-item')[4]); } }
+async function gradeAss(id) { let g = prompt('الدرجة:'); if(g) { await callApi('gradeAssignment', {rowId:id, grade:g}); nav('assignments', document.querySelectorAll('.nav-item')[5]); } }
+async function replyComp(id) { let r = prompt('الرد:'); if(r) { await callApi('replyToComplaint', {rowId:id, reply:r}); nav('complaints', document.querySelectorAll('.nav-item')[6]); } }
+
+async function saveSettings() {
+    // 1. General Settings
+    let s = {
+        'TeacherName': document.getElementById('set-name').value,
+        'WhatsApp': document.getElementById('set-wa').value, // This is contact WA
+        'Maintenance': document.getElementById('set-maint').value
+    };
     
-    await api('sendTargetedMessage', {target: e||t, msg:m});
-    Swal.fire('تم الإرسال','','success');
+    // 2. Social Links (including Renewal WA)
+    let links = {
+        'Facebook': document.getElementById('soc-fb').value,
+        'Instagram': document.getElementById('soc-ig').value,
+        'WhatsApp_Link': document.getElementById('soc-wa').value, // Renewal Link
+        'Youtube': document.getElementById('soc-yt').value
+    };
+
+    // Parallel save
+    await Promise.all([
+        callApi('saveGeneralSettings', {s:s}),
+        callApi('saveSocialLinks', {links:links})
+    ]);
+    
+    Swal.fire('تم', 'تم حفظ كافة الإعدادات بنجاح', 'success');
 }
 
 async function resetSystem() {
-    let selected = Array.from(document.querySelectorAll('.chk-reset:checked')).map(c => c.value);
-    if(selected.length === 0) return Swal.fire('تنبيه', 'اختر جدولاً واحداً على الأقل', 'warning');
-    
-    let {value:pass} = await Swal.fire({title:'كلمة مرور المسؤول لتأكيد الحذف', input:'password'});
-    
-    if(pass === 'admin') {
-        Swal.fire({title:'جاري التهيئة...', didOpen:()=>Swal.showLoading()});
-        await api('resetSpecificTables', {tables:selected});
-        Swal.close();
-        Swal.fire('تم','تمت إعادة ضبط الجداول المحددة','success').then(() => location.reload());
-    } else {
-        Swal.fire('خطأ','كلمة المرور غير صحيحة','error');
+    let t = [...document.querySelectorAll('.r-chk:checked')].map(c => c.value);
+    if(t.length === 0) return;
+    let p = prompt('أدخل كلمة مرور المسؤول للتأكيد:');
+    if(p === 'admin') { 
+        await callApi('resetSpecificTables', {tables:t});
+        Swal.fire('تم', 'تمت إعادة الضبط', 'success').then(()=>location.reload());
     }
 }
+
+// --- UTILS ---
+function populateFilters() {
+    let classes = [...new Set((DB.codes||[]).map(c => c.cls).filter(c => c))];
+    let opts = '<option value="all">كل الصفوف</option>';
+    classes.forEach(c => opts += `<option value="${c}">${c}</option>`);
+    
+    // Code Filters
+    let cEl = document.getElementById('filter-code-cls');
+    if(cEl) cEl.innerHTML = opts;
+
+    // Result Filters
+    let rEl = document.getElementById('filter-res-cls');
+    if(rEl) rEl.innerHTML = opts.replace('كل الصفوف', 'الكل');
+}
+
+function exportToExcel(tableId) {
+    let tbl = document.getElementById(tableId);
+    let wb = XLSX.utils.table_to_book(tbl, {sheet:"Sheet1"});
+    XLSX.writeFile(wb, 'Export_Data.xlsx');
+}
+
+function printIDCards() {
+    let w = window.open('', '', 'width=900,height=600');
+    let h = `<style>
+        body { font-family: sans-serif; direction: rtl; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        .card { border: 2px solid #333; border-radius: 10px; padding: 15px; display: flex; align-items: center; gap: 15px; page-break-inside: avoid; }
+        img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+    </style>`;
+    if(DB.students) DB.students.forEach(s => {
+        let qr = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(s.email)}`;
+        h += `<div class="card">
+            <img src="${s.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}">
+            <div><h3>${s.name}</h3><p>${s.cls}</p><small>${s.email}</small></div>
+            <img src="${qr}" style="border-radius:0; margin-right:auto">
+        </div>`;
+    });
+    w.document.write(h);
+    w.print();
+}
+
+function printFilteredCodes(mode) {
+    // Modes: 'selected', 'view', 'new'
+    let dataToPrint = [];
+    
+    if (mode === 'selected') {
+        let selectedVals = [...document.querySelectorAll('.code-chk:checked')].map(c => c.value);
+        if(selectedVals.length === 0) return Swal.fire('تنبيه', 'حدد أكواد أولاً', 'warning');
+        dataToPrint = DB.codes.filter(c => selectedVals.includes(String(c.code)));
+    } 
+    else if (mode === 'view') {
+        let fCls = document.getElementById('filter-code-cls').value;
+        let fStats = document.getElementById('filter-code-status').value;
+        dataToPrint = DB.codes.filter(c => 
+            (fCls === 'all' || c.cls === fCls) && 
+            (fStats === 'all' || (fStats === 'New' && c.status === 'New') || (fStats === 'Used' && c.status !== 'New'))
+        );
+    }
+    else if (mode === 'new') {
+        dataToPrint = DB.codes.filter(c => c.status === 'New');
+    }
+
+    if(dataToPrint.length === 0) return Swal.fire('تنبيه', 'لا توجد بيانات للطباعة', 'info');
+
+    let w = window.open('', '', 'width=900,height=600');
+    let h = `<style>
+        body { font-family: monospace; direction: ltr; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
+        .ticket { border: 2px dashed #000; padding: 10px; text-align: center; page-break-inside: avoid; }
+        .code { font-size: 20px; font-weight: bold; margin: 5px 0; background:#eee; padding:5px; }
+    </style>`;
+    
+    dataToPrint.forEach(c => {
+        h += `<div class="ticket">
+            <div>Code Activation</div>
+            <div class="code">${c.code}</div>
+            <div>${c.cls} | ${c.days || 120} days</div>
+        </div>`;
+    });
+    w.document.write(h);
+    w.print();
+}
+
+function logout() {
+    localStorage.removeItem('api_url');
+    location.reload();
+}
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
