@@ -1,1212 +1,1044 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="description" content="منصة نبراس التعليمية - بيئة تعليمية ذكية ومتكاملة">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>منصة نبراس | الطالب</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة نبراس | الطالب</title>
 
-    <!-- =======================================================
-         1. الأصول والمكتبات (Core Assets)
-         ======================================================= -->
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+  :root { 
+    --bg: #0f172a; 
+    --glass: rgba(30, 41, 59, 0.9); 
+    --border: rgba(255, 255, 255, 0.1);
+    --blue: #3b82f6; 
+    --gold: #f59e0b; 
+    --red: #ef4444; 
+    --green: #10b981; 
+    --text: #f8fafc;
+  }
+  [data-theme="light"] {
+    --bg: #f1f5f9; --glass: rgba(255, 255, 255, 0.95); --border: rgba(0, 0, 0, 0.1); --text: #1e293b; --blue: #2563eb;
+  }
+  body { 
+    background: var(--bg); color: var(--text); font-family: 'Tajawal'; margin: 0; padding: 0; min-height: 100vh;
+    transition: background 0.5s, color 0.5s;
+    background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.5) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.5) 0, transparent 50%);
+  }
+  
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; transition: 0.5s; }
+  .hidden { display: none !important; }
+  
+  /* === Landing Page Styles === */
+  #landing-page { text-align: center; padding-top: 50px; animation: fadeIn 1s; }
+  .hero-logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--gold); box-shadow: 0 0 30px rgba(245, 158, 11, 0.3); margin-bottom: 20px; object-fit: cover; }
+  .hero-title { font-family: 'Amiri'; font-size: 3em; margin: 0; color: var(--blue); text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+  .hero-subtitle { color: #94a3b8; font-size: 1.2em; margin-bottom: 40px; }
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
+  .feature-box { background: var(--glass); padding: 20px; border-radius: 15px; border: 1px solid var(--border); transition: 0.3s; }
+  .feature-box:hover { transform: translateY(-5px); border-color: var(--blue); }
+  .feature-icon { font-size: 2em; color: var(--gold); margin-bottom: 10px; }
+  
+  .action-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+  .btn-hero { padding: 15px 40px; border-radius: 30px; font-size: 1.1em; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; width: auto; }
+  .btn-hero:hover { transform: scale(1.05); }
+  .btn-primary-hero { background: linear-gradient(45deg, var(--blue), #1d4ed8); color: white; box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4); }
+  .btn-outline-hero { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+  .btn-outline-hero:hover { background: var(--gold); color: black; }
 
-    <!-- Animations -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  /* === Auth Cards & General Inputs === */
+  .card, .auth-card { 
+    background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 20px; padding: 30px; margin-bottom: 25px; 
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;
+  }
+  .auth-card { max-width: 400px; margin: 50px auto; }
 
-    <!-- Charts & Utils -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  input, select, textarea { 
+    width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(128,128,128,0.1); 
+    border: 1px solid var(--border); border-radius: 12px; color: var(--text); box-sizing: border-box; font-family: inherit; transition: 0.3s;
+  }
+  input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+  
+  .btn { 
+    width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+    font-size: 16px; margin-top: 5px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+  .btn-p { background: linear-gradient(135deg, var(--blue), #2563eb); color: white; } 
+  .btn-g { background: linear-gradient(135deg, var(--gold), #d97706); color: white; }
+  .btn-o { background: rgba(128,128,128,0.1); border: 1px solid var(--border); color: var(--text); }
+  .btn-r { background: linear-gradient(135deg, var(--red), #b91c1c); color: white; }
 
-    <style>
-        /* =======================================================
-           2. نظام التصميم الشامل (Design System)
-           ======================================================= */
-        :root {
-            /* --- Palette: Deep Academic --- */
-            --bg-body: #020617;
-            --bg-surface: #0f172a;
-            --bg-surface-2: #1e293b;
-            --bg-input: #334155;
-            
-            --bg-glass: rgba(15, 23, 42, 0.85);
-            --bg-glass-strong: rgba(15, 23, 42, 0.98);
-            
-            /* --- Identity Colors --- */
-            --primary: #4f46e5;      /* Indigo */
-            --primary-light: #818cf8;
-            --primary-glow: rgba(79, 70, 229, 0.4);
-            --primary-grad: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-            
-            --accent: #f59e0b;       /* Amber */
-            --accent-glow: rgba(245, 158, 11, 0.4);
-            --accent-grad: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-            
-            --success: #10b981;
-            --danger: #ef4444;
-            --info: #0ea5e9;
-            
-            /* --- Text --- */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-dim: #64748b;
-            
-            /* --- Typography --- */
-            --font-head: 'Cairo', sans-serif;
-            --font-body: 'Tajawal', sans-serif;
+  /* === Tabs & Dashboard === */
+  .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .nav-tab { 
+    flex: 1; padding: 15px; background: rgba(128,128,128,0.1); border-radius: 12px; text-align: center; 
+    cursor: pointer; border: 1px solid var(--border); color: #94a3b8; font-weight: bold; transition: 0.3s; 
+  }
+  .nav-tab:hover, .nav-tab.active { background: var(--blue); color: white; border-color: var(--blue); transform: translateY(-3px); }
 
-            /* --- UI Elements --- */
-            --border: 1px solid rgba(255, 255, 255, 0.08);
-            --border-focus: 1px solid rgba(79, 70, 229, 0.5);
-            
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-            --shadow-neon: 0 0 15px var(--primary-glow);
+  /* === Items & Lists === */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .exam-item { 
+    background: rgba(128,128,128,0.05); padding: 25px; border-radius: 16px; border: 1px solid var(--border); 
+    cursor: pointer; transition: 0.3s; text-align: right; position: relative;
+  }
+  .exam-item:hover { border-color: var(--blue); background: rgba(59,130,246,0.1); transform: translateY(-5px); }
+  .exam-icon { font-size: 30px; color: var(--gold); margin-bottom: 10px; display: block; }
+  .folder-item { background: rgba(59, 130, 246, 0.1); border-color: var(--blue); }
+  .folder-item .exam-icon { color: var(--blue); }
+  
+  .lib-item { 
+    display:flex; align-items:center; background:rgba(128,128,128,0.05); padding:15px; border-radius:12px; 
+    margin-bottom:10px; transition:0.3s; text-decoration:none; color:inherit; border:1px solid transparent; 
+  }
+  .lib-item:hover { background:rgba(128,128,128,0.1); border-color:var(--blue); transform:translateX(-5px); }
+  
+  /* === Tables & Stats === */
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 12px; overflow: hidden; }
+  th { background: rgba(59,130,246,0.2); color: var(--gold); padding: 15px; font-size: 14px; text-align: right; }
+  td { padding: 14px; border-bottom: 1px solid var(--border); text-align: right; font-size: 14px; }
+  
+  .chart-box { display: flex; align-items: flex-end; gap: 20px; height: 200px; padding: 20px; background: rgba(128,128,128,0.1); border-radius: 12px; margin-top: 20px; }
+  .chart-bar { flex: 1; border-radius: 8px 8px 0 0; position: relative; transition: height 1s; display: flex; align-items: flex-end; justify-content: center; color: white; font-weight: bold; padding-bottom: 5px; }
+  .chart-me { background: var(--blue); }
+  .chart-cls { background: var(--gold); }
 
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --radius-xl: 32px;
-            --radius-full: 9999px;
-            
-            --nav-height: 80px;
-            --header-height: 70px;
-        }
-
-        [data-theme="light"] {
-            --bg-body: #f8fafc;
-            --bg-surface: #ffffff;
-            --bg-surface-2: #f1f5f9;
-            --bg-input: #e2e8f0;
-            --bg-glass: rgba(255, 255, 255, 0.9);
-            --bg-glass-strong: rgba(255, 255, 255, 0.98);
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --text-dim: #94a3b8;
-            --border: 1px solid rgba(0,0,0,0.08);
-            --shadow-neon: 0 0 15px rgba(79, 70, 229, 0.15);
-        }
-
-        /* =======================================================
-           3. التأسيس (Global Reset)
-           ======================================================= */
-        *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; margin: 0; padding: 0; }
-        
-        html { scroll-behavior: smooth; font-size: 16px; }
-        
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: var(--font-body);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 120px; /* Space for Bottom Nav */
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.08) 0%, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
-            background-attachment: fixed;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-        a { text-decoration: none; color: inherit; transition: 0.2s; }
-        button { cursor: pointer; border: none; background: none; font-family: inherit; }
-        ul { list-style: none; }
-        img { display: block; max-width: 100%; }
-
-        /* Typography Utilities */
-        .font-head { font-family: var(--font-head); font-weight: 700; }
-        .text-gradient { background: linear-gradient(135deg, var(--primary-light), var(--info)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .text-accent { color: var(--accent); }
-        .text-muted { color: var(--text-muted); font-size: 0.9rem; }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        
-        /* Layout Utilities */
-        .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .justify-center { justify-content: center; }
-        .gap-2 { gap: 0.5rem; }
-        .gap-3 { gap: 0.75rem; }
-        .gap-4 { gap: 1rem; }
-        .w-full { width: 100%; }
-        .h-full { height: 100%; }
-        .hidden { display: none !important; }
-
-        /* =======================================================
-           4. المكونات (UI Components)
-           ======================================================= */
-        
-        /* 4.1 Buttons (Solid & Glass) */
-        .btn {
-            position: relative; overflow: hidden;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 14px 24px; font-size: 1rem; font-weight: 700;
-            border-radius: var(--radius-md); transition: all 0.2s ease;
-            font-family: var(--font-head); cursor: pointer;
-        }
-        .btn:active { transform: scale(0.96); }
-        
-        .btn-primary { 
-            background: var(--primary-grad); color: white; 
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .btn-primary:hover { box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6); transform: translateY(-2px); }
-        
-        .btn-accent {
-            background: var(--accent-grad); color: white;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        }
-        
-        .btn-glass {
-            background: rgba(255,255,255,0.05); color: var(--text-main);
-            border: 1px solid var(--border); backdrop-filter: blur(5px);
-        }
-        .btn-glass:hover { background: rgba(255,255,255,0.1); border-color: var(--text-muted); }
-        
-        .btn-icon { width: 42px; height: 42px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: var(--bg-surface-2); color: var(--text-muted); transition: 0.3s; }
-        .btn-icon:hover { background: var(--primary); color: white; }
-
-        /* 4.2 Cards (Clean & Glass) */
-        .card {
-            background: var(--bg-surface); border: var(--border); border-radius: var(--radius-lg);
-            padding: 24px; margin-bottom: 20px; transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
-        
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .card-title { font-size: 1.1rem; font-weight: 700; font-family: var(--font-head); margin: 0; color: var(--text-main); }
-
-        /* 4.3 Inputs */
-        .input-wrap { position: relative; margin-bottom: 20px; }
-        .input-icon { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); color: var(--text-muted); transition: 0.3s; z-index: 2; font-size: 1.1rem; }
-        .form-input {
-            width: 100%; padding: 16px 50px 16px 20px; background: var(--bg-surface-2);
-            border: 1px solid transparent; border-radius: var(--radius-md);
-            color: var(--text-main); font-size: 1rem; transition: 0.3s; font-family: inherit; font-weight: 500;
-        }
-        .form-input:focus { background: var(--bg-surface); border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-alpha); }
-        .input-wrap:focus-within .input-icon { color: var(--primary); }
-
-        /* 4.4 List Items (Grid System) */
-        .list-stack { display: flex; flex-direction: column; gap: 12px; }
-        .list-item {
-            display: flex; align-items: center; gap: 15px; padding: 16px;
-            background: var(--bg-surface); border: var(--border); border-radius: var(--radius-md);
-            cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
-        }
-        .list-item:hover { background: var(--bg-surface-hover); transform: translateX(-4px); border-color: var(--primary); }
-        .list-item::after { content:''; position: absolute; top:0; right:0; width:4px; height:100%; background:var(--primary); transform: scaleY(0); transition:0.3s; }
-        .list-item:hover::after { transform: scaleY(1); }
-        
-        .list-icon { 
-            width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; flex-shrink: 0; background: var(--bg-surface-2); color: var(--text-muted);
-        }
-        .list-icon.primary { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
-        .list-icon.accent { background: rgba(245, 158, 11, 0.1); color: var(--accent); }
-        .list-content { flex: 1; }
-        .list-content h4 { margin: 0 0 4px; font-size: 1rem; font-weight: 700; color: var(--text-main); }
-        .list-content p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
-
-        /* 4.5 Tabs (Segment Control) */
-        .tabs-container {
-            display: flex; background: var(--bg-surface-2); padding: 5px; border-radius: 16px; margin-bottom: 25px;
-            position: sticky; top: 80px; z-index: 50; box-shadow: var(--shadow-sm); border: var(--border);
-        }
-        .tab-btn {
-            flex: 1; text-align: center; padding: 10px; border-radius: 12px; font-size: 0.95rem; font-weight: 600;
-            color: var(--text-muted); cursor: pointer; transition: 0.3s;
-        }
-        .tab-btn.active { background: var(--bg-surface); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-
-        /* =======================================================
-           5. الهيكل والتنقل (Layout & Navigation)
-           ======================================================= */
-        
-        /* Top Header */
-        .app-header {
-            position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
-            background: var(--bg-glass-strong); backdrop-filter: blur(20px);
-            z-index: 1000; border-bottom: var(--border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            transform: translateY(0); transition: transform 0.3s;
-        }
-        .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-head); font-weight: 800; font-size: 1.4rem; color: var(--text-main); }
-        .logo img { width: 38px; height: 38px; border-radius: 10px; box-shadow: 0 0 15px var(--primary-glow); }
-
-        /* Bottom Nav (Dock Style) */
-        .bottom-nav {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 450px; height: 75px;
-            background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.15); border-radius: 28px;
-            display: flex; justify-content: space-evenly; align-items: center;
-            z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .bottom-nav.hidden { bottom: -120px; }
-        
-        .nav-link {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--text-muted); font-size: 0.7rem; cursor: pointer;
-            width: 60px; height: 100%; transition: 0.3s; position: relative;
-        }
-        .nav-link i { font-size: 1.5rem; margin-bottom: 4px; transition: 0.3s; }
-        .nav-link:hover { color: var(--text-main); }
-        .nav-link.active { color: var(--primary); }
-        .nav-link.active i { transform: translateY(-5px); filter: drop-shadow(0 0 8px var(--primary)); }
-        .nav-link.active span { opacity: 0; }
-        .nav-link.active::after { content:''; position: absolute; bottom: 15px; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
-
-        /* =======================================================
-           6. صفحات مخصصة (Custom Screens)
-           ======================================================= */
-        
-        /* Landing Page */
-        .landing-wrapper { text-align: center; padding: 60px 20px 40px; animation: fadeInUp 0.8s; }
-        .hero-logo { 
-            width: 140px; height: 140px; margin: 0 auto 35px; border-radius: 40px;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 60px rgba(79, 70, 229, 0.25); animation: float 6s infinite ease-in-out;
-        }
-        .hero-logo img { width: 100px; height: 100px; border-radius: 25px; object-fit: cover; }
-        
-        .hero-title { font-size: 3.2rem; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
-        .hero-sub { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 40px; max-width: 480px; margin-inline: auto; font-weight: 500; }
-
-        /* Features (Grid) */
-        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 30px 0; text-align: right; }
-        .feature-item { 
-            background: var(--bg-surface); padding: 25px; border-radius: 20px; border: var(--border);
-            transition: 0.3s; text-align: center;
-        }
-        .feature-item:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        .feature-item i { font-size: 2.2rem; color: var(--primary); margin-bottom: 15px; display: block; }
-        .feature-item h3 { font-size: 1.1rem; margin-bottom: 8px; font-family: var(--font-head); }
-        .feature-item p { font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
-
-        /* Testimonials (Marquee) */
-        .reviews-marquee { 
-            overflow: hidden; width: 100%; margin-top: 50px; padding: 20px 0;
-            background: linear-gradient(to right, transparent, var(--bg-surface-2), transparent);
-        }
-        .marquee-track { display: flex; gap: 20px; width: max-content; animation: scroll 35s linear infinite; }
-        .review-card {
-            background: var(--bg-surface); padding: 18px 24px; border-radius: 50px;
-            display: flex; align-items: center; gap: 15px; min-width: 320px; border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: var(--shadow-md);
-        }
-        .review-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background: var(--bg-surface-2); }
-        .review-content p { margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
-        .review-name { font-size: 0.8rem; color: var(--text-muted); }
-
-        /* Store (External/Guest) */
-        .pkg-grid { display: grid; gap: 20px; padding-top: 20px; }
-        .pkg-card {
-            background: var(--bg-surface); padding: 30px; border-radius: 28px; border: var(--border);
-            text-align: center; position: relative; overflow: hidden; transition: 0.3s;
-        }
-        .pkg-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: var(--shadow-neon); }
-        .pkg-card.featured { 
-            border: 2px solid var(--accent); 
-            background: linear-gradient(135deg, rgba(245,158,11,0.08), var(--bg-surface)); 
-        }
-        .pkg-badge {
-            position: absolute; top: 15px; right: 15px; background: var(--accent); color: #000;
-            font-size: 0.75rem; font-weight: 800; padding: 5px 12px; border-radius: 20px;
-        }
-        .pkg-icon { font-size: 3rem; color: var(--text-dim); margin-bottom: 15px; }
-        .pkg-price { font-size: 2.5rem; font-weight: 900; color: var(--text-main); font-family: var(--font-head); margin: 15px 0; }
-        .pkg-price sub { font-size: 1rem; font-weight: 500; color: var(--text-muted); }
-        .pkg-features { text-align: right; margin: 25px 0 30px; }
-        .pkg-features li { margin-bottom: 10px; color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
-        .pkg-features i { color: var(--success); background: rgba(16, 185, 129, 0.15); padding: 5px; border-radius: 50%; font-size: 0.8rem; }
-
-        /* Animations */
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Loader */
-        #loader {
-            position: fixed; inset: 0; background: var(--bg-body); z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .spinner { width: 60px; height: 60px; border: 5px solid var(--bg-surface-2); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s infinite linear; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Exam Overlay */
-        #exam-overlay { position: fixed; inset: 0; background: var(--bg-body); z-index: 5000; display: flex; flex-direction: column; }
-        .exam-head { padding: 0 25px; height: 80px; background: var(--bg-surface); display: flex; align-items: center; justify-content: space-between; border-bottom: var(--border); }
-        .exam-body { flex: 1; overflow-y: auto; padding: 30px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
-        .q-option { 
-            padding: 20px; background: var(--bg-surface-2); border-radius: 16px; margin-bottom: 15px; 
-            border: 2px solid transparent; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 15px; 
-        }
-        .q-option:hover { border-color: var(--text-muted); background: var(--bg-surface-hover); }
-        .q-option.selected { border-color: var(--primary); background: rgba(79, 70, 229, 0.15); box-shadow: 0 0 15px rgba(79,70,229,0.1); }
-        .q-circle { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .q-option.selected .q-circle { background: var(--primary); border-color: var(--primary); color: white; }
-        .q-option.selected .q-circle::after { content: '✔'; font-size: 0.8rem; }
-
-    </style>
+  /* === Exam UI === */
+  .timer-box { 
+    background: var(--red); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; 
+    font-size: 14px; display: flex; align-items: center; gap: 5px; animation: pulse 2s infinite; 
+  }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+  .q-option { 
+    padding: 18px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; cursor: pointer; 
+    background: rgba(128,128,128,0.05); transition: 0.2s; display: flex; align-items: center; gap: 10px; 
+  }
+  .q-option:hover { background: rgba(128,128,128,0.1); }
+  .q-option.selected { background: rgba(59,130,246,0.2); border-color: var(--blue); }
+  
+  /* === Other UI === */
+  .badge-item { display: inline-block; padding: 5px 10px; border-radius: 20px; background: var(--gold); color: black; font-size: 12px; margin: 2px; }
+  #notif-bell { position: relative; cursor: pointer; transition: 0.3s; }
+  #notif-bell:hover { transform: scale(1.1); }
+  #notif-dot { width: 10px; height: 10px; background: red; border-radius: 50%; position: absolute; top: 0; right: 0; display: none; }
+  #wa-btn { 
+    position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; width: 60px; height: 60px; 
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 9000; text-decoration: none; transition: 0.3s; 
+  }
+  #wa-btn:hover { transform: scale(1.1); }
+  #broadcast-bar { 
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; 
+    padding: 10px 20px; border-radius: 30px; z-index: 9000; box-shadow: 0 5px 20px rgba(0,0,0,0.3); display: none; 
+    animation: slideUp 0.5s; font-weight: bold; 
+  }
+  @keyframes slideUp { from {bottom: -50px} to {bottom: 20px} }
+  
+  /* === Loader === */
+  #loader { 
+    position: fixed; inset: 0; background: rgba(15,23,42,0.95); z-index: 9999; display: none; 
+    justify-content: center; align-items: center; flex-direction: column; 
+  }
+  
+  /* === Certificate === */
+  #cert-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; justify-content: center; align-items: center; overflow: auto; }
+  .cert-scaler { transform-origin: center top; width: 100%; display: flex; justify-content: center; padding: 20px 0; }
+  .cert-box { background: white; color: black; width: 800px; min-width: 800px; padding: 40px; border-radius: 15px; text-align: center; border: 10px double #1e3a8a; outline: 5px solid #f59e0b; outline-offset: -20px; position: relative; overflow: hidden; box-sizing: border-box; }
+  .cert-student-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #f59e0b; margin: 10px auto; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .stamp-seal { position: absolute; bottom: 40px; left: 40px; width: 140px; height: 140px; opacity: 0.9; transform: rotate(-10deg); z-index: 10; mix-blend-mode: multiply; }
+  @media (max-width: 850px) { .cert-scaler { transform: scale(0.45); margin-top: 50px; } }
+</style>
 </head>
 <body>
 
-    <!-- Loader -->
-    <div id="loader">
-        <div class="spinner"></div>
+<div id="loader">
+  <div style="font-size:50px;margin-bottom:15px;color:var(--blue)"><i class="fas fa-circle-notch fa-spin"></i></div>
+  <div style="color:white">جاري المعالجة...</div>
+</div>
+
+<div id="direct-link" class="hidden"></div>
+<div id="broadcast-bar">
+  <i class="fas fa-bullhorn"></i> <span id="bc-text"></span> 
+  <i class="fas fa-times" style="margin-right:10px;cursor:pointer" onclick="this.parentElement.style.display='none'"></i>
+</div>
+<a href="#" target="_blank" id="wa-btn" class="hidden"><i class="fab fa-whatsapp"></i></a>
+
+<div style="position:fixed; top:20px; left:20px; z-index:1000; display:flex; gap:15px; align-items:center">
+  <div id="notif-bell" class="hidden" onclick="showNotifs()">
+    <i class="fas fa-bell fa-lg" style="color:var(--text)"></i>
+    <div id="notif-dot"></div>
+  </div>
+  <button class="btn btn-o" style="width:auto; padding:10px; border-radius:50%" onclick="toggleTheme()">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+</div>
+
+<!-- ======================= -->
+<!-- ✅ صفحة الهبوط (جديد) -->
+<!-- ======================= -->
+<div id="landing-page" class="hidden">
+  <div class="container">
+    <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="hero-logo">
+    <h1 class="hero-title">منصة نبراس</h1>
+    <p class="hero-subtitle">طريقك للتميز والإبداع التعليمي</p>
+    
+    <div class="feature-grid">
+       <div class="feature-box">
+          <i class="fas fa-laptop-code feature-icon"></i>
+          <h3>امتحانات تفاعلية</h3>
+          <p style="color:#94a3b8">اختبر معلوماتك بنظام حديث</p>
+       </div>
+       <div class="feature-box">
+          <i class="fas fa-chart-line feature-icon"></i>
+          <h3>تحليل الأداء</h3>
+          <p style="color:#94a3b8">تابع تقدمك وقارن مستواك</p>
+       </div>
+       <div class="feature-box">
+          <i class="fas fa-certificate feature-icon"></i>
+          <h3>شهادات فورية</h3>
+          <p style="color:#94a3b8">احصل على شهادات تفوق</p>
+       </div>
+    </div>
+    
+    <div class="action-buttons">
+       <button class="btn-hero btn-primary-hero" onclick="showLogin('login')">تسجيل الدخول</button>
+       <button class="btn-hero btn-outline-hero" onclick="showLogin('trial')">جرب المنصة مجاناً</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= -->
+<!-- ✅ واجهة الدخول / التسجيل / التجربة -->
+<!-- ======================= -->
+<div id="auth-container" class="container hidden" style="max-width:400px; margin-top:60px">
+  <div class="auth-card">
+    <div style="text-align:center; margin-bottom:20px">
+       <i class="fas fa-arrow-right" style="float:right; cursor:pointer; color:var(--text)" onclick="showLanding()"></i>
+       <h2 id="auth-title" style="margin:0; color:var(--text)">تسجيل الدخول</h2>
     </div>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container" style="position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; pointer-events: none;"></div>
+    <!-- فورم الدخول -->
+    <div id="f-login">
+       <input id="le" placeholder="البريد الإلكتروني" dir="ltr">
+       <input id="lp" type="password" placeholder="كلمة المرور" dir="ltr">
+       <button class="btn btn-p" onclick="login()">دخول <i class="fas fa-sign-in-alt"></i></button>
+       <button class="btn btn-o" onclick="switchAuth('register')">تفعيل كود اشتراك</button>
+    </div>
 
-    <!-- =========================================
-         HEADER (يظهر فقط داخل التطبيق)
-         ========================================= -->
-    <header id="main-header" class="app-header hidden">
-        <div class="logo">
-            <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Logo">
-            <span>نبراس</span>
-        </div>
-        <div class="flex gap-2">
-            <button class="btn-icon" onclick="utils.theme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
-            <button class="btn-icon text-danger" style="color:var(--danger)" onclick="auth.logout()"><i class="fa-solid fa-power-off"></i></button>
-        </div>
-    </header>
+    <!-- فورم التسجيل -->
+    <div id="f-reg" class="hidden">
+       <div style="border:2px dashed var(--border); padding:15px; border-radius:10px; margin-bottom:15px; cursor:pointer; text-align:center" onclick="document.getElementById('rp').click()" id="ph-box">
+          <span id="p-txt" style="color:#94a3b8"><i class="fas fa-camera"></i> صورة شخصية</span>
+          <input type="file" id="rp" hidden onchange="readP(this)">
+       </div>
+       <input id="rc" placeholder="كود التفعيل">
+       <input id="rn" placeholder="الاسم الرباعي">
+       <input id="rph" placeholder="رقم الهاتف">
+       <input id="re" placeholder="البريد الإلكتروني" dir="ltr">
+       <input id="rpa" type="password" placeholder="كلمة المرور" dir="ltr">
+       <button class="btn btn-g" onclick="reg()">تفعيل الاشتراك</button>
+       <button class="btn btn-o" onclick="switchAuth('login')">عودة للدخول</button>
+    </div>
 
-    <!-- =========================================
-         1. LANDING SCREEN (الصفحة الرئيسية للزوار)
-         ========================================= -->
-    <div id="landing-screen" class="container">
-        <div class="landing-wrapper">
-            <div class="hero-logo">
-                <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Nebras">
-            </div>
-            <h1 class="hero-title text-gradient font-head">نبراس التعليمية</h1>
-            <p class="hero-sub">بوابتك للتميز الدراسي. منصة تعليمية متكاملة تجمع بين التكنولوجيا والتعليم الحديث.</p>
-            
-            <div class="flex flex-col gap-3 w-full mt-4">
-                <button class="btn btn-primary w-full" onclick="nav.to('login')">
-                    تسجيل الدخول <i class="fa-solid fa-arrow-left"></i>
-                </button>
-                <button class="btn btn-accent w-full" onclick="nav.to('trial')">
-                    <i class="fa-solid fa-stopwatch"></i> تجربة مجانية (24 ساعة)
-                </button>
-                <div class="flex gap-3 w-full">
-                    <button class="btn btn-glass w-full" onclick="nav.to('register')">حساب جديد</button>
-                    <button class="btn btn-glass w-full" onclick="nav.to('store-guest')">الباقات</button>
-                </div>
-            </div>
-        </div>
+    <!-- فورم التجربة المجانية (جديد) -->
+    <div id="f-trial" class="hidden">
+       <p style="color:var(--gold); text-align:center; font-size:0.9em">استمتع بتجربة كاملة لمدة 24 ساعة!</p>
+       <input id="tn" placeholder="الاسم الرباعي">
+       <input id="tph" placeholder="رقم الهاتف">
+       <input id="tcl" placeholder="الصف (مثال: العاشر)">
+       <input id="te" placeholder="البريد الإلكتروني" dir="ltr">
+       <button class="btn btn-p" onclick="createTrial()">بدء التجربة الآن 🚀</button>
+       <button class="btn btn-o" onclick="switchAuth('login')">إلغاء</button>
+    </div>
+  </div>
+</div>
 
-        <!-- المميزات (Grid) -->
-        <h3 class="text-center font-head mt-4 mb-4 text-gradient" style="font-size: 1.8rem;">لماذا نبراس؟</h3>
-        <div class="features-grid">
-            <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
-                <i class="fa-solid fa-brain"></i>
-                <h3>تعلم ذكي</h3>
-                <p>خطط دراسية مخصصة</p>
-            </div>
-            <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
-                <i class="fa-solid fa-chart-line"></i>
-                <h3>تتبع الأداء</h3>
-                <p>تقارير تفصيلية فورية</p>
-            </div>
-            <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
-                <i class="fa-solid fa-book-open"></i>
-                <h3>محتوى شامل</h3>
-                <p>تغطية كاملة للمناهج</p>
-            </div>
-            <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
-                <i class="fa-solid fa-certificate"></i>
-                <h3>شهادات</h3>
-                <p>جوائز تقدير للمتميزين</p>
-            </div>
-        </div>
+<!-- ======================= -->
+<!-- ✅ لوحة التحكم (القديمة كاملة) -->
+<!-- ======================= -->
+<div id="v-dash" class="container hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px">
+    <div style="display:flex; align-items:center; gap:15px; text-align:right">
+      <div style="position:relative">
+         <img id="u-img" src="" style="width:75px; height:75px; border-radius:50%; object-fit:cover; border:3px solid var(--blue); background:#333">
+         <div onclick="editProfile()" style="position:absolute; bottom:0; left:0; background:var(--gold); color:black; width:25px; height:25px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer" title="تعديل الملف">
+            <i class="fas fa-pen" style="font-size:12px"></i>
+         </div>
+      </div>
+      <div>
+        <h3 id="u-name" style="margin:0; color:var(--text); font-size:20px"></h3>
+        <span id="u-cls" style="color:var(--gold); font-size:14px; background:rgba(245, 158, 11, 0.1); padding:2px 8px; border-radius:10px"></span>
+        <div id="social-box" style="display:flex; gap:10px; margin-top:8px;"></div>
+        <div id="badges-area" style="margin-top:5px"></div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px">
+        <button class="btn btn-o" style="width:auto; color:var(--red); border-color:var(--red)" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
+    </div>
+  </div>
+  
+  <div class="nav-tabs">
+      <div class="nav-tab active" onclick="switchTab('exams', this)"><i class="fas fa-file-alt"></i> الامتحانات</div>
+      <div class="nav-tab" onclick="switchTab('assign', this)"><i class="fas fa-upload"></i> الواجبات</div>
+      <div class="nav-tab" onclick="switchTab('library', this)"><i class="fas fa-book-reader"></i> المكتبة</div>
+      <div class="nav-tab" onclick="switchTab('leader', this)"><i class="fas fa-crown"></i> الأوائل</div>
+      <div class="nav-tab" onclick="switchTab('history', this)"><i class="fas fa-history"></i> سجلي</div>
+      <div class="nav-tab" onclick="switchTab('notes', this)"><i class="fas fa-sticky-note"></i> مفكرتي</div>
+      <div class="nav-tab" onclick="switchTab('contact', this)"><i class="fas fa-envelope"></i> شكاوى</div>
+  </div>
 
-        <!-- عن المنصة -->
-        <div class="about-section" data-aos="fade-up">
-            <h3>من نحن؟</h3>
-            <p class="text-muted text-sm" style="line-height: 1.8;">
-                نحن فريق من المعلمين والمطورين نسعى لإحداث ثورة في التعليم الإلكتروني. توفر منصة نبراس بيئة تعليمية آمنة ومحفزة تساعد الطلاب على تحقيق أقصى إمكاناتهم من خلال أدوات تقنية حديثة ومحتوى أكاديمي عالي الجودة.
-            </p>
+  <div id="tab-exams">
+      <div id="exams-container" class="grid"></div>
+  </div>
+  
+  <div id="tab-assign" class="hidden">
+      <h3 style="text-align:right; color:var(--green); margin-top:10px"><i class="fas fa-file-upload"></i> تسليم الواجبات</h3>
+      <div class="card">
+        <label>نوع الواجب:</label>
+        <select id="as-type"><option value="ورقة عمل">ورقة عمل</option><option value="موضوع تعبير">موضوع تعبير</option></select>
+        <label>الوصف:</label>
+        <textarea id="as-desc" rows="3" placeholder="ملاحظاتك..."></textarea>
+        <div style="border:2px dashed var(--border); padding:20px; border-radius:12px; margin-bottom:15px; cursor:pointer; text-align:center" onclick="document.getElementById('as-file').click()">
+            <i class="fas fa-cloud-upload-alt fa-2x" style="color:var(--blue)"></i><br>اضغط لرفع ملف
+            <input type="file" id="as-file" hidden onchange="readAsFile(this)">
+            <div id="as-fname" style="margin-top:5px; color:#94a3b8; font-size:12px"></div>
         </div>
+        <button class="btn btn-p" onclick="uploadAss()">إرسال الواجب <i class="fas fa-paper-plane"></i></button>
+      </div>
+  </div>
 
-        <!-- آراء الطلاب (Marquee with Avatars) -->
-        <h3 class="text-center font-head mt-4">قصص نجاح</h3>
-        <div class="reviews-marquee">
-            <div class="marquee-track">
-                <!-- سيتم تعبئتها بـ JS -->
-            </div>
+  <div id="tab-library" class="hidden">
+      <h3 style="text-align:right; color:var(--gold); margin-top:10px"><i class="fas fa-book-open"></i> مكتبة الفصل</h3>
+      <div id="lib-content" class="card">جاري تحميل المصادر...</div>
+  </div>
+
+  <div id="tab-leader" class="hidden">
+      <div class="card" style="margin-top:10px; border-top: 4px solid var(--gold)">
+         <h3 style="color:var(--gold); margin:0 0 15px 0; text-align:right"><i class="fas fa-crown"></i> لوحة المتصدرين</h3>
+         <table id="leader-tbl"><thead><tr><th>#</th><th>الطالب</th><th>الدرجة</th></tr></thead><tbody id="leader-body"></tbody></table>
+      </div>
+  </div>
+
+  <div id="tab-history" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px">
+          <h3 style="text-align:right; color:var(--green); margin:0"><i class="fas fa-history"></i> سجلي الدراسي</h3>
+          <button class="btn btn-g" style="width:auto; padding:5px 15px" onclick="genReport()">📄 تقرير PDF</button>
+      </div>
+      <div class="card" style="margin-top:15px">
+         <h4 style="margin:0 0 10px 0; color:#94a3b8">مقارنة مع متوسط الصف</h4>
+         <div id="perf-chart" class="chart-box">
+             <div style="text-align:center; flex:1">جاري التحميل...</div>
+         </div>
+      </div>
+      <div class="card" style="padding:0; overflow:hidden">
+        <table><thead><tr><th>الامتحان</th><th>الدرجة</th><th>الإجراء</th></tr></thead><tbody id="res-list"></tbody></table>
+      </div>
+  </div>
+  
+  <div id="tab-notes" class="hidden">
+      <h3 style="text-align:right; color:var(--text); margin-top:10px"><i class="fas fa-sticky-note"></i> مفكرتي الخاصة</h3>
+      <div class="card">
+          <textarea id="my-notes" rows="10" placeholder="اكتب ملاحظاتك للحفظ هنا..."></textarea>
+          <button class="btn btn-p" onclick="saveNotes()">حفظ الملاحظات <i class="fas fa-save"></i></button>
+      </div>
+  </div>
+  
+  <div id="tab-contact" class="hidden">
+      <h3 style="text-align:right; color:var(--red); margin-top:10px"><i class="fas fa-envelope"></i> الشكاوى والمراسلات</h3>
+      <div class="card">
+          <textarea id="contact-msg" rows="5" placeholder="اكتب شكوتك أو رسالتك للمعلم..."></textarea>
+          <button class="btn btn-p" onclick="sendComplaint()">إرسال</button>
+      </div>
+      <h4 style="margin-right:10px; color:var(--text)">صندوق الوارد والردود:</h4>
+      <div id="msg-history" class="hidden" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- ======================= -->
+<!-- ✅ واجهة الامتحان -->
+<!-- ======================= -->
+<div id="v-exam" class="container hidden">
+  <div class="card" style="position:sticky; top:10px; z-index:100; backdrop-filter:blur(20px); background:rgba(15, 23, 42, 0.9);">
+    <div style="display:flex; justify-content:space-between; align-items:center">
+      <div>
+        <h2 id="xt" style="margin:0; color:var(--blue); font-size:18px"></h2>
+        <div style="font-size:12px; color:#94a3b8">عدد الأسئلة: <span id="q-count"></span></div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+         <div class="timer-box" id="timer-display"><i class="fas fa-clock"></i> <span id="time-val">00:00</span></div>
+         <button class="btn btn-r" style="width:auto; padding:5px 15px; font-size:12px;" onclick="exitExam()">خروج <i class="fas fa-door-open"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div id="q-box" style="text-align:right"></div>
+    <div style="height:1px; background:var(--border); margin:20px 0"></div>
+    <div style="display:flex; gap:10px; justify-content:space-between">
+      <button class="btn btn-o" style="width:auto" onclick="nav(-1)"><i class="fas fa-arrow-right"></i> السابق</button>
+      <div id="qs-ind" style="display:flex; gap:5px; align-items:center; color:#94a3b8"></div>
+      <button class="btn btn-p" style="width:auto" onclick="nav(1)">التالي <i class="fas fa-arrow-left"></i></button>
+    </div>
+    <button id="s-btn" class="btn btn-g hidden" onclick="sub()" style="margin-top:20px">إنهاء وتسليم الامتحان <i class="fas fa-check-circle"></i></button>
+  </div>
+</div>
+
+<div id="review-modal" class="container hidden" style="position:fixed; top:0; left:0; right:0; bottom:0; z-index:4000; overflow-y:auto; background:var(--bg); max-width:100%">
+  <div class="container" style="max-width:800px; margin-top:20px">
+    <div class="card" style="border-top:4px solid var(--blue)">
+        <div id="cert-review-btn" style="text-align:center; margin-bottom:20px" class="hidden">
+           <button class="btn btn-g" style="width:auto; display:inline-flex" onclick="cert(st.title, st.lastScore)">📜 تحميل الشهادة الآن</button>
         </div>
+        <h2 style="text-align:center; color:var(--text)">مراجعة الإجابات النموذجية</h2>
+        <div id="review-content"></div>
+        <button class="btn btn-o" onclick="closeReview()">إغلاق المراجعة والعودة</button>
+    </div>
+  </div>
+</div>
+
+<div id="cert-modal">
+  <div class="cert-scaler">
+    <div class="cert-box" id="cert-node">
+      <div style="text-align: center; margin-bottom: 10px;">
+          <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Logo" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #f59e0b">
+          <h2 style="color:#1e3a8a; margin:0; font-family:'Amiri'; font-size: 32px;">منصة نبراس </h2>
+          <p style="color:#d97706; margin:0; font-size: 16px;">للتميز والإبداع</p>
+      </div>
+      <img id="c-img" class="cert-student-img" src="">
+      <h1 style="font-family:'Amiri'; font-size:48px; color:#1e3a8a; margin:10px 0">شهادة تفوق</h1>
+      <p style="font-size:24px; margin: 10px 0;">يسرنا منح الطالب/ة:</p>
+      <h2 id="c-name" style="color:black; font-size:38px; margin:5px 0; border-bottom:2px solid #ccc; display:inline-block; padding:0 40px; font-family:'Amiri'"></h2>
+      <p style="margin-top:20px; font-size: 20px;">لاجتيازه اختبار <b id="c-ex" style="color:#d97706"></b> بنتيجة:</p>
+      <h1 id="c-sc" style="color:#1e3a8a; font-size:60px; margin:10px 0; font-family:'Tajawal'"></h1>
         
-        <div class="text-center mt-4 mb-4 py-5">
-            <p class="text-muted text-sm">جميع الحقوق محفوظة © نبراس 2026</p>
+      <div style="margin-top:60px; display:flex; justify-content:space-between; align-items:flex-end; padding: 0 30px;">
+        <div style="text-align:right;">
+          <p style="margin:0; font-weight:bold; color:#555; font-size:18px">مدير المنصة</p>
+          <h3 id="t-name" style="margin:5px 0; font-family:'Amiri'; font-size:30px; color:#000">أ. عبد الرحمن نصر الله</h3>
         </div>
+        <div style="position:relative; width:160px; height:130px">
+            <img id="stamp-img" src="" class="stamp-seal" crossorigin="anonymous">
+        </div>
+      </div>
     </div>
-
-    <!-- =========================================
-         2. AUTH SCREENS (تسجيل الدخول / التسجيل)
-         ========================================= -->
-    <div id="auth-container" class="container hidden" style="padding-top: 40px;">
-        <button class="btn-icon mb-4" onclick="nav.to('landing')"><i class="fa-solid fa-arrow-right"></i></button>
-
-        <!-- Login -->
-        <div id="view-login" class="auth-card hidden">
-            <div class="auth-header">
-                <h2>تسجيل الدخول</h2>
-                <p class="text-muted">مرحباً بعودتك! تابع تقدمك الآن.</p>
-            </div>
-            <div class="input-wrap">
-                <i class="fa-regular fa-envelope input-icon"></i>
-                <input type="email" id="log-email" class="form-input" placeholder="البريد الإلكتروني" dir="ltr">
-            </div>
-            <div class="input-wrap">
-                <i class="fa-regular fa-lock input-icon"></i>
-                <input type="password" id="log-pass" class="form-input" placeholder="كلمة المرور" dir="ltr">
-            </div>
-            <button class="btn btn-primary w-full" onclick="auth.login()">دخول</button>
-            <p class="text-center mt-4 text-sm text-muted">ليس لديك حساب؟ <span class="text-accent" style="cursor:pointer" onclick="nav.to('register')">أنشئ حساباً</span></p>
-        </div>
-
-        <!-- Register -->
-        <div id="view-register" class="auth-card hidden">
-            <div class="text-center mb-4">
-                <div style="width:110px; height:110px; background:var(--bg-surface-2); border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; border:2px dashed var(--text-muted); position:relative" onclick="document.getElementById('reg-img').click()">
-                    <img id="reg-preview" src="" style="width:100%; height:100%; object-fit:cover; display:none">
-                    <i id="reg-icon" class="fa-solid fa-camera fa-2x text-muted"></i>
-                </div>
-                <input type="file" id="reg-img" hidden onchange="utils.preview(this)">
-                <p class="text-xs text-muted mt-2">اختر صورتك الرمزية</p>
-            </div>
-            <div class="input-wrap"><input id="reg-code" class="form-input" placeholder="كود التفعيل"></div>
-            <div class="input-wrap"><input id="reg-name" class="form-input" placeholder="الاسم الرباعي"></div>
-            <div class="input-wrap"><input id="reg-phone" class="form-input" placeholder="رقم الهاتف"></div>
-            <div class="input-wrap"><input id="reg-email" class="form-input" placeholder="البريد" dir="ltr"></div>
-            <div class="input-wrap"><input id="reg-pass" class="form-input" placeholder="كلمة المرور" dir="ltr"></div>
-            <button class="btn btn-primary w-full" onclick="auth.register()">تفعيل الحساب</button>
-        </div>
-
-        <!-- Trial -->
-        <div id="view-trial" class="auth-card hidden">
-            <div class="card text-center" style="border-color: var(--accent);">
-                <i class="fa-solid fa-gift text-accent" style="font-size:3rem; margin-bottom:15px"></i>
-                <h3 class="font-head">تجربة 24 ساعة</h3>
-                <p class="text-muted text-sm">وصول كامل لجميع المميزات مجاناً</p>
-            </div>
-            <div class="input-wrap"><input id="trial-name" class="form-input" placeholder="الاسم"></div>
-            <div class="input-wrap"><input id="trial-phone" class="form-input" placeholder="رقم الهاتف"></div>
-            <div class="input-wrap"><select id="trial-class" class="form-input"><option disabled selected>جاري التحميل...</option></select></div>
-            <div class="input-wrap"><input id="trial-email" class="form-input" placeholder="البريد" dir="ltr"></div>
-            <button class="btn btn-accent w-full" onclick="auth.trial()">ابدأ الآن</button>
-        </div>
-
-        <!-- Guest Store -->
-        <div id="view-store-guest" class="auth-card hidden">
-            <h3 class="text-center font-head mb-4">باقات الاشتراك</h3>
-            
-            <div class="pkg-grid">
-                <!-- الباقة الذهبية -->
-                <div class="pkg-card featured" data-tilt>
-                    <div class="pkg-badge">الأكثر طلباً</div>
-                    <i class="fa-solid fa-crown pkg-icon text-accent"></i>
-                    <h3 class="pkg-title">الباقة الماسية</h3>
-                    <p class="text-sm text-muted">الحل الشامل للتفوق الدراسي</p>
-                    <div class="pkg-price">25 <span>JOD</span></div>
-                    <ul class="pkg-features">
-                        <li><i class="fa-solid fa-circle-check"></i> فتح جميع المواد الدراسية</li>
-                        <li><i class="fa-solid fa-circle-check"></i> بنك أسئلة ذكي (AI)</li>
-                        <li><i class="fa-solid fa-circle-check"></i> مراجعات مكثفة</li>
-                    </ul>
-                    <button class="btn btn-primary w-full" onclick="utils.buy('الماسية', '25')">اشتراك عبر واتساب</button>
-                </div>
-
-                <!-- باقة المادة -->
-                <div class="pkg-card" data-tilt>
-                    <i class="fa-solid fa-layer-group pkg-icon text-primary"></i>
-                    <h3 class="pkg-title">باقة المادة</h3>
-                    <p class="text-sm text-muted">تركيز كامل على مادة واحدة</p>
-                    <div class="pkg-price">10 <span>JOD</span></div>
-                    <ul class="pkg-features">
-                        <li><i class="fa-solid fa-circle-check"></i> شرح كامل لمادة واحدة</li>
-                        <li><i class="fa-solid fa-circle-check"></i> امتحانات وأوراق عمل</li>
-                    </ul>
-                    <button class="btn btn-glass w-full" onclick="utils.buy('مادة واحدة', '10')">اشتراك عبر واتساب</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- =========================================
-         3. التطبيق الداخلي (Main App)
-         ========================================= -->
-    <div id="main-app" class="container hidden" style="padding-top: 80px;">
-        
-        <!-- Tab: Home -->
-        <div id="tab-home" class="hidden">
-            <!-- Welcome Card -->
-            <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; border: none; padding: 25px;">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h2 class="font-head m-0 text-2xl">أهلاً، <span id="u-name">...</span> 👋</h2>
-                        <p class="text-sm opacity-90 mt-1">الصف: <span id="u-class">...</span></p>
-                    </div>
-                    <div style="text-align: center;">
-                        <div class="avatar-tile" style="background: rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 18px; font-size: 1.5rem;">
-                            <span class="font-head fw-bold" id="u-lvl">1</span>
-                        </div>
-                        <span class="text-xs mt-1 block opacity-80">Level</span>
-                    </div>
-                </div>
-                <div class="flex gap-3 mt-5">
-                    <div class="w-full bg-glass p-3 rounded-lg text-center backdrop-blur-md border border-white/10">
-                        <span class="block font-bold text-xl" id="st-ex">0</span>
-                        <span class="text-xs opacity-80">الاختبارات</span>
-                    </div>
-                    <div class="w-full bg-glass p-3 rounded-lg text-center backdrop-blur-md border border-white/10">
-                        <span class="block font-bold text-xl" id="st-avg">0%</span>
-                        <span class="text-xs opacity-80">المعدل</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Leaderboard Mini -->
-            <div class="card mt-4 p-4">
-                <div class="card-header">
-                    <h3 class="card-title text-accent"><i class="fa-solid fa-trophy mr-2"></i> المتصدرون</h3>
-                </div>
-                <div id="mini-leaderboard" class="flex flex-col gap-2">
-                    <!-- JS Populated -->
-                </div>
-            </div>
-
-            <h3 class="font-head text-lg mb-3 mt-5 text-primary">المواد الدراسية</h3>
-            <div id="home-list" class="flex flex-col gap-3">
-                <!-- List Items JS -->
-            </div>
-        </div>
-
-        <!-- Tab: Library -->
-        <div id="tab-library" class="hidden">
-            <div class="tabs-container">
-                <div class="tab-btn active" onclick="ui.seg('lib','exams',this)">امتحانات</div>
-                <div class="tab-btn" onclick="ui.seg('lib','assign',this)">واجبات</div>
-                <div class="tab-btn" onclick="ui.seg('lib','files',this)">مصادر</div>
-            </div>
-
-            <div id="seg-lib-exams">
-                <div id="exams-empty" class="text-center py-5 text-muted">
-                    <i class="fa-regular fa-folder-open" style="font-size:3.5rem; opacity:0.3; margin-bottom:15px; display:block"></i>
-                    <p>اختر مادة من الصفحة الرئيسية</p>
-                </div>
-                <div id="exams-content" class="flex flex-col gap-3"></div>
-            </div>
-
-            <div id="seg-lib-assign" class="hidden">
-                <div class="card">
-                    <h3 class="font-head text-md mb-4">رفع واجب</h3>
-                    <div class="input-wrap"><select id="as-type" class="form-input"><option>ورقة عمل</option><option>مشروع</option></select></div>
-                    <div class="input-wrap"><textarea id="as-desc" class="form-input" rows="4" placeholder="ملاحظات..."></textarea></div>
-                    <div onclick="document.getElementById('as-file').click()" class="text-center p-5 border-dashed rounded-lg mb-4 cursor-pointer bg-surface-2 transition hover:bg-surface-hover" style="border: 2px dashed var(--text-muted);">
-                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-primary mb-3"></i>
-                        <p class="text-sm text-muted" id="as-name">اختر ملف (PDF, IMG)</p>
-                        <input type="file" id="as-file" hidden onchange="utils.handleFile(this)">
-                    </div>
-                    <button class="btn btn-primary w-full" onclick="app.upload()">إرسال</button>
-                </div>
-            </div>
-
-            <div id="seg-lib-files" class="hidden flex flex-col gap-3" id="files-content"></div>
-        </div>
-
-        <!-- Tab: Tools -->
-        <div id="tab-tools" class="hidden">
-            <div class="tabs-container">
-                <div class="tab-btn active" onclick="ui.seg('tool','cal',this)">التقويم</div>
-                <div class="tab-btn" onclick="ui.seg('tool','tasks',this)">المهام</div>
-                <div class="tab-btn" onclick="ui.seg('tool','notes',this)">مفكرة</div>
-            </div>
-            
-            <div id="seg-tool-cal">
-                <div class="card text-center p-4">
-                    <h3 class="font-head mb-3 text-accent">التقويم الدراسي</h3>
-                    <div class="flex justify-between mb-3 px-2">
-                        <span class="font-bold">يناير 2026</span>
-                        <div class="flex gap-2">
-                            <i class="fa-solid fa-chevron-right text-muted cursor-pointer"></i>
-                            <i class="fa-solid fa-chevron-left text-muted cursor-pointer"></i>
-                        </div>
-                    </div>
-                    <div id="calendar-grid" class="calendar-grid"></div>
-                </div>
-                <h4 class="font-head text-sm mb-2 mt-4 text-muted">الأحداث القادمة</h4>
-                <div id="calendar-events" class="flex flex-col gap-2">
-                    <div class="list-item">
-                        <div class="list-icon primary"><i class="fa-solid fa-calendar-day"></i></div>
-                        <div class="list-content">
-                            <h4>امتحان رياضيات</h4>
-                            <p>الأحد القادم - الساعة 10:00</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="seg-tool-tasks" class="hidden">
-                <div class="flex gap-2 mb-4">
-                    <input id="new-task" class="form-input" placeholder="مهمة جديدة..." style="margin:0">
-                    <button class="btn btn-primary btn-icon" onclick="app.addTask()"><i class="fa-solid fa-plus"></i></button>
-                </div>
-                <div id="tasks-list" class="flex flex-col gap-3"></div>
-            </div>
-
-            <div id="seg-tool-notes" class="hidden">
-                <div class="card p-0 overflow-hidden">
-                    <textarea id="my-notes" class="w-full p-4 bg-transparent border-none resize-none text-main" rows="16" placeholder="اكتب هنا..." style="width:100%; border:none; background:transparent; padding:20px; color:var(--text-main); font-family:inherit; line-height:1.6"></textarea>
-                    <div class="p-3 border-t border-color bg-surface-2" style="padding:15px; border-top:1px solid var(--border)">
-                        <button class="btn btn-sm btn-primary w-full" onclick="app.saveNotes()">حفظ الملاحظات</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab: Profile -->
-        <div id="tab-profile" class="hidden">
-            <div class="profile-header">
-                <div class="profile-img-wrap">
-                    <img id="profile-img" src="">
-                    <div class="edit-badge" onclick="document.getElementById('edit-pic').click()"><i class="fa-solid fa-pen"></i></div>
-                    <input type="file" id="edit-pic" hidden onchange="actions.updatePic(this)">
-                </div>
-                <h3 id="p-name" class="font-head m-0 text-xl">...</h3>
-                <p id="p-class" class="text-muted text-sm mt-1">...</p>
-            </div>
-            
-            <div class="card mt-4 p-4">
-                <h4 class="font-head text-sm mb-3 text-muted">إحصائيات الأداء</h4>
-                <canvas id="chart-canvas" height="200"></canvas>
-            </div>
-            
-            <h4 class="font-head text-sm mb-2 mt-5 px-2">سجل النشاط الأخير</h4>
-            <div id="history-list" class="flex flex-col gap-2"></div>
-            
-            <button class="btn btn-glass w-full mt-5 text-danger border-danger/20 hover:bg-danger/10" onclick="auth.logout()">تسجيل الخروج</button>
-        </div>
-
-    </div>
-
-    <!-- Bottom Navigation Bar -->
-    <nav id="bottom-nav" class="bottom-nav hidden">
-        <div class="nav-link active" onclick="ui.tab('home', this)">
-            <i class="fa-solid fa-house"></i>
-            <span>الرئيسية</span>
-        </div>
-        <div class="nav-link" onclick="ui.tab('library', this)">
-            <i class="fa-solid fa-book-open"></i>
-            <span>المكتبة</span>
-        </div>
-        <div class="nav-link" onclick="ui.tab('tools', this)">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>الأدوات</span>
-        </div>
-        <div class="nav-link" onclick="ui.tab('profile', this)">
-            <i class="fa-solid fa-user"></i>
-            <span>حسابي</span>
-        </div>
-    </nav>
-
-    <!-- Exam Overlay -->
-    <div id="exam-overlay" class="hidden" style="position:fixed; inset:0; background:var(--bg-body); z-index:5000; display:flex; flex-direction:column;">
-        <div class="flex justify-between items-center p-4 border-b border-color bg-surface">
-            <div>
-                <h3 id="ex-title" class="font-head m-0 text-primary text-md">الامتحان</h3>
-                <span class="text-xs text-muted"><span id="q-idx">1</span> / <span id="q-total">10</span></span>
-            </div>
-            <div id="ex-timer" class="bg-danger text-white px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2">
-                <i class="fa-regular fa-clock"></i> 00:00
-            </div>
-        </div>
-        <div style="height:4px; background:var(--bg-surface-2); width:100%"><div id="ex-prog" style="height:100%; width:0%; background:var(--primary); transition:width 0.3s"></div></div>
-        
-        <div class="flex-1 overflow-y-auto p-5">
-            <div class="card text-center py-6 border-primary/20 shadow-lg">
-                <h3 id="q-txt" class="text-lg leading-relaxed m-0 font-head"></h3>
-                <div id="q-img" class="mt-4 rounded-lg overflow-hidden"></div>
-            </div>
-            <div id="q-opts" class="flex flex-col gap-3"></div>
-        </div>
-        
-        <div class="p-4 border-t border-color bg-surface flex justify-between">
-            <button class="btn btn-glass btn-sm px-4" onclick="exam.nav(-1)">السابق</button>
-            <button class="btn btn-glass btn-sm text-danger border-danger/30 px-4" onclick="exam.quit()">خروج</button>
-            <button class="btn btn-primary btn-sm px-6" onclick="exam.nav(1)" id="btn-next">التالي</button>
-        </div>
-    </div>
+  </div>
+  <div style="position:absolute; bottom:20px; width:100%; text-align:center; z-index:9999; display:flex; gap:10px; justify-content:center">
+    <button class="btn btn-g" style="width:auto; padding:10px 40px" onclick="dlCert()">💾 حفظ الصورة</button>
+    <button class="btn btn-o" style="width:auto; background:white; color:black" onclick="document.getElementById('cert-modal').style.display='none'">إغلاق</button>
+  </div>
+</div>
 
 <script>
-    // ==================== CONFIGURATION ====================
-    const ADMIN_NUMBER = "962799999999"; 
-    const CFG = {
-        api: "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec",
-        defImg: "https://api.dicebear.com/7.x/bottts/svg?seed=user",
-        // Avatars for reviews (Cartoonish & Random)
-        avatars: [
-            "https://api.dicebear.com/7.x/micah/svg?seed=Felix",
-            "https://api.dicebear.com/7.x/micah/svg?seed=Aneka",
-            "https://api.dicebear.com/7.x/micah/svg?seed=Willow",
-            "https://api.dicebear.com/7.x/micah/svg?seed=Milo",
-            "https://api.dicebear.com/7.x/micah/svg?seed=Zoe",
-            "https://api.dicebear.com/7.x/micah/svg?seed=Caleb"
-        ]
-    };
+// ============================================
+// ⚠️ هام: ضع رابط النشر (Web App URL) هنا
+const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
+// ============================================
 
-    let STATE = {
-        token: localStorage.getItem('tk'),
-        user: { name: localStorage.getItem('nm'), class: localStorage.getItem('cl'), photo: localStorage.getItem('ph') },
-        did: localStorage.getItem('did') || 'dev_'+Date.now(),
-        data: { subs: [], tasks: JSON.parse(localStorage.getItem('tasks')||'[]') },
-        exam: { on: false, data: [], ans: {}, idx: 0, time: null, sec: 0 },
-        tmp: {}
-    };
-    if(!localStorage.getItem('did')) localStorage.setItem('did', STATE.did);
+const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
+const DEF_IMG = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+let token = localStorage.getItem('tk');
 
-    // ==================== INITIALIZATION ====================
-    window.onload = () => {
-        if(localStorage.getItem('theme')=='light') utils.toggleTheme(false);
-        
-        // Populate Reviews
-        const reviews = [
-            { name: "سالم العمري", text: "منصة ممتازة جداً ساعدتني في الفهم!" },
-            { name: "نور الهدى", text: "أفضل منصة للتعليم عن بعد بلا منازع." },
-            { name: "كريم يوسف", text: "الاختبارات واقعية ومفيدة للغاية." },
-            { name: "جنى محمد", text: "التصميم رائع وسهل الاستخدام." },
-            { name: "عمر الفاروق", text: "شكراً لكم على هذا الجهد الرائع." },
-            { name: "ليان الأحمد", text: "تجربة تعليمية لا مثيل لها." }
-        ];
-        
-        const track = document.querySelector('.marquee-track');
-        [...reviews, ...reviews].forEach((r, i) => {
-            let img = CFG.avatars[i % CFG.avatars.length];
-            track.innerHTML += `
-                <div class="review-card">
-                    <img src="${img}" class="review-img">
-                    <div class="review-content">
-                        <p>"${r.text}"</p>
-                        <span class="review-name">${r.name}</span>
-                    </div>
-                </div>
-            `;
+// ✅ إنشاء معرف جهاز فريد عند أول زيارة
+let deviceId = localStorage.getItem('did');
+if (!deviceId) {
+    deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now();
+    localStorage.setItem('did', deviceId);
+}
+
+let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
+let allSubjects = [];
+
+const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
+
+async function callApi(action, data = {}) {
+    data.action = action;
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(data),
         });
+        const result = await response.json();
+        return result;
+    } catch (e) {
+        console.error(e);
+        return { success: false, message: 'تعذر الاتصال بالخادم' };
+    }
+}
 
-        // Routing Logic
-        if(STATE.token) {
-            app.init(); 
-        } else {
-            document.getElementById('loader').style.display='none';
-            document.getElementById('landing-screen').classList.remove('hidden');
-        }
+function cleanUrlAndDash() {
+    const cleanURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.pushState({path:cleanURL},'',cleanURL);
+    loadDash();
+}
 
-        const p = new URLSearchParams(window.location.search).get('exam');
-        if(p) sessionStorage.setItem('p_exam', p);
-        
-        AOS.init();
+window.onload = function() {
+  document.getElementById('stamp-img').src = STAMP_URL;
+  const urlParams = new URLSearchParams(window.location.search);
+  const examParam = urlParams.get('exam');
+  if (examParam) {
+      sessionStorage.setItem('pending', examParam);
+      window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  
+  // ✅ التوجيه الذكي: إذا كان مسجل دخول -> للوحة، وإلا -> لصفحة الهبوط
+  if(token) checkPending(); else showLanding();
+  
+  document.addEventListener("visibilitychange", () => {
+    if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
+        st.cheats++;
+        Swal.fire({ icon: 'warning', title: 'تحذير!', text: 'الخروج من الامتحان ممنوع!', timer: 3000, showConfirmButton: false });
+    }
+  });
+  setInterval(checkMsgs, 60000);
+  checkBroadcast();
+};
+
+// === وظائف التنقل الجديدة (Landing & Auth) ===
+function showLanding() {
+    document.getElementById('landing-page').classList.remove('hidden');
+    document.getElementById('auth-container').classList.add('hidden');
+    document.getElementById('v-dash').classList.add('hidden');
+}
+
+function showLogin(type) {
+    document.getElementById('landing-page').classList.add('hidden');
+    document.getElementById('auth-container').classList.remove('hidden');
+    switchAuth(type === 'trial' ? 'trial' : 'login');
+}
+
+function switchAuth(type) {
+    ['f-login', 'f-reg', 'f-trial'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    let title = 'تسجيل الدخول';
+    if(type === 'register') title = 'تفعيل اشتراك جديد';
+    if(type === 'trial') title = 'تجربة مجانية';
+    document.getElementById('auth-title').innerText = title;
+    
+    if(type === 'login') document.getElementById('f-login').classList.remove('hidden');
+    else if(type === 'register') document.getElementById('f-reg').classList.remove('hidden');
+    else document.getElementById('f-trial').classList.remove('hidden');
+}
+
+function tog(r){ switchAuth(r ? 'register' : 'login'); } // دعم للكود القديم
+
+function switchTab(tabId, el) {
+    ['exams', 'library', 'leader', 'history', 'assign', 'contact', 'notes'].forEach(id => document.getElementById('tab-'+id).classList.add('hidden'));
+    document.getElementById('tab-'+tabId).classList.remove('hidden');
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    if(tabId === 'history') loadStats();
+    if(tabId === 'notes') loadNotes();
+    if(tabId === 'contact') loadMsgHistory();
+}
+
+function toggleTheme() {
+    let b = document.body;
+    if(b.getAttribute('data-theme') == 'light') {
+        b.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-icon').className = 'fas fa-moon';
+    } else {
+        b.setAttribute('data-theme', 'light');
+        document.getElementById('theme-icon').className = 'fas fa-sun';
+    }
+}
+
+function readP(i){ 
+  if(i.files[0]){ 
+    let r=new FileReader(); 
+    r.onload=e=>{
+      let img = new Image(); img.src = e.target.result;
+      img.onload = function() {
+        let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
+        let MAX_W = 150; let scale = MAX_W / img.width;
+        canvas.width = MAX_W; canvas.height = img.height * scale;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        st.photo = canvas.toDataURL('image/jpeg', 0.7);
+        document.getElementById('p-txt').innerHTML='<i class="fas fa-check-circle" style="color:var(--green)"></i> تم الاختيار';
+        document.getElementById('ph-box').style.borderColor = 'var(--green)';
+      }
+    }; r.readAsDataURL(i.files[0]); 
+  } 
+}
+
+// === العمليات الأساسية (Login, Register, Trial) ===
+function login(){
+  let e=document.getElementById('le').value, p=document.getElementById('lp').value;
+  ld(1); 
+  // ✅ إرسال deviceId مع الدخول
+  callApi('loginUser', {email:e, pass:p, deviceId:deviceId}).then(r=>{ 
+      ld(0); 
+      if(r.success){ 
+          sv(r); checkPending(); 
+      } else {
+          if(r.message === 'EXPIRED') {
+               Swal.fire({
+                  icon: 'warning', title: 'انتهى اشتراكك',
+                  text: 'انتهت الصلاحية. للتجديد تواصل معنا.',
+                  confirmButtonText: 'تجديد عبر الواتساب', confirmButtonColor: '#25D366'
+               }).then((res) => { if(res.isConfirmed) window.open(r.wa, '_blank'); });
+          } else {
+               Swal.fire('خطأ',r.message,'error'); 
+          }
+      }
+  });
+}
+
+function reg(){
+  let d={code:document.getElementById('rc').value, name:document.getElementById('rn').value, phone:document.getElementById('rph').value, email:document.getElementById('re').value, password:document.getElementById('rpa').value, photoData:st.photo, deviceId:deviceId};
+  if(!d.code) return Swal.fire('تنبيه','بيانات ناقصة','warning');
+  ld(1); 
+  callApi('registerStudent', {d:d}).then(r=>{ 
+      ld(0); 
+      if(r.success){ sv(r); Swal.fire('تم','أهلاً بك','success').then(checkPending); } else Swal.fire('خطأ',r.message,'error'); 
+  });
+}
+
+function createTrial() {
+    let d = {
+        name: document.getElementById('tn').value, phone: document.getElementById('tph').value,
+        classLevel: document.getElementById('tcl').value, email: document.getElementById('te').value,
+        deviceId: deviceId
     };
-
-    // ==================== UTILS ====================
-    const utils = {
-        loader: (s) => document.getElementById('loader').style.display = s?'flex':'none',
-        api: async (act, dt={}) => {
-            dt.action = act;
-            try { return await (await fetch(CFG.api, {method:'POST', body:JSON.stringify(dt)})).json(); }
-            catch { return {success:false, message:'خطأ اتصال'}; }
-        },
-        toggleTheme: (t=true) => {
-            let b = document.body;
-            let n = t ? (b.getAttribute('data-theme')=='light'?'dark':'light') : 'light';
-            b.setAttribute('data-theme', n); localStorage.setItem('theme', n);
-        },
-        preview: (i) => {
-            if(i.files[0]) {
-                let r = new FileReader();
-                r.onload = e => {
-                    STATE.tmp.photo = e.target.result;
-                    document.getElementById('reg-preview').src = e.target.result;
-                    document.getElementById('reg-preview').style.display='block';
-                    document.getElementById('reg-icon').style.display='none';
-                }; r.readAsDataURL(i.files[0]);
-            }
-        },
-        handleFile: (i) => {
-            if(i.files[0]) {
-                document.getElementById('as-name').innerText = i.files[0].name;
-                let r = new FileReader();
-                r.onload = e => STATE.tmp.file = {d:e.target.result, n:i.files[0].name};
-                r.readAsDataURL(i.files[0]);
-            }
-        },
-        buy: (n, p) => {
-            window.open(`https://wa.me/${ADMIN_NUMBER}?text=مرحباً، أريد الاشتراك في باقة ${n} بسعر ${p}`, '_blank');
-        },
-        toggleFaq: (el) => {
-            el.parentElement.classList.toggle('active');
-        }
-    };
-
-    // ==================== NAV ====================
-    const nav = {
-        to: (v) => {
-            document.getElementById('landing-screen').classList.add('hidden');
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('main-header').classList.add('hidden');
-            document.getElementById('bottom-nav').classList.add('hidden');
-
-            if (v === 'landing') {
-                document.getElementById('landing-screen').classList.remove('hidden');
-            } else if (['login','register','trial','store-guest'].includes(v)) {
-                document.getElementById('auth-container').classList.remove('hidden');
-                ['view-login','view-register','view-trial','view-store-guest'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.classList.add('hidden');
-                });
-                
-                const targetView = document.getElementById('view-'+v);
-                if(targetView) targetView.classList.remove('hidden');
-                
-                if(v=='trial') auth.loadClasses();
-            }
-        }
-    };
-
-    const ui = {
-        tab: (id, el) => {
-            document.querySelectorAll('#main-app > div').forEach(d => d.classList.add('hidden'));
-            document.getElementById('tab-'+id).classList.remove('hidden');
-            document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            window.scrollTo(0,0);
-        },
-        seg: (p, id, el) => {
-            document.querySelectorAll(`[id^="seg-${p}-"]`).forEach(s => s.classList.add('hidden'));
-            document.getElementById(`seg-${p}-${id}`).classList.remove('hidden');
-            el.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-        }
-    };
-
-    // ==================== AUTH ====================
-    const auth = {
-        login: async () => {
-            let e = document.getElementById('log-email').value, p = document.getElementById('log-pass').value;
-            if(!e||!p) return Swal.fire('تنبيه','بيانات ناقصة','warning');
-            utils.loader(1);
-            let r = await utils.api('loginUser', {email:e, pass:p, deviceId:STATE.did});
-            utils.loader(0);
-            if(r.success) auth.save(r); else Swal.fire('خطأ',r.message,'error');
-        },
-        register: async () => {
-            let d = {
-                code: document.getElementById('reg-code').value, name: document.getElementById('reg-name').value,
-                phone: document.getElementById('reg-phone').value, email: document.getElementById('reg-email').value,
-                password: document.getElementById('reg-pass').value, photoData: STATE.tmp.photo, deviceId: STATE.did
-            };
-            if(!d.code) return Swal.fire('تنبيه','الكود مطلوب','warning');
-            utils.loader(1);
-            let r = await utils.api('registerStudent', {d:d});
-            utils.loader(0);
-            if(r.success) auth.save(r); else Swal.fire('خطأ',r.message,'error');
-        },
-        trial: async () => {
-            let d = {
-                name: document.getElementById('trial-name').value, phone: document.getElementById('trial-phone').value,
-                classLevel: document.getElementById('trial-class').value, email: document.getElementById('trial-email').value, deviceId: STATE.did
-            };
-            if(!d.name) return Swal.fire('تنبيه','الاسم مطلوب','warning');
-            utils.loader(1);
-            let r = await utils.api('createTrialAccount', {d:d});
-            utils.loader(0);
-            if(r.success) { Swal.fire('تم','كلمة المرور: '+r.tempPass,'success').then(()=>auth.save(r)); }
-            else Swal.fire('خطأ',r.message,'error');
-        },
-        save: (r) => {
-            localStorage.setItem('tk', r.token); localStorage.setItem('nm', r.name);
-            localStorage.setItem('cl', r.classLevel); if(r.photo) localStorage.setItem('ph', r.photo);
-            STATE.token = r.token; STATE.user = {name:r.name, class:r.classLevel, photo:r.photo};
-            app.init();
-        },
-        loadClasses: async () => {
-            let r = await utils.api('getPublicData');
-            if(r.classes) document.getElementById('trial-class').innerHTML = '<option disabled selected>اختر الصف</option>' + r.classes.map(c=>`<option>${c}</option>`).join('');
-        },
-        logout: () => { localStorage.clear(); location.reload(); }
-    };
-
-    // ==================== APP LOGIC ====================
-    const app = {
-        init: () => {
-            document.getElementById('landing-screen').classList.add('hidden');
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('main-header').classList.remove('hidden');
-            document.getElementById('bottom-nav').classList.remove('hidden');
-            document.getElementById('loader').style.display = 'none';
-            
-            document.getElementById('u-name').innerText = STATE.user.name;
-            document.getElementById('p-name').innerText = STATE.user.name;
-            document.getElementById('u-class').innerText = STATE.user.class;
-            document.getElementById('p-class').innerText = STATE.user.class;
-            document.getElementById('profile-img').src = STATE.user.photo || CFG.defImg;
-            
-            ui.tab('home', document.querySelector('.nav-link'));
-
-            app.loadData();
-            app.renderTasks();
-            app.renderCal();
-            app.renderLeaderboard();
-            
-            let p = sessionStorage.getItem('p_exam');
-            if(p) { sessionStorage.removeItem('p_exam'); exam.start(p); }
-        },
-        loadData: async () => {
-            let r1 = await utils.api('getExamsList', {token:STATE.token});
-            if(r1.subjects) {
-                STATE.data.subs = r1.subjects;
-                app.renderHome();
-                document.getElementById('st-ex').innerText = r1.subjects.reduce((a,s)=>a+s.exams.length,0);
-            }
-            let r2 = await utils.api('getStudentStats', {token:STATE.token});
-            if(r2.success) {
-                document.getElementById('st-avg').innerText = r2.myAvg + '%';
-                document.getElementById('u-lvl').innerText = Math.floor(r2.myAvg / 20) + 1;
-                app.renderHist(r2.history);
-                app.renderChart(r2.myAvg, r2.classAvg);
-            }
-            let r3 = await utils.api('getLibraryContent', {token:STATE.token});
-            if(r3.library) app.renderLib(r3.library);
-        },
-        renderHome: () => {
-            let h='';
-            STATE.data.subs.forEach(s => {
-                h += `<div class="list-item" onclick="app.openSub('${s.name}')">
-                        <div class="list-icon primary"><i class="fa-solid fa-book"></i></div>
-                        <div class="list-content">
-                            <h4>${s.name}</h4>
-                            <p>${s.exams.length} اختبار</p>
-                        </div>
-                        <i class="fa-solid fa-chevron-left text-muted text-sm"></i>
-                      </div>`;
-            });
-            document.getElementById('home-list').innerHTML = h;
-        },
-        renderLeaderboard: () => {
-            // Mock Leaderboard
-            const leaders = [
-                {name:"يزن محمود", score:99, img:CFG.avatars[3]},
-                {name:"لين سامر", score:97, img:CFG.avatars[4]},
-                {name:"كرم هاني", score:95, img:CFG.avatars[5]}
-            ];
-            let h = '';
-            leaders.forEach((l, i) => {
-                h += `<div class="list-item" style="padding:10px">
-                        <div class="text-accent fw-bold text-lg" style="width:25px">#${i+1}</div>
-                        <img src="${l.img}" style="width:35px;height:35px;border-radius:50%;border:1px solid var(--border-hover)">
-                        <div class="list-content"><h4>${l.name}</h4></div>
-                        <div class="text-success fw-bold">${l.score}%</div>
-                      </div>`;
-            });
-            document.getElementById('mini-leaderboard').innerHTML = h;
-        },
-        renderCal: () => {
-            let h = '';
-            for(let i=1; i<=7; i++) {
-                h += `<div class="cal-day ${i==4?'active':''}" style="padding:10px; border:1px solid var(--border); border-radius:10px; font-weight:bold">${i}</div>`;
-            }
-            document.getElementById('calendar-grid').innerHTML = h;
-        },
-        openSub: (n) => {
-            ui.tab('library', document.querySelectorAll('.nav-link')[1]);
-            ui.seg('lib', 'exams', document.querySelectorAll('#tab-library .tab-btn')[0]);
-            document.getElementById('exams-empty').classList.add('hidden');
-            let sub = STATE.data.subs.find(s=>s.name==n);
-            let h = `<h4 class="font-ui text-primary mb-4">${n}</h4>`;
-            sub.exams.forEach(x => {
-                h += `<div class="list-item" onclick="exam.start('${x.title}')">
-                        <div class="list-icon accent"><i class="fa-solid fa-pen-to-square"></i></div>
-                        <div class="list-content">
-                            <h4>${x.title}</h4>
-                            <p>${x.duration} د</p>
-                        </div>
-                        <button class="btn btn-primary btn-sm" style="padding:5px 12px">ابدأ</button>
-                      </div>`;
-            });
-            document.getElementById('exams-content').innerHTML = h;
-        },
-        renderLib: (l) => {
-            let h='';
-            l.forEach(f => {
-                h += `<a href="${f.link}" target="_blank" class="list-item">
-                        <div class="list-icon text-success" style="background:var(--bg-surface-hover)"><i class="fa-solid fa-file-arrow-down"></i></div>
-                        <div class="list-content">
-                            <h4>${f.title}</h4>
-                            <p>${f.date}</p>
-                        </div>
-                      </a>`;
-            });
-            document.getElementById('files-content').innerHTML = h;
-        },
-        renderTasks: () => {
-            let h='';
-            STATE.data.tasks.forEach((t,i) => {
-                h += `<div class="list-item">
-                        <input type="checkbox" ${t.done?'checked':''} onchange="app.togTask(${i})">
-                        <div class="list-content mx-2" style="text-decoration:${t.done?'line-through':''}; opacity:${t.done?0.5:1}">${t.txt}</div>
-                        <i class="fa-solid fa-trash text-danger cursor-pointer" onclick="app.delTask(${i})"></i>
-                      </div>`;
-            });
-            document.getElementById('tasks-list').innerHTML = h || '<p class="text-center text-muted text-sm">لا مهام</p>';
-        },
-        togTask: (i) => { STATE.data.tasks[i].done=!STATE.data.tasks[i].done; localStorage.setItem('tasks', JSON.stringify(STATE.data.tasks)); app.renderTasks(); },
-        delTask: (i) => { STATE.data.tasks.splice(i,1); localStorage.setItem('tasks', JSON.stringify(STATE.data.tasks)); app.renderTasks(); },
-        addTask: () => {
-            let v = document.getElementById('new-task').value;
-            if(v) { STATE.data.tasks.push({txt:v, done:false}); localStorage.setItem('tasks', JSON.stringify(STATE.data.tasks)); document.getElementById('new-task').value=''; app.renderTasks(); }
-        },
-        saveNotes: async () => {
-            await utils.api('saveStudentNote', {token:STATE.token, text:document.getElementById('my-notes').value});
-            Swal.fire({toast:true, position:'top-end', icon:'success', title:'تم الحفظ', timer:1500, showConfirmButton:false});
-        },
-        upload: async () => {
-            if(!STATE.tmp.file) return Swal.fire('تنبيه','اختر ملف','warning');
-            utils.loader(1);
-            let r = await utils.api('uploadStudentAssignment', {
-                token:STATE.token, d:{type:document.getElementById('as-type').value, desc:document.getElementById('as-desc').value, fileData:STATE.tmp.file.d, fileName:STATE.tmp.file.n}
-            });
-            utils.loader(0);
-            if(r.success) Swal.fire('نجاح','تم الإرسال','success'); else Swal.fire('خطأ',r.message,'error');
-        },
-        renderHist: (l) => {
-            let h='';
-            l.forEach(x => {
-                let p = x.percent>=50;
-                h += `<div class="list-item">
-                        <div class="list-icon ${p?'text-success':'text-danger'} font-bold">${x.percent}%</div>
-                        <div class="list-content">
-                            <h4>${x.exam}</h4>
-                            <p>${p?'ناجح':'حاول مرة أخرى'}</p>
-                        </div>
-                      </div>`;
-            });
-            document.getElementById('history-list').innerHTML = h;
-        },
-        renderChart: (m, c) => {
-            new Chart(document.getElementById('chart-canvas'), {
-                type: 'line',
-                data: { labels: ['الأول', 'الثاني', 'الثالث', 'الحالي'], datasets: [{label: 'مستواك', data: [m-5, m-2, m, m], borderColor: '#6366f1', fill:true, backgroundColor:'rgba(99,102,241,0.1)'}] },
-                options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:100}} }
-            });
-        }
-    };
-
-    // ==================== EXAM ENGINE ====================
-    const exam = {
-        start: async (t) => {
-            utils.loader(1);
-            let r = await utils.api('getExamQuestions', {token:STATE.token, name:t});
-            utils.loader(0);
-            if(!r.success) return Swal.fire('خطأ', 'تعذر بدء الامتحان', 'error');
-            STATE.exam = { on:true, data:r.questions, ans:{}, idx:0, time:null, sec:r.duration*60, title:t };
-            document.getElementById('exam-overlay').classList.remove('hidden');
-            exam.render(); exam.timer();
-        },
-        render: () => {
-            let q = STATE.exam.data[STATE.exam.idx];
-            document.getElementById('ex-title').innerText = STATE.exam.title;
-            document.getElementById('q-idx').innerText = STATE.exam.idx+1;
-            document.getElementById('q-total').innerText = STATE.exam.data.length;
-            document.getElementById('q-txt').innerText = q.text;
-            document.getElementById('q-img').innerHTML = q.img ? `<img src="${q.img}" style="max-width:100%; border-radius:10px">` : '';
-            
-            let p = ((STATE.exam.idx+1)/STATE.exam.data.length)*100;
-            document.getElementById('ex-prog').style.width = p+'%';
-            
-            let h=''; q.opts.forEach(o => {
-                let s = STATE.exam.ans[q.id]==o ? 'border-primary bg-primary-alpha' : 'border-transparent bg-surface-2';
-                h += `<div class="p-3 rounded-lg border cursor-pointer ${s} flex items-center gap-3 mb-2" onclick="exam.sel('${q.id}', '${o}')">
-                        <div class="w-4 h-4 rounded-full border border-muted flex-center ${STATE.exam.ans[q.id]==o?'bg-primary border-primary':''}"></div>
-                        <span class="text-sm font-bold">${o}</span>
-                      </div>`;
-            });
-            document.getElementById('q-opts').innerHTML = h;
-            document.getElementById('btn-next').innerText = STATE.exam.idx < STATE.exam.data.length-1 ? 'التالي' : 'تسليم';
-        },
-        sel: (qid, v) => { STATE.exam.ans[qid]=v; exam.render(); },
-        nav: (d) => {
-            let n = STATE.exam.idx + d;
-            if(n >= 0 && n < STATE.exam.data.length) { STATE.exam.idx = n; exam.render(); }
-            else if(d==1) exam.submit();
-        },
-        timer: () => {
-            clearInterval(STATE.exam.time);
-            STATE.exam.time = setInterval(() => {
-                STATE.exam.sec--;
-                let m = Math.floor(STATE.exam.sec/60), s = STATE.exam.sec%60;
-                document.getElementById('ex-timer').innerText = `${m}:${s<10?'0'+s:s}`;
-                if(STATE.exam.sec<=0) exam.submit(true);
-            }, 1000);
-        },
-        submit: async (f) => {
-            if(!f && !confirm('تسليم نهائي؟')) return;
-            clearInterval(STATE.exam.time); utils.loader(1);
-            let r = await utils.api('submitExam', {token:STATE.token, n:STATE.exam.title, a:STATE.exam.ans, cheats:0});
-            utils.loader(0);
-            document.getElementById('exam-overlay').classList.add('hidden');
-            let pass = r.percent>=50;
+    if(!d.name || !d.email) return Swal.fire('تنبيه','أكمل البيانات','warning');
+    ld(1);
+    callApi('createTrialAccount', {d:d}).then(r => {
+        ld(0);
+        if(r.success) {
+            sv(r);
             Swal.fire({
-                title: pass ? 'أحسنت!' : 'حظاً أوفر',
-                text: `النتيجة: ${r.percent}%`,
-                icon: pass ? 'success' : 'error'
-            }).then(() => { if(pass) confetti(); app.loadData(); });
-        },
-        quit: () => { if(confirm('خروج؟ ستفقد التقدم')) { clearInterval(STATE.exam.time); document.getElementById('exam-overlay').classList.add('hidden'); } }
-    };
-    function actions(){ return { updatePic: (i) => {
-        if(i.files[0]) {
-            let r = new FileReader();
-            r.onload = e => {
-                utils.loader(1);
-                utils.api('updateProfile', {token:STATE.token, newPhoto:e.target.result}).then(res => {
-                    utils.loader(0);
-                    if(res.success) {
-                        localStorage.setItem('ph', e.target.result); STATE.user.photo = e.target.result;
-                        document.getElementById('profile-img').src = e.target.result;
-                        Swal.fire('نجاح','تم التحديث','success');
-                    }
-                });
-            }; r.readAsDataURL(i.files[0]);
+                title: '🎉 تم تفعيل التجربة!',
+                html: `كلمة مرورك المؤقتة هي: <b style="font-size:20px">${r.tempPass}</b><br>احفظها للدخول لاحقاً.`,
+                icon: 'success'
+            }).then(checkPending);
+        } else Swal.fire('خطأ', r.message, 'error');
+    });
+}
+
+function sv(r){ 
+  localStorage.setItem('tk',r.token); localStorage.setItem('nm',r.name); localStorage.setItem('cl',r.classLevel); 
+  if(r.photo && r.photo.length > 50) localStorage.setItem('ph', r.photo);
+  token=r.token; 
+}
+function checkPending(){ let p=sessionStorage.getItem('pending'); if(p){ sessionStorage.removeItem('pending'); start(p); } else loadDash(); }
+function logout(){ localStorage.clear(); location.reload(); }
+
+// === لوحة التحكم (تم دمجها لتعمل مع الهيكل الجديد) ===
+function loadDash(){
+  document.getElementById('landing-page').classList.add('hidden'); // إخفاء الهبوط
+  document.getElementById('auth-container').classList.add('hidden'); // إخفاء الدخول
+  document.getElementById('v-exam').classList.add('hidden'); 
+  document.getElementById('v-dash').classList.remove('hidden'); // إظهار اللوحة
+  document.getElementById('notif-bell').classList.remove('hidden');
+
+  document.getElementById('u-name').innerText = localStorage.getItem('nm'); 
+  document.getElementById('u-cls').innerText = localStorage.getItem('cl');
+  let ph = localStorage.getItem('ph'); document.getElementById('u-img').src = ph ? ph : DEF_IMG;
+
+  ld(1);
+  callApi('getExamsList', {token:token}).then(r=>{
+    allSubjects = r.subjects || [];
+    renderSubjects();
+    ld(0);
+  });
+
+  // ... (بقية دوال التحميل تعمل كما في الكود القديم تماماً) ...
+  callApi('getLibraryContent', {token:token}).then(r=>{
+      let h='';
+      if(r.library && r.library.length) {
+          r.library.forEach(i => {
+              let icon = i.type=='Video' ? 'fa-youtube text-danger' : 'fa-file-pdf text-warning';
+              h+=`<a href="${i.link}" target="_blank" class="lib-item">
+                    <i class="fab ${icon} fa-2x" style="margin-left:15px"></i>
+                    <div><h4 style="margin:0;font-size:16px">${i.title}</h4><span style="font-size:12px;color:#94a3b8">${i.date}</span></div>
+                  </a>`;
+          });
+      } else h = '<p style="color:#94a3b8; text-align:center">لا توجد مصادر</p>';
+      document.getElementById('lib-content').innerHTML = h;
+  });
+  
+  callApi('getLeaderboard', {token:token}).then(r=>{
+    let h='';
+    if(r.list) {
+      r.list.forEach((l,i)=>{ 
+        h+=`<tr><td style="color:var(--gold)">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</td><td>${l.name}</td><td style="color:var(--blue);font-weight:bold">${l.score}%</td></tr>`; 
+      });
+      document.getElementById('leader-body').innerHTML=h || '<tr><td colspan="3">لا يوجد متصدرين</td></tr>';
+    }
+  });
+
+  callApi('getStudentResults', {token:token}).then(r=>{
+    let h='';
+    if(r.results) {
+        r.results.forEach(x=>{
+          let pass=parseInt(x.percent)>=50;
+          h+=`<tr><td>${x.exam}</td><td style="color:${pass?'var(--green)':'var(--red)'}">${x.percent}</td><td>${pass?`<button class="btn-g" style="width:auto;padding:5px 10px;font-size:12px;margin:0" onclick="cert('${x.exam}','${x.percent}')">📜</button>`:'-'}</td></tr>`;
+        });
+        document.getElementById('res-list').innerHTML=h;
+    }
+  });
+
+  loadStats(); 
+  checkMsgs();
+}
+
+function renderSubjects() {
+    let h = '';
+    if(allSubjects.length === 0) {
+        h = '<p style="color:#94a3b8; text-align:center;">لا توجد امتحانات متاحة حالياً.</p>';
+    } else {
+        h += `<h3 style="text-align:right; color:var(--blue); margin-top:10px"><i class="fas fa-folder-open"></i> المواد الدراسية</h3>`;
+        allSubjects.forEach((sub, idx) => {
+            h += `<div class="exam-item folder-item" onclick="openSubject(${idx})">
+                    <i class="fas fa-book exam-icon"></i>
+                    <h3 style="margin:0;color:var(--text)">${sub.name}</h3>
+                    <div style="font-size:13px; color:#94a3b8; margin-top:5px">${sub.exams.length} امتحان</div>
+                  </div>`;
+        });
+    }
+    document.getElementById('exams-container').innerHTML = h;
+}
+
+function openSubject(idx) {
+    let sub = allSubjects[idx];
+    let h = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--gold); margin:0;">${sub.name}</h3>
+                <button class="btn btn-o" style="width:auto; padding:5px 10px;" onclick="renderSubjects()">↩ عودة</button>
+             </div>`;
+    
+    sub.exams.forEach(x => {
+        h += `<div class="exam-item" onclick="start('${x.title}')">
+                <i class="fas fa-file-alt exam-icon"></i>
+                <h3 style="margin:0;color:var(--text)">${x.title}</h3>
+                <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
+              </div>`;
+    });
+    document.getElementById('exams-container').innerHTML = h;
+}
+
+function editProfile() {
+    Swal.fire({
+        title: 'تعديل الملف الشخصي',
+        html: `
+            <div style="margin-bottom:15px; border:2px dashed #ccc; padding:10px; cursor:pointer;" onclick="document.getElementById('sw-file').click()">
+                <i class="fas fa-camera"></i> تغيير الصورة
+                <input type="file" id="sw-file" hidden onchange="readP_SW(this)">
+            </div>
+            <input id="sw-pass" type="password" class="swal2-input" placeholder="كلمة المرور الجديدة (اختياري)">
+            <button class="btn btn-r" style="margin-top:10px" onclick="deleteMyAccount()">❌ حذف حسابي نهائياً</button>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'حفظ',
+        cancelButtonText: 'إلغاء',
+        preConfirm: () => {
+            return { pass: document.getElementById('sw-pass').value, photo: window.tempPhoto };
         }
-    }}}
-    const actionsObj = { updatePic: (i) => { actions().updatePic(i); } };
-    window.actions = {...auth, ...actionsObj};
+    }).then((res) => {
+        if(res.isConfirmed) {
+            ld(1);
+            callApi('updateProfile', {token:token, newPass:res.value.pass, newPhoto:res.value.photo}).then(r => {
+                ld(0);
+                if(r.success) { 
+                    if(res.value.photo) { localStorage.setItem('ph', res.value.photo); document.getElementById('u-img').src = res.value.photo; }
+                    Swal.fire('تم', r.message, 'success'); 
+                }
+            });
+        }
+        window.tempPhoto = null;
+    });
+}
+
+function readP_SW(input) {
+    if(input.files && input.files[0]) {
+        let r = new FileReader();
+        r.onload = function(e) {
+            let img = new Image(); img.src = e.target.result;
+            img.onload = function() {
+                let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
+                let MAX_W = 150; let scale = MAX_W / img.width;
+                canvas.width = MAX_W; canvas.height = img.height * scale;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                window.tempPhoto = canvas.toDataURL('image/jpeg', 0.7);
+                Swal.showValidationMessage('تم اختيار الصورة! اضغط حفظ.');
+            }
+        };
+        r.readAsDataURL(input.files[0]);
+    }
+}
+
+function deleteMyAccount() {
+    Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "سيتم حذف حسابك ولن تتمكن من الدخول مجدداً!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'نعم، حذف'
+    }).then((r) => {
+        if(r.isConfirmed) {
+            ld(1);
+            callApi('softDeleteAccount', {token:token}).then(res => {
+                ld(0);
+                if(res.success) Swal.fire('تم الحذف', res.message, 'success').then(logout);
+                else Swal.fire('خطأ', res.message, 'error');
+            });
+        }
+    });
+}
+
+// === EXAMS (Standard) ===
+function start(t){
+  ld(1); 
+  callApi('getExamQuestions', {token:token, name:t}).then(r=>{
+    ld(0); 
+    if(!r || !r.success) {
+          Swal.fire('تنبيه', r ? r.message : 'خطأ غير معروف', 'warning').then(() => cleanUrlAndDash());
+          return;
+    }
+    st.exam=r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0;
+    st.seconds = r.duration * 60; 
+    document.getElementById('v-dash').classList.add('hidden');
+    document.getElementById('v-exam').classList.remove('hidden');
+    document.getElementById('xt').innerText=t;
+    document.getElementById('q-count').innerText = st.exam.length;
+    startTimer();
+    rendQ();
+  });
+}
+
+function startTimer(){
+  clearInterval(st.timer);
+  st.timer = setInterval(()=>{
+    st.seconds--;
+    let m = Math.floor(st.seconds/60), s = st.seconds%60;
+    document.getElementById('time-val').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+    if(st.seconds <= 0) { clearInterval(st.timer); submitExam(true); }
+  }, 1000);
+}
+function rendQ(){
+  let q=st.exam[st.idx];
+  let h=`<h3 style="color:var(--text); margin-bottom:20px"><span style="color:var(--gold)">س ${st.idx+1}:</span> ${q.text}</h3>`;
+  if(q.img) h+=`<img src="${q.img}" style="max-width:100%; border-radius:12px; margin-bottom:20px; border:1px solid var(--border)">`;
+  q.opts.forEach(o=>{ if(o) h+=`<div class="q-option ${st.ans[q.id]==o?'selected':''}" onclick="sl('${o}')"><div style="width:20px;height:20px;border-radius:50%;border:2px solid ${st.ans[q.id]==o?'var(--blue)':'#555'};background:${st.ans[q.id]==o?'var(--blue)':'transparent'}"></div>${o}</div>` });
+  document.getElementById('q-box').innerHTML=h;
+  document.getElementById('qs-ind').innerText = `${st.idx+1} / ${st.exam.length}`;
+  document.getElementById('s-btn').classList.toggle('hidden', st.idx!=st.exam.length-1);
+}
+function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
+function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
+function sub(){ submitExam(false); }
+
+function exitExam() {
+  Swal.fire({
+    title: 'تأكيد الخروج؟',
+    text: "سيتم إلغاء الامتحان ولن يتم حفظ النتيجة.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    confirmButtonText: 'نعم، خروج'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      clearInterval(st.timer); 
+      document.getElementById('v-exam').classList.add('hidden');
+      document.getElementById('v-dash').classList.remove('hidden');
+      document.getElementById('notif-bell').classList.remove('hidden');
+      loadDash();
+    }
+  });
+}
+
+function submitExam(forced){
+  if(!forced && !confirm('هل أنت متأكد من التسليم؟')) return;
+  clearInterval(st.timer);
+  ld(1); 
+  callApi('submitExam', {token:token, n:st.title, a:st.ans, cheats:st.cheats}).then(res=>{ 
+    ld(0); 
+    document.getElementById('v-exam').classList.add('hidden');
+    let isPass = parseInt(res.percent)>=50;
+    st.lastScore = res.percent; 
+    Swal.fire({
+      title: isPass ? '🎉 مبروك!' : 'حظاً أوفر',
+      html: `النتيجة: <b style="font-size:30px; color:${isPass?'green':'red'}">${res.percent}</b><br>إجابات صحيحة: ${res.score}/${res.total}`,
+      icon: isPass ? 'success' : 'error',
+      showDenyButton: true,
+      showCancelButton: isPass, 
+      confirmButtonText: '🏠 الرئيسية',
+      denyButtonText: '🔍 مراجعة الإجابات',
+      cancelButtonText: '📜 تحميل الشهادة',
+      cancelButtonColor: '#f59e0b'
+    }).then((result) => {
+      if (result.isDenied) {
+         showReview(st.title, isPass);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+         cert(st.title, res.percent); confetti();
+         setTimeout(cleanUrlAndDash, 2000);
+      } else {
+         cleanUrlAndDash();
+         if(isPass) confetti();
+      }
+    });
+  });
+}
+
+function showReview(examTitle, isPass) {
+  ld(1);
+  callApi('getReviewData', {token:token, title:examTitle}).then(r => {
+    ld(0);
+    document.getElementById('review-modal').classList.remove('hidden');
+    if(isPass) document.getElementById('cert-review-btn').classList.remove('hidden');
+    else document.getElementById('cert-review-btn').classList.add('hidden');
+    let h = '';
+    st.exam.forEach((q, i) => {
+      let userAns = st.ans[q.id];
+      let correctAns = r.answers[q.id];
+      let isCorrect = userAns === correctAns;
+      h += `<div style="background:rgba(128,128,128,0.05); padding:15px; border-radius:10px; margin-bottom:15px; border-right:4px solid ${isCorrect?'var(--green)':'var(--red)'}">
+              <p style="font-weight:bold; margin:0 0 10px 0; text-align:right">س${i+1}: ${q.text}</p>
+              ${q.img ? `<img src="${q.img}" style="max-height:100px; display:block; margin-bottom:10px">` : ''}
+              <div style="font-size:14px; text-align:right">
+                <span style="color:#94a3b8">إجابتك: </span> <span style="color:${isCorrect?'var(--green)':'var(--red)'}">${userAns || 'لم يتم الإجابة'}</span><br>
+                ${!isCorrect ? `<span style="color:#94a3b8">الإجابة الصحيحة: </span> <span style="color:var(--green)">${correctAns}</span>` : ''}
+              </div>
+            </div>`;
+    });
+    document.getElementById('review-content').innerHTML = h;
+  });
+}
+
+function closeReview(){ document.getElementById('review-modal').classList.add('hidden'); cleanUrlAndDash(); }
+
+function cert(e,s){
+  document.getElementById('c-name').innerText=localStorage.getItem('nm');
+  document.getElementById('c-ex').innerText=e; document.getElementById('c-sc').innerText=s;
+  let ph = localStorage.getItem('ph'); document.getElementById('c-img').src = ph ? ph : DEF_IMG;
+  document.getElementById('cert-modal').style.display='flex';
+}
+function dlCert(){
+  let node = document.getElementById('cert-node');
+  html2canvas(node, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' }).then(c=>{
+    let a=document.createElement('a'); a.download='Certificate.png'; a.href=c.toDataURL(); a.click();
+  });
+}
+
+function readAsFile(input) {
+  if(input.files && input.files[0]) {
+    let f = input.files[0];
+    document.getElementById('as-fname').innerText = f.name;
+    let r = new FileReader();
+    r.onload = e => { st.assignFile = e.target.result; st.assignName = f.name; };
+    r.readAsDataURL(f);
+  }
+}
+function uploadAss() {
+  if(!st.assignFile) return Swal.fire('تنبيه', 'يرجى اختيار ملف', 'warning');
+  ld(1);
+  let d = {
+     type: document.getElementById('as-type').value,
+     desc: document.getElementById('as-desc').value,
+     fileData: st.assignFile,
+     fileName: st.assignName,
+     mimeType: st.assignFile.split(';')[0].split(':')[1]
+  };
+  callApi('uploadStudentAssignment', {token:token, d:d}).then(r=>{
+     ld(0); if(r.success) Swal.fire('تم', 'تم تسليم الواجب بنجاح', 'success'); else Swal.fire('خطأ', r.message, 'error');
+  });
+}
+
+function sendComplaint() {
+  let msg = document.getElementById('contact-msg').value;
+  if(!msg) return Swal.fire('تنبيه', 'اكتب الرسالة أولاً', 'warning');
+  ld(1);
+  callApi('sendComplaint', {token:token, msg:msg}).then(r=>{
+     ld(0); Swal.fire('تم', 'تم إرسال رسالتك بنجاح', 'success');
+     document.getElementById('contact-msg').value = '';
+     loadMsgHistory();
+  });
+}
+
+function loadStats() {
+    callApi('getStudentStats', {token:token}).then(r => {
+        if(!r.success) return;
+        document.getElementById('perf-chart').innerHTML = `
+            <div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div>
+            <div class="chart-bar chart-cls" style="height:${r.classAvg}%;"><span style="margin-bottom:5px">${r.classAvg}%</span></div>
+            <div style="position:absolute; bottom:-30px; left:20px; right:20px; display:flex; justify-content:space-between; color:#94a3b8; font-size:12px"><span>مستواي</span><span>متوسط الفصل</span></div>
+        `;
+        let b = '';
+        if(r.badges && r.badges.length) {
+           r.badges.forEach(badge => b += `<span class="badge-item"><i class="fas fa-medal"></i> ${badge}</span>`);
+           document.getElementById('badges-area').innerHTML = b;
+        }
+        
+        // === Render Social Icons ===
+        if(r.socials) {
+            let sHtml = '';
+            if(r.socials.whatsapp) {
+                document.getElementById('wa-btn').href = r.socials.whatsapp;
+                document.getElementById('wa-btn').classList.remove('hidden');
+            }
+            if(r.socials.facebook) sHtml += `<a href="${r.socials.facebook}" target="_blank" style="color:#1877F2; font-size:20px"><i class="fab fa-facebook"></i></a>`;
+            if(r.socials.instagram) sHtml += `<a href="${r.socials.instagram}" target="_blank" style="color:#C13584; font-size:20px"><i class="fab fa-instagram"></i></a>`;
+            if(r.socials.youtube) sHtml += `<a href="${r.socials.youtube}" target="_blank" style="color:#FF0000; font-size:20px"><i class="fab fa-youtube"></i></a>`;
+            document.getElementById('social-box').innerHTML = sHtml;
+        }
+    });
+}
+
+function genReport() {
+    let el = document.getElementById('tab-history');
+    html2canvas(el).then(canvas => {
+       let a=document.createElement('a'); a.download='Report.png'; a.href=canvas.toDataURL(); a.click();
+    });
+}
+
+function loadNotes() {
+    callApi('getStudentNote', {token:token}).then(r => {
+        if(r.success) document.getElementById('my-notes').value = r.note;
+    });
+}
+
+function saveNotes() {
+    let txt = document.getElementById('my-notes').value;
+    callApi('saveStudentNote', {token:token, text:txt}).then(r => {
+        const Toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+        Toast.fire({icon: 'success', title: 'تم الحفظ'});
+    });
+}
+
+function checkBroadcast() {
+    // البث المباشر (يمكنك تفعيله من السيرفر إذا أردت)
+}
+
+function checkMsgs() {
+    callApi('getStudentMessages', {token:token}).then(msgs => {
+        if(msgs && msgs.length > 0) {
+            document.getElementById('notif-dot').style.display = 'block';
+            let h = ''; 
+            msgs.forEach(m => {
+                h += `<div style="background:var(--glass); padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid var(--border)">
+                        <small style="color:#94a3b8; display:block; margin-bottom:5px">${m.date}</small>
+                        <p style="margin:0; font-size:14px">${m.msg}</p>
+                      </div>`;
+            });
+            document.getElementById('msg-history').innerHTML = h;
+        }
+    });
+}
+
+function showNotifs() {
+    switchTab('contact', document.querySelectorAll('.nav-tab')[6]);
+    document.getElementById('msg-history').classList.remove('hidden');
+    document.getElementById('notif-dot').style.display = 'none';
+}
+
+function loadMsgHistory() { 
+    checkMsgs(); 
+    document.getElementById('msg-history').classList.remove('hidden'); 
+}
 </script>
 </body>
 </html>
