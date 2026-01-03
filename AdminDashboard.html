@@ -459,6 +459,7 @@
                 <div class="stat-card">
                     <h5 class="fw-bold mb-3 text-primary">إضافة محتوى</h5>
                     <input id="lib-title" class="form-control mb-2" placeholder="عنوان الدرس">
+                    <input id="lib-subject" class="form-control mb-2" placeholder="المادة (تصنيف)">
                     <select id="lib-type" class="form-select mb-2"><option value="PDF">ملف PDF</option><option value="Video">فيديو</option></select>
                     <input id="lib-cls" class="form-control mb-2" placeholder="الصف (اختياري)">
                     <input id="lib-link" class="form-control mb-3" placeholder="الرابط">
@@ -468,7 +469,7 @@
             <div class="col-md-8">
                 <div class="pro-table-container">
                     <table class="table table-hover mb-0">
-                        <thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead>
+                        <thead><tr><th>العنوان</th><th>المادة</th><th>النوع</th><th>الصف</th><th>حذف</th></tr></thead>
                         <tbody id="lib-body"></tbody>
                     </table>
                 </div>
@@ -509,7 +510,7 @@
     <div id="view-settings" class="view-section hidden">
         <div class="row g-4">
             <!-- General Settings -->
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-sliders-h"></i> إعدادات أساسية</h5>
                     <div class="mb-3"><label>اسم المعلم (للشهادات):</label><input id="set-name" class="form-control"></div>
@@ -518,13 +519,38 @@
                         <select id="set-maint" class="form-select"><option value="Off">يعمل</option><option value="On">صيانة</option></select>
                     </div>
                 </div>
+            </div>
 
-                <div class="stat-card">
-                    <h5 class="fw-bold mb-3 text-success"><i class="fas fa-link"></i> روابط التواصل & التجديد</h5>
-                    <div class="social-input-group mb-2 input-group">
-                        <span class="input-group-text"><i class="fab fa-whatsapp text-success"></i></span>
-                        <input id="soc-wa" class="form-control" placeholder="رابط واتساب التجديد (عند انتهاء الاشتراك)">
+            <!-- Store & Packages Settings (New) -->
+            <div class="col-md-4">
+                <div class="stat-card mb-3">
+                    <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-store"></i> المتجر والباقات</h5>
+                    <div class="mb-3">
+                        <label>رقم واتساب المتجر/الاشتراك:</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-whatsapp text-success"></i></span>
+                            <input id="soc-wa" class="form-control" placeholder="رابط أو رقم واتساب">
+                        </div>
                     </div>
+                    <div class="mb-3">
+                        <label>سعر الباقة الأساسية:</label>
+                        <input id="price-basic" class="form-control" placeholder="مثال: 5 JD">
+                    </div>
+                    <div class="mb-3">
+                        <label>سعر الباقة الذهبية:</label>
+                        <input id="price-gold" class="form-control" placeholder="مثال: 15 JD">
+                    </div>
+                    <div class="mb-3">
+                        <label>سعر الباقة الفصلية:</label>
+                        <input id="price-term" class="form-control" placeholder="مثال: 35 JD">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social & Danger Zone -->
+            <div class="col-md-4">
+                <div class="stat-card mb-3">
+                    <h5 class="fw-bold mb-3 text-success"><i class="fas fa-share-alt"></i> روابط التواصل</h5>
                     <div class="social-input-group mb-2 input-group">
                         <span class="input-group-text"><i class="fab fa-facebook text-primary"></i></span>
                         <input id="soc-fb" class="form-control" placeholder="رابط الفيسبوك">
@@ -538,19 +564,19 @@
                         <input id="soc-yt" class="form-control" placeholder="رابط اليوتيوب">
                     </div>
                 </div>
-                <button class="btn btn-primary w-100 mt-3" onclick="saveSettings()">حفظ كافة التغييرات</button>
-            </div>
 
-            <!-- Danger Zone -->
-            <div class="col-md-6">
                 <div class="stat-card border-danger border">
                     <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة الخطر</h5>
-                    <p class="text-muted small">حدد الجداول المراد حذف بياناتها نهائياً (إعادة ضبط المصنع)</p>
+                    <p class="text-muted small">حدد الجداول المراد حذف بياناتها نهائياً</p>
                     <div class="row" id="reset-boxes">
                         <!-- JS populated -->
                     </div>
                     <button class="btn btn-danger w-100 mt-3" onclick="resetSystem()">تنفيذ الحذف</button>
                 </div>
+            </div>
+            
+            <div class="col-12">
+                <button class="btn btn-primary w-100 btn-lg shadow" onclick="saveSettings()"><i class="fas fa-save"></i> حفظ كافة التغييرات</button>
             </div>
         </div>
     </div>
@@ -585,7 +611,7 @@ window.onload = function() {
     // Init Danger Zone
     let tables = ['Students', 'Codes', 'Results', 'Library', 'Assignments', 'Complaints'];
     let h = '';
-    tables.forEach(t => h+=`<div class="col-4"><div class="form-check"><input type="checkbox" class="form-check-input r-chk" value="${t}" id="r-${t}"><label class="form-check-label small" for="r-${t}">${t}</label></div></div>`);
+    tables.forEach(t => h+=`<div class="col-6"><div class="form-check"><input type="checkbox" class="form-check-input r-chk" value="${t}" id="r-${t}"><label class="form-check-label small" for="r-${t}">${t}</label></div></div>`);
     document.getElementById('reset-boxes').innerHTML = h;
 };
 
@@ -671,10 +697,16 @@ async function refreshAll() {
             document.getElementById('st-total-exam').innerText = d.stats.exams || 0;
             document.getElementById('st-total-std').innerText = d.stats.students || 0;
             
+            // Populate General & Price Settings
             if(d.settings) {
                 if(document.getElementById('set-name')) document.getElementById('set-name').value = d.settings['TeacherName'] || '';
                 if(document.getElementById('set-wa')) document.getElementById('set-wa').value = d.settings['WhatsApp'] || '';
                 if(document.getElementById('set-maint')) document.getElementById('set-maint').value = d.settings['Maintenance'] || 'Off';
+                
+                // New Price Fields
+                if(document.getElementById('price-basic')) document.getElementById('price-basic').value = d.settings['Price_Basic'] || '5 JD';
+                if(document.getElementById('price-gold')) document.getElementById('price-gold').value = d.settings['Price_Gold'] || '15 JD';
+                if(document.getElementById('price-term')) document.getElementById('price-term').value = d.settings['Price_Term'] || '35 JD';
             }
 
             if(d.socials) {
@@ -861,8 +893,8 @@ function renderResults() {
 }
 
 function renderLib() {
-    let h=''; if(DB.library) DB.library.forEach(i => h+=`<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`);
-    document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا يوجد محتوى</td></tr>';
+    let h=''; if(DB.library) DB.library.forEach(i => h+=`<tr><td>${i.title}</td><td>${i.subject || 'غير مصنف'}</td><td>${i.type}</td><td>${i.cls}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`);
+    document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="5" class="text-center text-muted">لا يوجد محتوى</td></tr>';
 }
 function renderAssign() {
     let h=''; if(DB.assignments) DB.assignments.forEach(a => h+=`<tr><td>${a.date}</td><td>${a.name}</td><td>${a.type}</td><td><a href="${a.link}" target="_blank" class="btn btn-sm btn-info">عرض</a></td><td>${a.grade}</td><td><button class="btn btn-sm btn-primary" onclick="gradeAss(${a.rowId})">رصد</button></td></tr>`);
@@ -924,6 +956,7 @@ async function deleteSelectedCodes() {
 async function addToLib() {
     let d = {
         title: document.getElementById('lib-title').value,
+        subject: document.getElementById('lib-subject').value,
         type: document.getElementById('lib-type').value,
         cls: document.getElementById('lib-cls').value,
         link: document.getElementById('lib-link').value
@@ -953,15 +986,18 @@ async function saveSettings() {
     // 1. General Settings
     let s = {
         'TeacherName': document.getElementById('set-name').value,
-        'WhatsApp': document.getElementById('set-wa').value, // This is contact WA
-        'Maintenance': document.getElementById('set-maint').value
+        'WhatsApp': document.getElementById('set-wa').value, // Contact WA
+        'Maintenance': document.getElementById('set-maint').value,
+        'Price_Basic': document.getElementById('price-basic').value,
+        'Price_Gold': document.getElementById('price-gold').value,
+        'Price_Term': document.getElementById('price-term').value
     };
     
     // 2. Social Links (including Renewal WA)
     let links = {
         'Facebook': document.getElementById('soc-fb').value,
         'Instagram': document.getElementById('soc-ig').value,
-        'WhatsApp_Link': document.getElementById('soc-wa').value, // Renewal Link
+        'WhatsApp_Link': document.getElementById('soc-wa').value, // Store/Renewal WA
         'Youtube': document.getElementById('soc-yt').value
     };
 
