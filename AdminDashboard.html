@@ -289,6 +289,16 @@
 
     <!-- 1. HOME DASHBOARD -->
     <div id="view-home" class="view-section">
+        <!-- ✅ قسم الأخبار (تم نقله للأعلى للوضوح) -->
+        <div class="stat-card mb-4 border-info border">
+            <h5 class="fw-bold mb-3 text-info"><i class="fas fa-newspaper"></i> شريط الأخبار والإشعارات</h5>
+            <div class="input-group">
+                <input type="text" class="form-control" id="notif-msg" placeholder="اكتب الخبر أو التنبيه هنا ليظهر في شريط الأخبار...">
+                <button class="btn btn-info text-white fw-bold" onclick="sendNotif()">نشر الآن 📢</button>
+            </div>
+            <small class="text-muted">هذا النص سيظهر في الشريط المتحرك أعلى شاشة الطالب.</small>
+        </div>
+
         <div class="row g-4 mb-4">
             <div class="col-md-4">
                 <div class="stat-card">
@@ -326,15 +336,6 @@
                     <canvas id="chart-students"></canvas>
                 </div>
             </div>
-        </div>
-
-        <div class="stat-card">
-            <h5 class="fw-bold mb-3"><i class="fas fa-newspaper text-info"></i> نشر أخبار وتنبيهات</h5>
-            <div class="input-group">
-                <input type="text" class="form-control" id="notif-msg" placeholder="اكتب الخبر أو التنبيه هنا ليظهر في لوحة الطالب...">
-                <button class="btn btn-info fw-bold text-white" onclick="sendNotif()">نشر الخبر 📢</button>
-            </div>
-            <small class="text-muted">سيظهر هذا النص في شريط الأخبار بلوحة الطالب.</small>
         </div>
     </div>
 
@@ -407,7 +408,6 @@
                         </div>
                     </div>
                     
-                    <!-- تخصيص الطباعة -->
                     <div class="row g-2 mb-3 align-items-end p-2 border rounded bg-light">
                         <div class="col-md-5">
                             <label class="small text-muted">عنوان البطاقة (للطباعة):</label>
@@ -529,10 +529,15 @@
                     <div class="mb-3"><label>حالة النظام:</label>
                         <select id="set-maint" class="form-select"><option value="Off">يعمل</option><option value="On">صيانة</option></select>
                     </div>
+                    <!-- ✅ خيار تفعيل/تعطيل الأخبار -->
+                    <div class="form-check form-switch mb-3 p-0 d-flex gap-2 align-items-center">
+                        <input class="form-check-input ms-0" type="checkbox" id="set-news-status" style="width: 3em; height: 1.5em;">
+                        <label class="form-check-label fw-bold" for="set-news-status">تفعيل شريط الأخبار في واجهة الطالب</label>
+                    </div>
                 </div>
             </div>
 
-            <!-- Store & Packages Settings (UPDATED) -->
+            <!-- Store & Packages Settings -->
             <div class="col-md-12 col-lg-8">
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-store"></i> المتجر والباقات</h5>
@@ -606,7 +611,7 @@
                 </div>
             </div>
             
-            <!-- ✅ قسم روابط مجموعات الصفوف (موسع من 3 إلى 12) -->
+            <!-- Class Groups (3-12) -->
             <div class="col-md-12 col-lg-8"> 
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-success"><i class="fab fa-whatsapp"></i> روابط مجموعات الصفوف</h5>
@@ -753,6 +758,7 @@ async function refreshAll() {
                 if(document.getElementById('set-name')) document.getElementById('set-name').value = d.settings['TeacherName'] || '';
                 if(document.getElementById('set-wa')) document.getElementById('set-wa').value = d.settings['WhatsApp'] || '';
                 if(document.getElementById('set-maint')) document.getElementById('set-maint').value = d.settings['Maintenance'] || 'Off';
+                if(document.getElementById('set-news-status')) document.getElementById('set-news-status').checked = (d.settings['News_Enabled'] === 'On');
                 
                 // Store Settings (Names, Prices, Descs)
                 if(document.getElementById('pkg-basic-name')) document.getElementById('pkg-basic-name').value = d.settings['Pkg_Basic_Name'] || 'الباقة الأساسية';
@@ -1044,11 +1050,12 @@ async function addToLib() {
 }
 
 async function sendNotif() {
-    let t = document.getElementById('notif-target').value;
     let m = document.getElementById('notif-msg').value;
-    if(!m) return;
-    await callApi('sendTargetedMessage', {target:t, msg:m});
-    Swal.fire('تم', 'تم الإرسال', 'success');
+    if(!m) return Swal.fire('تنبيه', 'الرجاء كتابة النص', 'warning');
+    // Using 'All' as target for News
+    await callApi('sendTargetedMessage', {target:'All', msg:m});
+    Swal.fire('تم', 'تم نشر الخبر بنجاح', 'success');
+    document.getElementById('notif-msg').value = '';
 }
 
 async function delStudent(e) { if(confirm('حذف؟')) { await callApi('deleteStudent', {email:e}); refreshAll(); } }
@@ -1065,6 +1072,7 @@ async function saveSettings() {
         'TeacherName': document.getElementById('set-name').value,
         'WhatsApp': document.getElementById('set-wa').value, // Contact WA
         'Maintenance': document.getElementById('set-maint').value,
+        'News_Enabled': document.getElementById('set-news-status').checked ? 'On' : 'Off',
         
         // Store Settings (Names & Prices & Desc)
         'Pkg_Basic_Name': document.getElementById('pkg-basic-name').value,
