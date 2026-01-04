@@ -35,33 +35,42 @@
   .container { max-width: 1100px; margin: 0 auto; padding: 20px; transition: 0.5s; }
   .hidden { display: none !important; }
   
-  /* === Landing Page Navigation === */
+  /* === Landing Page Navigation (Fix for Buttons) === */
   .landing-nav {
       display: flex; justify-content: space-between; align-items: center;
       padding: 20px 0; margin-bottom: 40px; border-bottom: 1px solid var(--border);
+      flex-wrap: wrap; 
   }
   .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2em; color: var(--text); }
+  
   .nav-links { display: flex; gap: 25px; }
   .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; transition: 0.3s; position: relative; }
   .nav-links a:hover { color: var(--blue); }
-  .nav-links a::after { content:''; position: absolute; bottom: -5px; width: 0; height: 2px; background: var(--blue); left: 50%; transition: 0.3s; }
-  .nav-links a:hover::after { width: 100%; left: 0; }
   
-  /* تنسيق الأزرار في القائمة العلوية */
-  .nav-buttons { display: flex; gap: 10px; align-items: center; }
-  /* ضمان أن الأزرار داخل القائمة لا تأخذ عرض 100% */
-  .nav-buttons .btn { width: auto !important; margin: 0; }
+  /* ✅ تنسيق الأزرار الجديد لضمان الفصل */
+  .nav-buttons { 
+      display: flex; 
+      gap: 12px; 
+      align-items: center; 
+  }
+  .nav-btn-sep {
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: 0.3s;
+      border: 1px solid transparent;
+      display: flex; align-items: center; gap: 5px;
+  }
+  .btn-login-nav { background: var(--blue); color: white; }
+  .btn-reg-nav { background: transparent; border-color: var(--gold); color: var(--gold); }
+  .btn-reg-nav:hover { background: var(--gold); color: black; }
 
   @media (max-width: 768px) { 
-      .nav-links { display: none; } 
-      
-      /* تعديل لعرض الأزرار على الموبايل بدلاً من إخفائها */
-      .nav-buttons { gap: 8px; }
-      .nav-buttons button { 
-          padding: 6px 15px !important; 
-          font-size: 0.85em !important; 
-      }
-      /* تم إزالة كود الإخفاء ليظهر الزرين معاً */
+      .nav-links { display: none !important; } 
+      .nav-buttons { width: 100%; justify-content: center; margin-top: 15px; }
+      .nav-btn-sep { width: 48%; justify-content: center; font-size: 0.85em; }
   }
 
   /* === Landing Sections === */
@@ -83,7 +92,7 @@
   .feature-box:hover { transform: translateY(-10px); border-color: var(--blue); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
   .feature-icon { font-size: 3em; color: var(--gold); margin-bottom: 20px; background: rgba(245, 158, 11, 0.1); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 20px; }
 
-  /* Store (Pricing) - Updated Layout */
+  /* Store (Pricing) - With IDs for Dynamic Update */
   .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 80px; justify-content: center; }
   .price-card { background: var(--glass); padding: 40px 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; transition: 0.3s; position: relative; }
   .price-card:hover { transform: translateY(-5px); border-color: var(--blue); }
@@ -144,7 +153,7 @@
     border: 1px solid var(--border); border-radius: 12px; color: var(--text); box-sizing: border-box; font-family: inherit; transition: 0.3s;
   }
   input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-  select option { background: var(--bg); color: var(--text); } /* Fix for select dropdown color */
+  select option { background: var(--bg); color: var(--text); } 
 
   .btn { 
     width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
@@ -272,17 +281,24 @@
           <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--gold)">
           <span>نبراس التعليمية</span>
        </div>
+       
+       <!-- روابط التنقل -->
        <div class="nav-links">
           <a href="#hero">الرئيسية</a>
           <a href="#features">المميزات</a>
+          <a href="#store">المتجر</a>
           <a href="#reviews">الآراء</a>
           <a href="#faq">الأسئلة</a>
-          <a href="#store">المتجر</a>
        </div>
-       <!-- أزرار الدخول والتفعيل منفصلة -->
+       
+       <!-- ✅ فصل الأزرار بوضوح -->
        <div class="nav-buttons">
-           <button class="btn btn-o btn-reg-nav" style="width:auto; padding:8px 20px; border-radius:30px; font-size:0.9em; border-color:var(--gold); color:var(--gold)" onclick="showLogin('register')">تفعيل كود</button>
-           <button class="btn btn-p" style="width:auto; padding:8px 25px; border-radius:30px" onclick="showLogin('login')">تسجيل الدخول <i class="fas fa-sign-in-alt"></i></button>
+           <button class="nav-btn-sep btn-reg-nav" onclick="showLogin('register')">
+               <i class="fas fa-key"></i> تفعيل كود
+           </button>
+           <button class="nav-btn-sep btn-login-nav" onclick="showLogin('login')">
+               تسجيل دخول
+           </button>
        </div>
     </nav>
 
@@ -405,7 +421,7 @@
        </div>
     </div>
 
-    <!-- قسم المتجر (الباقات) - تم نقله للأسفل -->
+    <!-- قسم المتجر (الباقات) -->
     <div id="store">
        <div class="section-header">
           <h2>باقات الاشتراك</h2>
@@ -413,7 +429,8 @@
        <div class="pricing-grid">
           <div class="price-card popular">
              <h3 class="plan-name">الباقة الذهبية</h3>
-             <div class="plan-price">15 <span>JD</span></div>
+             <!-- ✅ هنا تم وضع ID للسعر -->
+             <div class="plan-price"><span id="disp-price-gold">15 JD</span></div>
              <ul class="plan-features">
                 <li><i class="fas fa-check-circle"></i> وصول كامل للامتحانات</li>
                 <li><i class="fas fa-check-circle"></i> مكتبة الفيديو والملفات</li>
@@ -424,7 +441,8 @@
           </div>
           <div class="price-card">
              <h3 class="plan-name">الباقة الفصلية</h3>
-             <div class="plan-price">35 <span>JD</span></div>
+             <!-- ✅ هنا تم وضع ID للسعر -->
+             <div class="plan-price"><span id="disp-price-term">35 JD</span></div>
              <ul class="plan-features">
                 <li><i class="fas fa-check-circle"></i> اشتراك لمدة فصل كامل</li>
                 <li><i class="fas fa-check-circle"></i> جميع مميزات الذهبية</li>
@@ -461,7 +479,6 @@
        <input id="le" placeholder="البريد الإلكتروني" dir="ltr">
        <input id="lp" type="password" placeholder="كلمة المرور" dir="ltr">
        <button class="btn btn-p" onclick="login()">دخول <i class="fas fa-sign-in-alt"></i></button>
-       <button class="btn btn-o" onclick="switchAuth('register')">تفعيل كود اشتراك</button>
     </div>
 
     <!-- فورم التسجيل -->
@@ -479,16 +496,13 @@
        <button class="btn btn-o" onclick="switchAuth('login')">عودة للدخول</button>
     </div>
 
-    <!-- فورم التجربة المجانية (تعديل: القائمة المنسدلة) -->
+    <!-- فورم التجربة المجانية -->
     <div id="f-trial" class="hidden">
        <p style="color:var(--gold); text-align:center; font-size:0.9em">استمتع بتجربة كاملة لمدة 24 ساعة!</p>
        <input id="tn" placeholder="الاسم الرباعي">
        <input id="tph" placeholder="رقم الهاتف">
-       
-       <!-- قائمة الصفوف الديناميكية -->
        <select id="tcl" class="form-select mb-3">
            <option value="" disabled selected>جاري تحميل الصفوف...</option>
-           <!-- Fallback options if API fails -->
            <option value="التوجيهي">التوجيهي</option>
            <option value="الأول ثانوي">الأول ثانوي</option>
            <option value="العاشر">العاشر</option>
@@ -496,7 +510,6 @@
            <option value="الثامن">الثامن</option>
            <option value="السابع">السابع</option>
        </select>
-
        <input id="te" placeholder="البريد الإلكتروني" dir="ltr">
        <button class="btn btn-p" onclick="createTrial()">بدء التجربة الآن 🚀</button>
        <button class="btn btn-o" onclick="switchAuth('login')">إلغاء</button>
@@ -505,7 +518,7 @@
 </div>
 
 <!-- ======================= -->
-<!-- ✅ لوحة التحكم (القديمة كاملة) -->
+<!-- ✅ لوحة التحكم (Dashboard) -->
 <!-- ======================= -->
 <div id="v-dash" class="container hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px">
@@ -687,7 +700,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35j
 const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
 const DEF_IMG = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 let token = localStorage.getItem('tk');
-let publicSettings = {}; // Store fetched public settings
+let publicSettings = {}; 
 
 // ✅ إنشاء معرف جهاز فريد عند أول زيارة
 let deviceId = localStorage.getItem('did');
@@ -731,10 +744,8 @@ window.onload = function() {
       window.history.replaceState({}, document.title, window.location.pathname);
   }
   
-  // Fetch Public Data (Classes & Settings) on load
   fetchPublicData();
 
-  // ✅ التوجيه الذكي: إذا كان مسجل دخول -> للوحة، وإلا -> لصفحة الهبوط
   if(token) checkPending(); else showLanding();
   
   document.addEventListener("visibilitychange", () => {
@@ -749,23 +760,28 @@ window.onload = function() {
 
 // === Public Data & Settings Linkage ===
 function fetchPublicData() {
-    // Attempt to fetch public settings and classes
-    // Note: Assuming 'getPublicData' action exists or we gracefully fail
     callApi('getPublicData').then(r => {
         if(r && r.success) {
             publicSettings = r.settings || {};
             
-            // 1. Update Classes Dropdown
+            // ✅ تحديث الأسعار في المتجر بناءً على ما أدخله المدير
+            if(publicSettings.Price_Gold) {
+                let el = document.getElementById('disp-price-gold');
+                if(el) el.innerText = publicSettings.Price_Gold;
+            }
+            if(publicSettings.Price_Term) {
+                let el = document.getElementById('disp-price-term');
+                if(el) el.innerText = publicSettings.Price_Term;
+            }
+
             if(r.classes && r.classes.length > 0) {
                 let opts = '<option value="" disabled selected>اختر الصف</option>';
                 r.classes.forEach(c => opts += `<option value="${c}">${c}</option>`);
                 document.getElementById('tcl').innerHTML = opts;
             } else {
-                // Fallback handled by HTML hardcoded options
                 document.getElementById('tcl').innerHTML = '<option value="" disabled selected>اختر الصف</option><option value="التوجيهي">التوجيهي</option><option value="الأول ثانوي">الأول ثانوي</option><option value="العاشر">العاشر</option><option value="التاسع">التاسع</option><option value="الثامن">الثامن</option><option value="السابع">السابع</option>';
             }
 
-            // 2. Update Social Links in Footer
             let sHtml = '';
             if(publicSettings.Facebook) sHtml += `<a href="${publicSettings.Facebook}" target="_blank"><i class="fab fa-facebook"></i></a>`;
             if(publicSettings.Instagram) sHtml += `<a href="${publicSettings.Instagram}" target="_blank"><i class="fab fa-instagram"></i></a>`;
@@ -773,27 +789,23 @@ function fetchPublicData() {
             if(publicSettings.WhatsApp_Link) sHtml += `<a href="${publicSettings.WhatsApp_Link}" target="_blank"><i class="fab fa-whatsapp"></i></a>`;
             if(sHtml) document.getElementById('footer-socials').innerHTML = sHtml;
 
-            // 3. Update WA Floating Button
             if(publicSettings.WhatsApp_Link) {
                 let waBtn = document.getElementById('wa-btn');
                 waBtn.href = publicSettings.WhatsApp_Link;
                 waBtn.classList.remove('hidden');
             }
 
-            // 4. Update Store Links (Assuming WA link for purchase)
             document.querySelectorAll('.wa-link-btn').forEach(btn => {
                 btn.onclick = () => window.open(publicSettings.WhatsApp_Link || 'https://wa.me/', '_blank');
             });
         } else {
-            // Setup defaults if API fails
-            let wa = "https://wa.me/96270000000"; // Fallback
+            let wa = "https://wa.me/96270000000";
             document.getElementById('wa-btn').href = wa;
             document.querySelectorAll('.wa-link-btn').forEach(btn => btn.onclick = () => window.open(wa, '_blank'));
         }
     });
 }
 
-// === وظائف التنقل الجديدة (Landing & Auth) ===
 function showLanding() {
     document.getElementById('landing-page').classList.remove('hidden');
     document.getElementById('auth-container').classList.add('hidden');
@@ -820,7 +832,7 @@ function switchAuth(type) {
 
 function toggleFaq(el) { el.classList.toggle('active'); }
 
-function tog(r){ switchAuth(r ? 'register' : 'login'); } // دعم للكود القديم
+function tog(r){ switchAuth(r ? 'register' : 'login'); }
 
 function switchTab(tabId, el) {
     ['exams', 'library', 'leader', 'history', 'assign', 'contact', 'notes'].forEach(id => document.getElementById('tab-'+id).classList.add('hidden'));
@@ -861,18 +873,15 @@ function readP(i){
   } 
 }
 
-// === العمليات الأساسية (Login, Register, Trial) ===
 function login(){
   let e=document.getElementById('le').value, p=document.getElementById('lp').value;
   ld(1); 
-  // ✅ إرسال deviceId مع الدخول
   callApi('loginUser', {email:e, pass:p, deviceId:deviceId}).then(r=>{ 
       ld(0); 
       if(r.success){ 
           sv(r); checkPending(); 
       } else {
           if(r.message === 'EXPIRED') {
-               // استخدام رابط الواتساب من رد السيرفر أو الإعدادات المحملة
                let waLink = r.wa || publicSettings.WhatsApp_Link || 'https://wa.me/';
                Swal.fire({
                   icon: 'warning', title: 'انتهى اشتراكك',
@@ -927,10 +936,10 @@ function logout(){ localStorage.clear(); location.reload(); }
 
 // === لوحة التحكم (تم دمجها لتعمل مع الهيكل الجديد) ===
 function loadDash(){
-  document.getElementById('landing-page').classList.add('hidden'); // إخفاء الهبوط
-  document.getElementById('auth-container').classList.add('hidden'); // إخفاء الدخول
+  document.getElementById('landing-page').classList.add('hidden'); 
+  document.getElementById('auth-container').classList.add('hidden'); 
   document.getElementById('v-exam').classList.add('hidden'); 
-  document.getElementById('v-dash').classList.remove('hidden'); // إظهار اللوحة
+  document.getElementById('v-dash').classList.remove('hidden'); 
   document.getElementById('notif-bell').classList.remove('hidden');
 
   document.getElementById('u-name').innerText = localStorage.getItem('nm'); 
@@ -944,7 +953,6 @@ function loadDash(){
     ld(0);
   });
 
-  // ... (بقية دوال التحميل تعمل كما في الكود القديم تماماً) ...
   callApi('getLibraryContent', {token:token}).then(r=>{
       let h='';
       if(r.library && r.library.length) {
@@ -1260,6 +1268,15 @@ function sendComplaint() {
 function loadStats() {
     callApi('getStudentStats', {token:token}).then(r => {
         if(!r.success) return;
+        
+        // ✅ تحديث بيانات الطالب من السيرفر لضمان المزامنة
+        if (r.name && r.cls) {
+            localStorage.setItem('nm', r.name);
+            localStorage.setItem('cl', r.cls);
+            document.getElementById('u-name').innerText = r.name;
+            document.getElementById('u-cls').innerText = r.cls;
+        }
+
         document.getElementById('perf-chart').innerHTML = `
             <div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div>
             <div class="chart-bar chart-cls" style="height:${r.classAvg}%;"><span style="margin-bottom:5px">${r.classAvg}%</span></div>
@@ -1340,4 +1357,3 @@ function loadMsgHistory() {
 </script>
 </body>
 </html>
-
