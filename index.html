@@ -35,6 +35,15 @@
   .container { max-width: 1100px; margin: 0 auto; padding: 20px; transition: 0.5s; }
   .hidden { display: none !important; }
   
+  /* === Top News Ticker === */
+  .top-news-bar {
+      background: var(--blue); color: white; width: 100%; overflow: hidden; white-space: nowrap;
+      position: relative; z-index: 2000; font-size: 0.9em; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: none; /* Hidden by default */
+  }
+  .news-content-scroll { display: inline-block; padding-left: 100%; animation: ticker 30s linear infinite; }
+  @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-200%); } }
+
   /* === Landing Page Navigation === */
   .landing-nav {
       display: flex; justify-content: space-between; align-items: center;
@@ -47,20 +56,11 @@
   .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; transition: 0.3s; position: relative; }
   .nav-links a:hover { color: var(--blue); }
   
-  .nav-buttons { 
-      display: flex; 
-      gap: 12px; 
-      align-items: center; 
-  }
+  /* تنسيق الأزرار */
+  .nav-buttons { display: flex; gap: 12px; align-items: center; }
   .nav-btn-sep {
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 0.9em;
-      cursor: pointer;
-      transition: 0.3s;
-      border: 1px solid transparent;
-      display: flex; align-items: center; gap: 5px;
+      padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9em; cursor: pointer;
+      transition: 0.3s; border: 1px solid transparent; display: flex; align-items: center; gap: 5px;
   }
   .btn-login-nav { background: var(--blue); color: white; }
   .btn-reg-nav { background: transparent; border-color: var(--gold); color: var(--gold); }
@@ -71,16 +71,6 @@
       .nav-buttons { width: 100%; justify-content: center; margin-top: 15px; }
       .nav-btn-sep { width: 48%; justify-content: center; font-size: 0.85em; }
   }
-
-  /* === News Ticker === */
-  .news-ticker-container {
-      background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden;
-      display: flex; align-items: center; padding: 10px; border-left: 4px solid var(--gold);
-  }
-  .news-label { background: var(--red); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8em; margin-left: 15px; white-space: nowrap; }
-  .news-content { flex: 1; overflow: hidden; white-space: nowrap; font-size: 0.9em; }
-  .news-content span { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; color: var(--text); }
-  @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-200%); } }
 
   /* === Sections === */
   #landing-page { animation: fadeIn 1s; }
@@ -279,6 +269,11 @@
   </button>
 </div>
 
+<!-- ✅ شريط الأخبار العلوي (Top Ticker) -->
+<div id="top-news-bar" class="top-news-bar">
+    <span id="top-news-content" class="news-content-scroll">مرحباً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span>
+</div>
+
 <!-- ======================= -->
 <!-- ✅ صفحة الهبوط الكاملة (Landing Page) -->
 <!-- ======================= -->
@@ -317,6 +312,12 @@
        <h1 class="hero-title">منصة نبراس التعليمية</h1>
        <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك.</p>
        
+       <!-- ✅ News Ticker -->
+       <div id="news-section" class="news-ticker-container hidden">
+           <div class="news-label">عاجل</div>
+           <div class="news-content"><span id="news-text">أهلاً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span></div>
+       </div>
+
        <div class="action-buttons">
           <button class="btn-hero btn-primary-hero" onclick="showLogin('register')"><i class="fas fa-user-plus"></i> اشترك الآن</button>
           <button class="btn-hero btn-outline-hero" onclick="showLogin('trial')"><i class="fas fa-rocket"></i> تجربة مجانية</button>
@@ -368,7 +369,7 @@
                 <li><i class="fas fa-check-circle"></i> تقارير أداء متقدمة</li>
                 <li><i class="fas fa-check-circle"></i> دعم فني مباشر</li>
              </ul>
-             <button class="btn btn-p wa-link-btn">اشترك الآن</button>
+             <button class="btn btn-p wa-link-btn" data-plan="الباقة الذهبية">اشترك الآن</button>
           </div>
           <div class="price-card">
              <h3 class="plan-name">الباقة الفصلية</h3>
@@ -380,7 +381,7 @@
                 <li><i class="fas fa-check-circle"></i> حصص مراجعة مباشرة</li>
                 <li><i class="fas fa-check-circle"></i> أولوية في الرد</li>
              </ul>
-             <button class="btn btn-o wa-link-btn">طلب الكود</button>
+             <button class="btn btn-o wa-link-btn" data-plan="الباقة الفصلية">طلب الكود</button>
           </div>
        </div>
     </div>
@@ -542,6 +543,12 @@
         <h3 id="u-name" style="margin:0; color:var(--text); font-size:20px"></h3>
         <span id="u-cls" style="color:var(--gold); font-size:14px; background:rgba(245, 158, 11, 0.1); padding:2px 8px; border-radius:10px"></span>
         <div id="social-box" style="display:flex; gap:10px; margin-top:8px;"></div>
+        
+        <!-- ✅ زر مجموعة الصف الجديد -->
+        <button class="btn btn-g btn-sm" onclick="joinClassGroup()" style="width:auto; margin-top:5px; padding: 5px 15px;">
+            <i class="fab fa-whatsapp"></i> مجموعة الصف
+        </button>
+
         <div id="badges-area" style="margin-top:5px"></div>
       </div>
     </div>
@@ -779,26 +786,28 @@ function fetchPublicData() {
         if(r && r.success) {
             publicSettings = r.settings || {};
             
-            // ✅ تحديث الأسعار في المتجر بناءً على ما أدخله المدير
-            if(publicSettings.Price_Gold) {
-                let el = document.getElementById('disp-price-gold');
-                if(el) el.innerText = publicSettings.Price_Gold;
-            }
-            if(publicSettings.Price_Term) {
-                let el = document.getElementById('disp-price-term');
-                if(el) el.innerText = publicSettings.Price_Term;
-            }
+            // Safe update helper
+            const setText = (id, txt) => { let el = document.getElementById(id); if(el) el.innerText = txt; };
+            const showEl = (id) => { let el = document.getElementById(id); if(el) el.classList.remove('hidden'); };
+            const setDisplay = (id, val) => { let el = document.getElementById(id); if(el) el.style.display = val; };
 
-            // ✅ عرض آخر الأخبار في صفحة الهبوط
+            // Update Prices
+            if(publicSettings.Price_Gold) setText('disp-price-gold', publicSettings.Price_Gold);
+            if(publicSettings.Price_Term) setText('disp-price-term', publicSettings.Price_Term);
+
+            // Update News
             if(r.news && r.news.length > 0) {
                 let newsText = r.news.map(n => n.text).join(' | ');
-                document.getElementById('news-text').innerText = newsText;
-                document.getElementById('news-section').classList.remove('hidden');
+                setText('top-news-content', newsText);
+                setDisplay('top-news-bar', 'block');
                 
-                // ✅ عرض آخر خبر في لوحة التحكم الداخلية
                 let latestNews = r.news[0].text;
-                document.getElementById('dashboard-news-text').innerText = latestNews;
-                document.getElementById('dashboard-news-section').classList.remove('hidden');
+                setText('dashboard-news-text', latestNews);
+                showEl('dashboard-news-section');
+                
+                // Optional: Update the hero ticker if it exists
+                setText('news-text', newsText);
+                showEl('news-section');
             }
 
             if(r.classes && r.classes.length > 0) {
@@ -840,16 +849,42 @@ function fetchPublicData() {
     });
 }
 
+function buyPlan(planName) {
+     let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
+     let msg = encodeURIComponent(`مرحباً، أرغب بالاشتراك في ${planName}`);
+     window.open(`https://wa.me/${waNum}?text=${msg}`, '_blank');
+}
+
+function joinClassGroup() {
+    let cls = localStorage.getItem('cl');
+    if(!cls) return Swal.fire('تنبيه', 'لم يتم تحديد صفك الدراسي', 'warning');
+    
+    // محاولة العثور على رابط المجموعة الخاص بالصف، وإلا استخدام الرابط العام
+    let groupLink = publicSettings[`Group_${cls}`] || publicSettings['WhatsApp_Link'];
+    
+    if(groupLink) {
+         // إذا كان الرابط رقم هاتف فقط، نحوله لرابط واتساب
+         let url = String(groupLink).includes('http') ? groupLink : `https://wa.me/${String(groupLink).replace(/\D/g,'')}`;
+         window.open(url, '_blank');
+    } else {
+         Swal.fire('تنبيه', 'رابط المجموعة غير متوفر حالياً', 'info');
+    }
+}
+
 function showLanding() {
     document.getElementById('landing-page').classList.remove('hidden');
     document.getElementById('auth-container').classList.add('hidden');
     document.getElementById('v-dash').classList.add('hidden');
+    // إخفاء شريط الأخبار العلوي في لوحة التحكم (يوجد واحد داخلي)
+    document.getElementById('top-news-bar').style.display = 'block'; 
 }
 
 function showLogin(type) {
     document.getElementById('landing-page').classList.add('hidden');
     document.getElementById('auth-container').classList.remove('hidden');
-    switchAuth(type === 'trial' ? 'trial' : 'login');
+    document.getElementById('top-news-bar').style.display = 'none';
+    // ✅ هنا الإصلاح: تمرير النوع مباشرة
+    switchAuth(type); 
 }
 
 function switchAuth(type) {
@@ -859,9 +894,10 @@ function switchAuth(type) {
     if(type === 'trial') title = 'تجربة مجانية';
     document.getElementById('auth-title').innerText = title;
     
-    if(type === 'login') document.getElementById('f-login').classList.remove('hidden');
-    else if(type === 'register') document.getElementById('f-reg').classList.remove('hidden');
-    else document.getElementById('f-trial').classList.remove('hidden');
+    // ✅ منطق التبديل الصحيح
+    if(type === 'register') document.getElementById('f-reg').classList.remove('hidden');
+    else if(type === 'trial') document.getElementById('f-trial').classList.remove('hidden');
+    else document.getElementById('f-login').classList.remove('hidden');
 }
 
 function toggleFaq(el) { el.classList.toggle('active'); }
@@ -975,6 +1011,7 @@ function loadDash(){
   document.getElementById('v-exam').classList.add('hidden'); 
   document.getElementById('v-dash').classList.remove('hidden'); 
   document.getElementById('notif-bell').classList.remove('hidden');
+  document.getElementById('top-news-bar').style.display = 'none'; // Hide landing news
 
   document.getElementById('u-name').innerText = localStorage.getItem('nm'); 
   document.getElementById('u-cls').innerText = localStorage.getItem('cl');
