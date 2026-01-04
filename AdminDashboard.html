@@ -521,7 +521,7 @@
     <div id="view-settings" class="view-section hidden">
         <div class="row g-4">
             <!-- General Settings -->
-            <div class="col-md-4">
+            <div class="col-md-12 col-lg-4">
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-sliders-h"></i> إعدادات أساسية</h5>
                     <div class="mb-3"><label>اسم المعلم (للشهادات):</label><input id="set-name" class="form-control"></div>
@@ -532,8 +532,8 @@
                 </div>
             </div>
 
-            <!-- Store & Packages Settings (New) -->
-            <div class="col-md-4">
+            <!-- Store & Packages Settings (UPDATED) -->
+            <div class="col-md-12 col-lg-8">
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-store"></i> المتجر والباقات</h5>
                     <div class="mb-3">
@@ -542,25 +542,42 @@
                             <span class="input-group-text"><i class="fab fa-whatsapp text-success"></i></span>
                             <input id="soc-wa" class="form-control" placeholder="9627xxxxxxxx">
                         </div>
-                        <small class="text-muted">مثال: 962799999999</small>
                     </div>
-                    <div class="mb-3">
-                        <label>سعر الباقة الأساسية:</label>
-                        <input id="price-basic" class="form-control" placeholder="مثال: 5 JD">
-                    </div>
-                    <div class="mb-3">
-                        <label>سعر الباقة الذهبية:</label>
-                        <input id="price-gold" class="form-control" placeholder="مثال: 15 JD">
-                    </div>
-                    <div class="mb-3">
-                        <label>سعر الباقة الفصلية:</label>
-                        <input id="price-term" class="form-control" placeholder="مثال: 35 JD">
+                    
+                    <div class="row g-3">
+                        <!-- Basic Package -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded bg-light">
+                                <h6 class="fw-bold text-center">الباقة الأساسية</h6>
+                                <input id="pkg-basic-name" class="form-control form-control-sm mb-2" placeholder="الاسم (مثال: الباقة الأساسية)">
+                                <input id="price-basic" class="form-control form-control-sm mb-2" placeholder="السعر (مثال: 5 JD)">
+                                <textarea id="pkg-basic-desc" class="form-control form-control-sm" rows="3" placeholder="المميزات (مفصولة بفاصلة)"></textarea>
+                            </div>
+                        </div>
+                        <!-- Gold Package -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded bg-light">
+                                <h6 class="fw-bold text-center text-warning">الباقة الذهبية</h6>
+                                <input id="pkg-gold-name" class="form-control form-control-sm mb-2" placeholder="الاسم (مثال: الباقة الذهبية)">
+                                <input id="price-gold" class="form-control form-control-sm mb-2" placeholder="السعر (مثال: 15 JD)">
+                                <textarea id="pkg-gold-desc" class="form-control form-control-sm" rows="3" placeholder="المميزات (مفصولة بفاصلة)"></textarea>
+                            </div>
+                        </div>
+                        <!-- Term Package -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded bg-light">
+                                <h6 class="fw-bold text-center text-success">الباقة الفصلية</h6>
+                                <input id="pkg-term-name" class="form-control form-control-sm mb-2" placeholder="الاسم (مثال: الباقة الفصلية)">
+                                <input id="price-term" class="form-control form-control-sm mb-2" placeholder="السعر (مثال: 35 JD)">
+                                <textarea id="pkg-term-desc" class="form-control form-control-sm" rows="3" placeholder="المميزات (مفصولة بفاصلة)"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Social & Danger Zone -->
-            <div class="col-md-4">
+            <div class="col-md-12 col-lg-4">
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-success"><i class="fas fa-share-alt"></i> روابط التواصل</h5>
                     <div class="social-input-group mb-2 input-group">
@@ -586,6 +603,25 @@
                     <button class="btn btn-danger w-100 mt-2" onclick="resetSystem()">تنفيذ الحذف (خطر)</button>
                     <!-- New Button for Strong Init / Smart Repair -->
                     <button class="btn btn-warning w-100 mt-2 text-dark fw-bold" onclick="smartRepair()">🛠️ صيانة النظام وإصلاح الجداول</button>
+                </div>
+            </div>
+            
+            <!-- ✅ قسم روابط مجموعات الصفوف (موسع من 3 إلى 12) -->
+            <div class="col-md-12 col-lg-8"> 
+                <div class="stat-card mb-3">
+                    <h5 class="fw-bold mb-3 text-success"><i class="fab fa-whatsapp"></i> روابط مجموعات الصفوف</h5>
+                    <div class="row g-3">
+                        <div class="col-md-3"><label>الصف الثالث:</label><input id="set-group-3" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف الرابع:</label><input id="set-group-4" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف الخامس:</label><input id="set-group-5" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف السادس:</label><input id="set-group-6" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف السابع:</label><input id="set-group-7" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف الثامن:</label><input id="set-group-8" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف التاسع:</label><input id="set-group-9" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف العاشر:</label><input id="set-group-10" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-4"><label>الأول ثانوي:</label><input id="set-group-11" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-4"><label>التوجيهي:</label><input id="set-group-12" class="form-control form-control-sm" placeholder="الرابط"></div>
+                    </div>
                 </div>
             </div>
             
@@ -713,14 +749,35 @@ async function refreshAll() {
             
             // Populate General & Price Settings
             if(d.settings) {
+                // Basic Settings
                 if(document.getElementById('set-name')) document.getElementById('set-name').value = d.settings['TeacherName'] || '';
                 if(document.getElementById('set-wa')) document.getElementById('set-wa').value = d.settings['WhatsApp'] || '';
                 if(document.getElementById('set-maint')) document.getElementById('set-maint').value = d.settings['Maintenance'] || 'Off';
                 
-                // New Price Fields
+                // Store Settings (Names, Prices, Descs)
+                if(document.getElementById('pkg-basic-name')) document.getElementById('pkg-basic-name').value = d.settings['Pkg_Basic_Name'] || 'الباقة الأساسية';
                 if(document.getElementById('price-basic')) document.getElementById('price-basic').value = d.settings['Price_Basic'] || '5 JD';
+                if(document.getElementById('pkg-basic-desc')) document.getElementById('pkg-basic-desc').value = d.settings['Pkg_Basic_Desc'] || '';
+                
+                if(document.getElementById('pkg-gold-name')) document.getElementById('pkg-gold-name').value = d.settings['Pkg_Gold_Name'] || 'الباقة الذهبية';
                 if(document.getElementById('price-gold')) document.getElementById('price-gold').value = d.settings['Price_Gold'] || '15 JD';
+                if(document.getElementById('pkg-gold-desc')) document.getElementById('pkg-gold-desc').value = d.settings['Pkg_Gold_Desc'] || '';
+
+                if(document.getElementById('pkg-term-name')) document.getElementById('pkg-term-name').value = d.settings['Pkg_Term_Name'] || 'الباقة الفصلية';
                 if(document.getElementById('price-term')) document.getElementById('price-term').value = d.settings['Price_Term'] || '35 JD';
+                if(document.getElementById('pkg-term-desc')) document.getElementById('pkg-term-desc').value = d.settings['Pkg_Term_Desc'] || '';
+                
+                // Class Groups (3-12)
+                if(document.getElementById('set-group-3')) document.getElementById('set-group-3').value = d.settings['Group_الثالث'] || '';
+                if(document.getElementById('set-group-4')) document.getElementById('set-group-4').value = d.settings['Group_الرابع'] || '';
+                if(document.getElementById('set-group-5')) document.getElementById('set-group-5').value = d.settings['Group_الخامس'] || '';
+                if(document.getElementById('set-group-6')) document.getElementById('set-group-6').value = d.settings['Group_السادس'] || '';
+                if(document.getElementById('set-group-7')) document.getElementById('set-group-7').value = d.settings['Group_السابع'] || '';
+                if(document.getElementById('set-group-8')) document.getElementById('set-group-8').value = d.settings['Group_الثامن'] || '';
+                if(document.getElementById('set-group-9')) document.getElementById('set-group-9').value = d.settings['Group_التاسع'] || '';
+                if(document.getElementById('set-group-10')) document.getElementById('set-group-10').value = d.settings['Group_العاشر'] || '';
+                if(document.getElementById('set-group-11')) document.getElementById('set-group-11').value = d.settings['Group_الأول ثانوي'] || '';
+                if(document.getElementById('set-group-12')) document.getElementById('set-group-12').value = d.settings['Group_التوجيهي'] || '';
             }
 
             if(d.socials) {
@@ -784,11 +841,14 @@ function updateCharts() {
     let classes = {};
     if(DB.students) DB.students.forEach(s => { classes[s.cls] = (classes[s.cls]||0) + 1; });
     
+    // Check if element exists before populating (it might be removed in news update)
     let filterCls = document.getElementById('notif-target');
-    filterCls.innerHTML = '<option value="All">الجميع</option>';
-    Object.keys(classes).forEach(c => {
-        filterCls.innerHTML += `<option value="${c}">طلاب ${c}</option>`;
-    });
+    if (filterCls) {
+        filterCls.innerHTML = '<option value="All">الجميع</option>';
+        Object.keys(classes).forEach(c => {
+            filterCls.innerHTML += `<option value="${c}">طلاب ${c}</option>`;
+        });
+    }
 
     if(CHARTS.std) CHARTS.std.destroy();
     CHARTS.std = new Chart(document.getElementById('chart-students'), {
@@ -984,12 +1044,11 @@ async function addToLib() {
 }
 
 async function sendNotif() {
+    let t = document.getElementById('notif-target').value;
     let m = document.getElementById('notif-msg').value;
-    if(!m) return Swal.fire('تنبيه', 'الرجاء كتابة النص', 'warning');
-    // Using 'All' as target for News
-    await callApi('sendTargetedMessage', {target:'All', msg:m});
-    Swal.fire('تم', 'تم نشر الخبر بنجاح', 'success');
-    document.getElementById('notif-msg').value = '';
+    if(!m) return;
+    await callApi('sendTargetedMessage', {target:t, msg:m});
+    Swal.fire('تم', 'تم الإرسال', 'success');
 }
 
 async function delStudent(e) { if(confirm('حذف؟')) { await callApi('deleteStudent', {email:e}); refreshAll(); } }
@@ -1006,12 +1065,34 @@ async function saveSettings() {
         'TeacherName': document.getElementById('set-name').value,
         'WhatsApp': document.getElementById('set-wa').value, // Contact WA
         'Maintenance': document.getElementById('set-maint').value,
+        
+        // Store Settings (Names & Prices & Desc)
+        'Pkg_Basic_Name': document.getElementById('pkg-basic-name').value,
         'Price_Basic': document.getElementById('price-basic').value,
+        'Pkg_Basic_Desc': document.getElementById('pkg-basic-desc').value,
+        
+        'Pkg_Gold_Name': document.getElementById('pkg-gold-name').value,
         'Price_Gold': document.getElementById('price-gold').value,
-        'Price_Term': document.getElementById('price-term').value
+        'Pkg_Gold_Desc': document.getElementById('pkg-gold-desc').value,
+
+        'Pkg_Term_Name': document.getElementById('pkg-term-name').value,
+        'Price_Term': document.getElementById('price-term').value,
+        'Pkg_Term_Desc': document.getElementById('pkg-term-desc').value,
+        
+        // Group Links (3-12)
+        'Group_الثالث': document.getElementById('set-group-3').value,
+        'Group_الرابع': document.getElementById('set-group-4').value,
+        'Group_الخامس': document.getElementById('set-group-5').value,
+        'Group_السادس': document.getElementById('set-group-6').value,
+        'Group_السابع': document.getElementById('set-group-7').value,
+        'Group_الثامن': document.getElementById('set-group-8').value,
+        'Group_التاسع': document.getElementById('set-group-9').value,
+        'Group_العاشر': document.getElementById('set-group-10').value,
+        'Group_الأول ثانوي': document.getElementById('set-group-11').value,
+        'Group_التوجيهي': document.getElementById('set-group-12').value
     };
     
-    // 2. Social Links (including Renewal WA)
+    // 2. Social Links
     let links = {
         'Facebook': document.getElementById('soc-fb').value,
         'Instagram': document.getElementById('soc-ig').value,
