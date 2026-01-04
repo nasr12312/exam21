@@ -35,7 +35,7 @@
   .container { max-width: 1100px; margin: 0 auto; padding: 20px; transition: 0.5s; }
   .hidden { display: none !important; }
   
-  /* === Landing Page Navigation (Fix for Buttons) === */
+  /* === Landing Page Navigation === */
   .landing-nav {
       display: flex; justify-content: space-between; align-items: center;
       padding: 20px 0; margin-bottom: 40px; border-bottom: 1px solid var(--border);
@@ -47,7 +47,6 @@
   .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; transition: 0.3s; position: relative; }
   .nav-links a:hover { color: var(--blue); }
   
-  /* ✅ تنسيق الأزرار الجديد لضمان الفصل */
   .nav-buttons { 
       display: flex; 
       gap: 12px; 
@@ -73,7 +72,17 @@
       .nav-btn-sep { width: 48%; justify-content: center; font-size: 0.85em; }
   }
 
-  /* === Landing Sections === */
+  /* === News Ticker === */
+  .news-ticker-container {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden;
+      display: flex; align-items: center; padding: 10px; border-left: 4px solid var(--gold);
+  }
+  .news-label { background: var(--red); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8em; margin-left: 15px; white-space: nowrap; }
+  .news-content { flex: 1; overflow: hidden; white-space: nowrap; font-size: 0.9em; }
+  .news-content span { display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; color: var(--text); }
+  @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-200%); } }
+
+  /* === Sections === */
   #landing-page { animation: fadeIn 1s; }
   .hero-section { text-align: center; padding: 60px 0 100px; }
   .hero-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--gold); box-shadow: 0 0 40px rgba(245, 158, 11, 0.4); margin-bottom: 25px; object-fit: cover; animation: float 6s ease-in-out infinite; }
@@ -86,23 +95,13 @@
   .section-header h2 { font-family: 'Amiri'; font-size: 2.5em; color: var(--gold); margin: 0; }
   .section-header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: var(--blue); border-radius: 2px; }
 
-  /* News Ticker */
-  .news-ticker-container {
-      background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 40px; overflow: hidden;
-      display: flex; align-items: center; padding: 10px;
-  }
-  .news-label { background: var(--red); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em; margin-left: 15px; white-space: nowrap; }
-  .news-content { flex: 1; overflow: hidden; white-space: nowrap; }
-  .news-content span { display: inline-block; padding-left: 50px; animation: ticker 20s linear infinite; color: var(--text); }
-  @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
   /* Features */
   .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 80px; }
   .feature-box { background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid var(--border); transition: 0.3s; text-align: center; position: relative; overflow: hidden; }
   .feature-box:hover { transform: translateY(-10px); border-color: var(--blue); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
   .feature-icon { font-size: 3em; color: var(--gold); margin-bottom: 20px; background: rgba(245, 158, 11, 0.1); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 20px; }
 
-  /* Store (Pricing) - With IDs for Dynamic Update */
+  /* Store (Pricing) */
   .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 80px; justify-content: center; }
   .price-card { background: var(--glass); padding: 40px 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; transition: 0.3s; position: relative; }
   .price-card:hover { transform: translateY(-5px); border-color: var(--blue); }
@@ -318,12 +317,6 @@
        <h1 class="hero-title">منصة نبراس التعليمية</h1>
        <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك.</p>
        
-       <!-- ✅ News Ticker -->
-       <div id="news-section" class="news-ticker-container hidden">
-           <div class="news-label">عاجل</div>
-           <div class="news-content"><span id="news-text">أهلاً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span></div>
-       </div>
-
        <div class="action-buttons">
           <button class="btn-hero btn-primary-hero" onclick="showLogin('register')"><i class="fas fa-user-plus"></i> اشترك الآن</button>
           <button class="btn-hero btn-outline-hero" onclick="showLogin('trial')"><i class="fas fa-rocket"></i> تجربة مجانية</button>
@@ -388,6 +381,84 @@
                 <li><i class="fas fa-check-circle"></i> أولوية في الرد</li>
              </ul>
              <button class="btn btn-o wa-link-btn">طلب الكود</button>
+          </div>
+       </div>
+    </div>
+
+    <!-- قسم آراء الطلاب -->
+    <div id="reviews">
+       <div class="section-header">
+          <h2>قالوا عن المنصة</h2>
+       </div>
+       <div class="reviews-grid">
+          <div class="review-card">
+             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+             <p class="review-text">"منصة رائعة جداً، ساعدتني في تنظيم دراستي وتحسين علاماتي بشكل ملحوظ. أنصح الجميع بها!"</p>
+             <div class="reviewer">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                <div>
+                   <h5 style="margin:0">أحمد محمد</h5>
+                   <small style="color:#94a3b8">طالب توجيهي</small>
+                </div>
+             </div>
+          </div>
+          <div class="review-card">
+             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+             <p class="review-text">"الامتحانات ممتازة وتغطي المادة بشكل شامل، والمكتبة فيها مصادر مفيدة جداً للدراسة."</p>
+             <div class="reviewer">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png">
+                <div>
+                   <h5 style="margin:0">سارة علي</h5>
+                   <small style="color:#94a3b8">الصف العاشر</small>
+                </div>
+             </div>
+          </div>
+          <div class="review-card">
+             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+             <p class="review-text">"أفضل ميزة هي الشهادات الفورية وتحليل الأداء، بتعطيك دافع كبير للاستمرار."</p>
+             <div class="reviewer">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135823.png">
+                <div>
+                   <h5 style="margin:0">عمر خالد</h5>
+                   <small style="color:#94a3b8">الصف التاسع</small>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+
+    <!-- قسم الأسئلة الشائعة -->
+    <div id="faq">
+       <div class="section-header">
+          <h2>أسئلة شائعة</h2>
+       </div>
+       <div class="faq-container">
+          <div class="faq-item" onclick="toggleFaq(this)">
+             <div class="faq-question">
+                كيف يمكنني الاشتراك في المنصة؟
+                <i class="fas fa-chevron-down faq-toggle"></i>
+             </div>
+             <div class="faq-answer">
+                يمكنك الاشتراك عن طريق شراء كود تفعيل من نقاط البيع المعتمدة أو التواصل معنا عبر الواتساب للحصول على الكود مباشرة.
+             </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+             <div class="faq-question">
+                هل يمكنني تجربة المنصة قبل الدفع؟
+                <i class="fas fa-chevron-down faq-toggle"></i>
+             </div>
+             <div class="faq-answer">
+                نعم، نوفر خيار "تجربة مجانية" يتيح لك الوصول للمحتوى لمدة 24 ساعة لتجربة مميزات المنصة قبل الاشتراك.
+             </div>
+          </div>
+          <div class="faq-item" onclick="toggleFaq(this)">
+             <div class="faq-question">
+                ماذا أفعل إذا نسيت كلمة المرور؟
+                <i class="fas fa-chevron-down faq-toggle"></i>
+             </div>
+             <div class="faq-answer">
+                يمكنك التواصل مع الدعم الفني عبر الواتساب لاستعادة حسابك أو تغيير كلمة المرور.
+             </div>
           </div>
        </div>
     </div>
@@ -477,6 +548,12 @@
     <div style="display:flex; flex-direction:column; gap:5px">
         <button class="btn btn-o" style="width:auto; color:var(--red); border-color:var(--red)" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
     </div>
+  </div>
+  
+  <!-- ✅ شريط الأخبار الداخلي للوحة الطالب -->
+  <div id="dashboard-news-section" class="news-ticker-container hidden" style="border-left-color: var(--blue);">
+      <div class="news-label" style="background: var(--blue);">تنويه</div>
+      <div class="news-content"><span id="dashboard-news-text"></span></div>
   </div>
   
   <div class="nav-tabs">
@@ -712,11 +789,16 @@ function fetchPublicData() {
                 if(el) el.innerText = publicSettings.Price_Term;
             }
 
-            // ✅ عرض آخر الأخبار
+            // ✅ عرض آخر الأخبار في صفحة الهبوط
             if(r.news && r.news.length > 0) {
                 let newsText = r.news.map(n => n.text).join(' | ');
                 document.getElementById('news-text').innerText = newsText;
                 document.getElementById('news-section').classList.remove('hidden');
+                
+                // ✅ عرض آخر خبر في لوحة التحكم الداخلية
+                let latestNews = r.news[0].text;
+                document.getElementById('dashboard-news-text').innerText = latestNews;
+                document.getElementById('dashboard-news-section').classList.remove('hidden');
             }
 
             if(r.classes && r.classes.length > 0) {
