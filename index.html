@@ -86,6 +86,16 @@
   .section-header h2 { font-family: 'Amiri'; font-size: 2.5em; color: var(--gold); margin: 0; }
   .section-header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: var(--blue); border-radius: 2px; }
 
+  /* News Ticker */
+  .news-ticker-container {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 40px; overflow: hidden;
+      display: flex; align-items: center; padding: 10px;
+  }
+  .news-label { background: var(--red); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9em; margin-left: 15px; white-space: nowrap; }
+  .news-content { flex: 1; overflow: hidden; white-space: nowrap; }
+  .news-content span { display: inline-block; padding-left: 50px; animation: ticker 20s linear infinite; color: var(--text); }
+  @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
   /* Features */
   .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 80px; }
   .feature-box { background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid var(--border); transition: 0.3s; text-align: center; position: relative; overflow: hidden; }
@@ -291,7 +301,7 @@
           <a href="#faq">الأسئلة</a>
        </div>
        
-       <!-- ✅ فصل الأزرار بوضوح -->
+       <!-- ✅ فصل أزرار التفعيل والدخول بوضوح -->
        <div class="nav-buttons">
            <button class="nav-btn-sep btn-reg-nav" onclick="showLogin('register')">
                <i class="fas fa-key"></i> تفعيل كود
@@ -308,6 +318,12 @@
        <h1 class="hero-title">منصة نبراس التعليمية</h1>
        <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك.</p>
        
+       <!-- ✅ News Ticker -->
+       <div id="news-section" class="news-ticker-container hidden">
+           <div class="news-label">عاجل</div>
+           <div class="news-content"><span id="news-text">أهلاً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span></div>
+       </div>
+
        <div class="action-buttons">
           <button class="btn-hero btn-primary-hero" onclick="showLogin('register')"><i class="fas fa-user-plus"></i> اشترك الآن</button>
           <button class="btn-hero btn-outline-hero" onclick="showLogin('trial')"><i class="fas fa-rocket"></i> تجربة مجانية</button>
@@ -339,84 +355,6 @@
              <div class="feature-icon"><i class="fas fa-book-reader"></i></div>
              <h3>مكتبة شاملة</h3>
              <p style="color:#94a3b8">شروحات فيديو وملفات PDF لكل المواد الدراسية في مكان واحد.</p>
-          </div>
-       </div>
-    </div>
-
-    <!-- قسم آراء الطلاب -->
-    <div id="reviews">
-       <div class="section-header">
-          <h2>قالوا عن المنصة</h2>
-       </div>
-       <div class="reviews-grid">
-          <div class="review-card">
-             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-             <p class="review-text">"منصة رائعة جداً، ساعدتني في تنظيم دراستي وتحسين علاماتي بشكل ملحوظ. أنصح الجميع بها!"</p>
-             <div class="reviewer">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-                <div>
-                   <h5 style="margin:0">أحمد محمد</h5>
-                   <small style="color:#94a3b8">طالب توجيهي</small>
-                </div>
-             </div>
-          </div>
-          <div class="review-card">
-             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-             <p class="review-text">"الامتحانات ممتازة وتغطي المادة بشكل شامل، والمكتبة فيها مصادر مفيدة جداً للدراسة."</p>
-             <div class="reviewer">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png">
-                <div>
-                   <h5 style="margin:0">سارة علي</h5>
-                   <small style="color:#94a3b8">الصف العاشر</small>
-                </div>
-             </div>
-          </div>
-          <div class="review-card">
-             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-             <p class="review-text">"أفضل ميزة هي الشهادات الفورية وتحليل الأداء، بتعطيك دافع كبير للاستمرار."</p>
-             <div class="reviewer">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135823.png">
-                <div>
-                   <h5 style="margin:0">عمر خالد</h5>
-                   <small style="color:#94a3b8">الصف التاسع</small>
-                </div>
-             </div>
-          </div>
-       </div>
-    </div>
-
-    <!-- قسم الأسئلة الشائعة -->
-    <div id="faq">
-       <div class="section-header">
-          <h2>أسئلة شائعة</h2>
-       </div>
-       <div class="faq-container">
-          <div class="faq-item" onclick="toggleFaq(this)">
-             <div class="faq-question">
-                كيف يمكنني الاشتراك في المنصة؟
-                <i class="fas fa-chevron-down faq-toggle"></i>
-             </div>
-             <div class="faq-answer">
-                يمكنك الاشتراك عن طريق شراء كود تفعيل من نقاط البيع المعتمدة أو التواصل معنا عبر الواتساب للحصول على الكود مباشرة.
-             </div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-             <div class="faq-question">
-                هل يمكنني تجربة المنصة قبل الدفع؟
-                <i class="fas fa-chevron-down faq-toggle"></i>
-             </div>
-             <div class="faq-answer">
-                نعم، نوفر خيار "تجربة مجانية" يتيح لك الوصول للمحتوى لمدة 24 ساعة لتجربة مميزات المنصة قبل الاشتراك.
-             </div>
-          </div>
-          <div class="faq-item" onclick="toggleFaq(this)">
-             <div class="faq-question">
-                ماذا أفعل إذا نسيت كلمة المرور؟
-                <i class="fas fa-chevron-down faq-toggle"></i>
-             </div>
-             <div class="faq-answer">
-                يمكنك التواصل مع الدعم الفني عبر الواتساب لاستعادة حسابك أو تغيير كلمة المرور.
-             </div>
           </div>
        </div>
     </div>
@@ -774,6 +712,13 @@ function fetchPublicData() {
                 if(el) el.innerText = publicSettings.Price_Term;
             }
 
+            // ✅ عرض آخر الأخبار
+            if(r.news && r.news.length > 0) {
+                let newsText = r.news.map(n => n.text).join(' | ');
+                document.getElementById('news-text').innerText = newsText;
+                document.getElementById('news-section').classList.remove('hidden');
+            }
+
             if(r.classes && r.classes.length > 0) {
                 let opts = '<option value="" disabled selected>اختر الصف</option>';
                 r.classes.forEach(c => opts += `<option value="${c}">${c}</option>`);
@@ -789,14 +734,21 @@ function fetchPublicData() {
             if(publicSettings.WhatsApp_Link) sHtml += `<a href="${publicSettings.WhatsApp_Link}" target="_blank"><i class="fab fa-whatsapp"></i></a>`;
             if(sHtml) document.getElementById('footer-socials').innerHTML = sHtml;
 
+            // ✅ إصلاح رابط واتساب (التأكد من صيغة الرابط)
             if(publicSettings.WhatsApp_Link) {
+                // Ensure it's a string before replacing
+                let waNum = String(publicSettings.WhatsApp_Link).replace(/\D/g,''); 
+                let waUrl = `https://wa.me/${waNum}`;
                 let waBtn = document.getElementById('wa-btn');
-                waBtn.href = publicSettings.WhatsApp_Link;
+                waBtn.href = waUrl;
                 waBtn.classList.remove('hidden');
             }
 
             document.querySelectorAll('.wa-link-btn').forEach(btn => {
-                btn.onclick = () => window.open(publicSettings.WhatsApp_Link || 'https://wa.me/', '_blank');
+                btn.onclick = () => {
+                     let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
+                     window.open(`https://wa.me/${waNum}`, '_blank');
+                };
             });
         } else {
             let wa = "https://wa.me/96270000000";
