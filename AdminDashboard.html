@@ -566,12 +566,14 @@
                 </div>
 
                 <div class="stat-card border-danger border">
-                    <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة الخطر</h5>
-                    <p class="text-muted small">حدد الجداول المراد حذف بياناتها نهائياً</p>
+                    <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة الخطر والصيانة</h5>
+                    <p class="text-muted small">إدارة الجداول والبيانات</p>
                     <div class="row" id="reset-boxes">
                         <!-- JS populated -->
                     </div>
-                    <button class="btn btn-danger w-100 mt-3" onclick="resetSystem()">تنفيذ الحذف</button>
+                    <button class="btn btn-danger w-100 mt-2" onclick="resetSystem()">تنفيذ الحذف (خطر)</button>
+                    <!-- New Button for Strong Init / Smart Repair -->
+                    <button class="btn btn-warning w-100 mt-2 text-dark fw-bold" onclick="smartRepair()">🛠️ صيانة النظام وإصلاح الجداول</button>
                 </div>
             </div>
             
@@ -833,13 +835,16 @@ function renderStudents() {
                     <span class="badge bg-light text-dark border">${st.cls}</span>
                     <small class="d-block text-muted text-truncate mt-1">${st.email}</small>
                 </div>
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item text-danger" onclick="delStudent('${st.email}')">حذف</a></li>
-                        <li><a class="dropdown-item text-warning" onclick="resetDev('${st.email}')">فك حظر الجهاز</a></li>
-                        <li><a class="dropdown-item" onclick="changePass('${st.email}')">تغيير السر</a></li>
-                    </ul>
+                
+                <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-light text-warning" onclick="resetDev('${st.email}')" title="فك حظر الجهاز"><i class="fas fa-unlock"></i></button>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-danger" onclick="delStudent('${st.email}')">حذف</a></li>
+                            <li><a class="dropdown-item" onclick="changePass('${st.email}')">تغيير السر</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -1017,6 +1022,13 @@ async function resetSystem() {
     if(p === 'admin') { 
         await callApi('resetSpecificTables', {tables:t});
         Swal.fire('تم', 'تمت إعادة الضبط', 'success').then(()=>location.reload());
+    }
+}
+
+async function smartRepair() {
+    if(confirm('هل تريد إجراء فحص وصيانة شاملة للنظام؟\nسيقوم هذا بحذف الجداول المعطوبة وإضافة الناقصة دون المساس ببيانات الطلاب والنتائج.')) {
+        await callApi('fullSystemSetup');
+        Swal.fire('تم', 'تمت صيانة النظام بنجاح وتحديث الهيكلية', 'success');
     }
 }
 
