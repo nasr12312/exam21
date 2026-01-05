@@ -249,7 +249,7 @@
     <div class="sidebar-header">
         <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="logo-img" alt="Logo">
         <h5 class="mb-0 fw-bold">لوحة المدير</h5>
-        <small style="opacity:0.8">الإصدار الاحترافي 3.0</small>
+        <small style="opacity:0.8">الإصدار الاحترافي 5.0</small>
     </div>
     <div class="nav-menu">
         <div class="nav-item active" onclick="nav('home', this)"><i class="fas fa-th-large"></i> الرئيسية</div>
@@ -289,15 +289,24 @@
 
     <!-- 1. HOME DASHBOARD -->
     <div id="view-home" class="view-section">
-        <!-- ✅ نظام المراسلة الشامل -->
+        <!-- ✅ نظام المراسلة الشامل (معدل لإرسال رسائل منبثقة) -->
         <div class="stat-card mb-4 border-primary border">
-            <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-paper-plane"></i> نظام المراسلة والإشعارات</h5>
+            <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-paper-plane"></i> إرسال تنبيهات (Popups)</h5>
             <div class="row g-3 align-items-end">
                 <div class="col-md-3">
-                    <label class="small text-muted mb-1">تحديد الجمهور:</label>
+                    <label class="small text-muted mb-1">الجمهور المستهدف:</label>
                     <select class="form-select" id="notif-target">
-                        <option value="All">📢 الجميع (شريط الأخبار)</option>
-                        <!-- Classes populated by JS -->
+                        <option value="All">📢 الجميع (رسالة عامة)</option>
+                        <option value="الثالث">الصف الثالث</option>
+                        <option value="الرابع">الصف الرابع</option>
+                        <option value="الخامس">الصف الخامس</option>
+                        <option value="السادس">الصف السادس</option>
+                        <option value="السابع">الصف السابع</option>
+                        <option value="الثامن">الصف الثامن</option>
+                        <option value="التاسع">الصف التاسع</option>
+                        <option value="العاشر">الصف العاشر</option>
+                        <option value="الأول ثانوي">الأول ثانوي</option>
+                        <option value="التوجيهي">التوجيهي</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -306,13 +315,13 @@
                 </div>
                 <div class="col-md-4">
                     <label class="small text-muted mb-1">نص الرسالة:</label>
-                    <input type="text" class="form-control" id="notif-msg" placeholder="اكتب رسالتك هنا...">
+                    <input type="text" class="form-control" id="notif-msg" placeholder="اكتب التنبيه هنا...">
                 </div>
                 <div class="col-md-2">
                     <button class="btn btn-primary w-100 fw-bold" onclick="sendNotif()">إرسال</button>
                 </div>
             </div>
-            <div class="mt-2 text-muted small"><i class="fas fa-info-circle"></i> اختر "الجميع" للنشر في شريط الأخبار، أو اختر صفاً/طالباً لإرسال تنبيه منبثق.</div>
+            <div class="mt-2 text-muted small"><i class="fas fa-info-circle"></i> سيظهر هذا كرسالة منبثقة للطالب عند دخوله المنصة.</div>
         </div>
 
         <div class="row g-4 mb-4">
@@ -545,14 +554,10 @@
                     <div class="mb-3"><label>حالة النظام:</label>
                         <select id="set-maint" class="form-select"><option value="Off">يعمل</option><option value="On">صيانة</option></select>
                     </div>
-                    <div class="form-check form-switch mb-3 p-0 d-flex gap-2 align-items-center">
-                        <input class="form-check-input ms-0" type="checkbox" id="set-news-status" style="width: 3em; height: 1.5em;">
-                        <label class="form-check-label fw-bold" for="set-news-status">تفعيل شريط الأخبار</label>
-                    </div>
                 </div>
             </div>
 
-            <!-- Store & Packages Settings (UPDATED) -->
+            <!-- Store & Packages Settings -->
             <div class="col-md-12 col-lg-8">
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-store"></i> المتجر والباقات</h5>
@@ -616,31 +621,29 @@
 
                 <div class="stat-card border-danger border">
                     <h5 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> منطقة الخطر والصيانة</h5>
-                    <p class="text-muted small">إدارة الجداول والبيانات</p>
-                    <div class="row" id="reset-boxes">
+                    <div class="row id="reset-boxes">
                         <!-- JS populated -->
                     </div>
                     <button class="btn btn-danger w-100 mt-2" onclick="resetSystem()">تنفيذ الحذف (خطر)</button>
-                    <!-- New Button for Strong Init / Smart Repair -->
                     <button class="btn btn-warning w-100 mt-2 text-dark fw-bold" onclick="smartRepair()">🛠️ صيانة النظام وإصلاح الجداول</button>
                 </div>
             </div>
             
-            <!-- ✅ قسم روابط مجموعات الصفوف (موسع من 3 إلى 12) -->
+            <!-- ✅ روابط مجموعات الصفوف (3-12) -->
             <div class="col-md-12 col-lg-8"> 
                 <div class="stat-card mb-3">
                     <h5 class="fw-bold mb-3 text-success"><i class="fab fa-whatsapp"></i> روابط مجموعات الصفوف</h5>
                     <div class="row g-3">
-                        <div class="col-md-3"><label>الصف الثالث:</label><input id="set-group-3" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف الرابع:</label><input id="set-group-4" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف الخامس:</label><input id="set-group-5" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف السادس:</label><input id="set-group-6" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف السابع:</label><input id="set-group-7" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف الثامن:</label><input id="set-group-8" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف التاسع:</label><input id="set-group-9" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-3"><label>الصف العاشر:</label><input id="set-group-10" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-4"><label>الأول ثانوي:</label><input id="set-group-11" class="form-control form-control-sm" placeholder="رابط"></div>
-                        <div class="col-md-4"><label>التوجيهي:</label><input id="set-group-12" class="form-control form-control-sm" placeholder="رابط"></div>
+                        <div class="col-md-3"><label>الصف الثالث:</label><input id="set-group-3" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف الرابع:</label><input id="set-group-4" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف الخامس:</label><input id="set-group-5" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف السادس:</label><input id="set-group-6" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف السابع:</label><input id="set-group-7" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف الثامن:</label><input id="set-group-8" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف التاسع:</label><input id="set-group-9" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-3"><label>الصف العاشر:</label><input id="set-group-10" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-4"><label>الأول ثانوي:</label><input id="set-group-11" class="form-control form-control-sm" placeholder="الرابط"></div>
+                        <div class="col-md-4"><label>التوجيهي:</label><input id="set-group-12" class="form-control form-control-sm" placeholder="الرابط"></div>
                     </div>
                 </div>
             </div>
@@ -682,7 +685,7 @@ window.onload = function() {
     let tables = ['Students', 'Codes', 'Results', 'Library', 'Assignments', 'Complaints'];
     let h = '';
     tables.forEach(t => h+=`<div class="col-6"><div class="form-check"><input type="checkbox" class="form-check-input r-chk" value="${t}" id="r-${t}"><label class="form-check-label small" for="r-${t}">${t}</label></div></div>`);
-    // ✅ Fix: Add safe check before setting innerHTML
+    // Safe check before setting innerHTML
     let rb = document.getElementById('reset-boxes');
     if(rb) rb.innerHTML = h;
 };
@@ -771,13 +774,12 @@ async function refreshAll() {
             
             // Populate General & Price Settings
             if(d.settings) {
-                // Basic
+                // Basic Settings
                 if(document.getElementById('set-name')) document.getElementById('set-name').value = d.settings['TeacherName'] || '';
                 if(document.getElementById('set-wa')) document.getElementById('set-wa').value = d.settings['WhatsApp'] || '';
                 if(document.getElementById('set-maint')) document.getElementById('set-maint').value = d.settings['Maintenance'] || 'Off';
-                if(document.getElementById('set-news-status')) document.getElementById('set-news-status').checked = (d.settings['News_Enabled'] === 'On');
                 
-                // Store
+                // Store Settings (Names, Prices, Descs)
                 if(document.getElementById('pkg-basic-name')) document.getElementById('pkg-basic-name').value = d.settings['Pkg_Basic_Name'] || 'الباقة الأساسية';
                 if(document.getElementById('price-basic')) document.getElementById('price-basic').value = d.settings['Price_Basic'] || '5 JD';
                 if(document.getElementById('pkg-basic-desc')) document.getElementById('pkg-basic-desc').value = d.settings['Pkg_Basic_Desc'] || '';
@@ -790,7 +792,7 @@ async function refreshAll() {
                 if(document.getElementById('price-term')) document.getElementById('price-term').value = d.settings['Price_Term'] || '35 JD';
                 if(document.getElementById('pkg-term-desc')) document.getElementById('pkg-term-desc').value = d.settings['Pkg_Term_Desc'] || '';
                 
-                // Class Groups
+                // Class Groups (3-12)
                 if(document.getElementById('set-group-3')) document.getElementById('set-group-3').value = d.settings['Group_الثالث'] || '';
                 if(document.getElementById('set-group-4')) document.getElementById('set-group-4').value = d.settings['Group_الرابع'] || '';
                 if(document.getElementById('set-group-5')) document.getElementById('set-group-5').value = d.settings['Group_الخامس'] || '';
@@ -864,13 +866,11 @@ function updateCharts() {
     let classes = {};
     if(DB.students) DB.students.forEach(s => { classes[s.cls] = (classes[s.cls]||0) + 1; });
     
-    // Check if element exists before populating (it might be removed in news update)
+    // Populate Notification Target
     let filterCls = document.getElementById('notif-target');
     if (filterCls) {
-        filterCls.innerHTML = '<option value="All">📢 الجميع (شريط الأخبار)</option>';
-        Object.keys(classes).forEach(c => {
-            filterCls.innerHTML += `<option value="${c}">طلاب ${c}</option>`;
-        });
+        // filterCls.innerHTML = '<option value="All">📢 الجميع (شريط الأخبار)</option>';
+        // Already static options in HTML
     }
 
     if(CHARTS.std) CHARTS.std.destroy();
@@ -993,8 +993,8 @@ function renderResults() {
 }
 
 function renderLib() {
-    let h=''; if(DB.library) DB.library.forEach(i => h+=`<tr><td>${i.title}</td><td>${i.subject || 'غير مصنف'}</td><td>${i.type}</td><td>${i.cls}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`);
-    document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="5" class="text-center text-muted">لا يوجد محتوى</td></tr>';
+    let h=''; if(DB.library) DB.library.forEach(i => h+=`<tr><td>${i.title}</td><td>${i.type}</td><td>${i.cls}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})">حذف</button></td></tr>`);
+    document.getElementById('lib-body').innerHTML = h || '<tr><td colspan="4" class="text-center text-muted">لا يوجد محتوى</td></tr>';
 }
 function renderAssign() {
     let h=''; if(DB.assignments) DB.assignments.forEach(a => h+=`<tr><td>${a.date}</td><td>${a.name}</td><td>${a.type}</td><td><a href="${a.link}" target="_blank" class="btn btn-sm btn-info">عرض</a></td><td>${a.grade}</td><td><button class="btn btn-sm btn-primary" onclick="gradeAss(${a.rowId})">رصد</button></td></tr>`);
@@ -1097,7 +1097,7 @@ async function saveSettings() {
         'TeacherName': document.getElementById('set-name').value,
         'WhatsApp': document.getElementById('set-wa').value, // Contact WA
         'Maintenance': document.getElementById('set-maint').value,
-        'News_Enabled': document.getElementById('set-news-status').checked ? 'On' : 'Off',
+        'News_Enabled': document.getElementById('set-news-status') ? (document.getElementById('set-news-status').checked ? 'On' : 'Off') : 'On',
         
         // Store Settings (Names & Prices & Desc)
         'Pkg_Basic_Name': document.getElementById('pkg-basic-name').value,
@@ -1355,5 +1355,3 @@ function logout() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
