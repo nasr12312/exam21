@@ -4,22 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- =========================================
-         SEO & Meta Tags (تحسين محركات البحث)
-         ========================================= -->
-    <title>منصة مدرسة نبراس التعليمية | اختبارات وشروحات المنهاج الأردني</title>
-    
-    <meta name="description" content="منصة نبراس التعليمية: الخيار الأول لطلاب المنهاج الأردني من الصف الثالث وحتى التوجيهي. نقدم اختبارات إلكترونية تفاعلية، بنك أسئلة شامل، أوراق عمل، ومتابعة دقيقة لمستوى الطالب.">
-    <meta name="keywords" content="مدرسة نبراس, منصة نبراس, المنهاج الأردني, امتحانات الكترونية, تعليم اونلاين, الصف العاشر, التوجيهي, شرح مواد, أوراق عمل, بنك أسئلة, عبد الرحمن نصر الله">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Nebras School">
-    
-    <meta property="og:title" content="منصة نبراس التعليمية">
-    <meta property="og:description" content="اختبر معلوماتك وارفع مستواك الدراسي مع أقوى منصة تعليمية للمنهاج الأردني.">
-    <meta property="og:image" content="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png">
-    <meta property="og:type" content="website">
+    <title>مدرسة نبراس | منصة تعليمية للمنهاج الأردني - شروحات وملخصات (صفوف 4-9)</title>
 
-    <!-- المكتبات والتنسيقات -->
+    <meta name="description" content="منصة مدرسة نبراس التعليمية: موقع شامل يقدم شروحات مبسطة، أوراق عمل، وتلخيصات لمواد اللغة العربية والتربية الإسلامية للمنهاج الأردني. امتحانات الكترونية، متابعة للطلاب، وشهادات تقدير فورية.">
+
+    <meta name="keywords" content="مدرسة نبراس, المنهاج الأردني, شرح لغة عربية, تربية إسلامية, الصف الرابع, الصف الخامس, الصف السادس, الصف السابع, الصف الثامن, الصف التاسع, ملخصات, أوراق عمل, امتحانات, اختبارات مقترحة, دوسيات, حل أسئلة الكتاب, تعليم أونلاين, عبد الرحمن نصر الله">
+    
+    <meta name="google-site-verification" content="8M_RsgVZKAFYIQV6oJ51s5i8TuLIxINROXWEfeq--pw" />
+
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -62,7 +54,6 @@
   .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; transition: 0.3s; position: relative; }
   .nav-links a:hover { color: var(--blue); }
   
-  /* تنسيق الأزرار */
   .nav-buttons { display: flex; gap: 12px; align-items: center; }
   .nav-btn-sep {
       padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9em; cursor: pointer;
@@ -84,6 +75,7 @@
   .hero-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--gold); box-shadow: 0 0 40px rgba(245, 158, 11, 0.4); margin-bottom: 25px; object-fit: cover; animation: float 6s ease-in-out infinite; }
   @keyframes float { 0%{transform:translateY(0px)} 50%{transform:translateY(-20px)} 100%{transform:translateY(0px)} }
   
+  /* استخدام H1 للعنوان الرئيسي لأغراض السيو */
   .hero-title { font-family: 'Amiri'; font-size: 3.5em; margin: 0; color: var(--blue); text-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
   .hero-subtitle { color: #94a3b8; font-size: 1.3em; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.6; }
   
@@ -189,12 +181,11 @@
   .folder-item { background: rgba(59, 130, 246, 0.1); border-color: var(--blue); }
   .folder-item .exam-icon { color: var(--blue); }
   
-  /* === Library Items (Redesigned for Grid) === */
   .lib-item { 
     display:flex; align-items:center; background:rgba(128,128,128,0.05); padding:15px; border-radius:12px; 
-    transition:0.3s; text-decoration:none; color:inherit; border:1px solid transparent; cursor: pointer;
+    margin-bottom:10px; transition:0.3s; text-decoration:none; color:inherit; border:1px solid transparent; 
   }
-  .lib-item:hover { background:rgba(128,128,128,0.1); border-color:var(--blue); transform:translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+  .lib-item:hover { background:rgba(128,128,128,0.1); border-color:var(--blue); transform:translateX(-5px); }
   
   /* === Tables & Stats === */
   table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 12px; overflow: hidden; }
@@ -206,7 +197,12 @@
   .chart-me { background: var(--blue); }
   .chart-cls { background: var(--gold); }
 
-  /* === Exam UI (No Timer) === */
+  /* === Exam UI === */
+  .timer-box { 
+    background: var(--red); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; 
+    font-size: 14px; display: flex; align-items: center; gap: 5px; animation: pulse 2s infinite; 
+  }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
   .q-option { 
     padding: 18px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; cursor: pointer; 
     background: rgba(128,128,128,0.05); transition: 0.2s; display: flex; align-items: center; gap: 10px; 
@@ -214,28 +210,6 @@
   .q-option:hover { background: rgba(128,128,128,0.1); }
   .q-option.selected { background: rgba(59,130,246,0.2); border-color: var(--blue); }
   
-  /* === Digital Viewer Modal === */
-  #viewer-modal { 
-    position: fixed; inset: 0; background: rgba(15,23,42,0.98); z-index: 9999; 
-    display: none; flex-direction: column; 
-  }
-  .viewer-header {
-    display: flex; justify-content: space-between; align-items: center; padding: 15px 25px;
-    background: var(--glass); border-bottom: 1px solid var(--border);
-  }
-  .viewer-body { flex: 1; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; }
-  .viewer-iframe { width: 100%; height: 100%; border: none; }
-
-  /* === Gamification Card === */
-  .level-card {
-    background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white;
-    padding: 15px; border-radius: 15px; margin-top: 15px; position: relative; overflow: hidden;
-  }
-  .level-badge {
-    position: absolute; top: 10px; left: 10px; background: var(--gold); color: black;
-    padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8em;
-  }
-
   /* === Other UI === */
   .badge-item { display: inline-block; padding: 5px 10px; border-radius: 20px; background: var(--gold); color: black; font-size: 12px; margin: 2px; }
   #notif-bell { position: relative; cursor: pointer; transition: 0.3s; }
@@ -247,6 +221,12 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 9000; text-decoration: none; transition: 0.3s; 
   }
   #wa-btn:hover { transform: scale(1.1); }
+  #broadcast-bar { 
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; 
+    padding: 10px 20px; border-radius: 30px; z-index: 9000; box-shadow: 0 5px 20px rgba(0,0,0,0.3); display: none; 
+    animation: slideUp 0.5s; font-weight: bold; 
+  }
+  @keyframes slideUp { from {bottom: -50px} to {bottom: 20px} }
   
   /* === Loader === */
   #loader { 
@@ -271,6 +251,10 @@
 </div>
 
 <div id="direct-link" class="hidden"></div>
+<div id="broadcast-bar">
+  <i class="fas fa-bullhorn"></i> <span id="bc-text"></span> 
+  <i class="fas fa-times" style="margin-right:10px;cursor:pointer" onclick="this.parentElement.style.display='none'"></i>
+</div>
 <a href="#" target="_blank" id="wa-btn" class="hidden"><i class="fab fa-whatsapp"></i></a>
 
 <div style="position:fixed; top:20px; left:20px; z-index:1000; display:flex; gap:15px; align-items:center">
@@ -283,28 +267,22 @@
   </button>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ صفحة الهبوط الكاملة (Landing Page) -->
-<!-- ======================= -->
 <div id="landing-page" class="hidden">
   <div class="container">
-    <!-- شريط التنقل -->
     <nav class="landing-nav">
        <div class="nav-logo">
           <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--gold)">
           <span>نبراس التعليمية</span>
        </div>
        
-       <!-- روابط التنقل -->
        <div class="nav-links">
           <a href="#hero">الرئيسية</a>
-          <a href="#public-library">المكتبة والملفات</a> <!-- ✅ رابط جديد -->
           <a href="#features">المميزات</a>
           <a href="#store">المتجر</a>
           <a href="#reviews">الآراء</a>
+          <a href="#faq">الأسئلة</a>
        </div>
        
-       <!-- ✅ فصل أزرار التفعيل والدخول بوضوح -->
        <div class="nav-buttons">
            <button class="nav-btn-sep btn-reg-nav" onclick="showLogin('register')">
                <i class="fas fa-key"></i> تفعيل كود
@@ -315,49 +293,22 @@
        </div>
     </nav>
 
-    <!-- القسم الرئيسي (Hero) -->
     <div id="hero" class="hero-section">
        <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="hero-logo">
-       <h1 class="hero-title">منصة نبراس التعليمية</h1>
-       <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك.</p>
+       <h1 class="hero-title">منصة مدرسة نبراس التعليمية</h1>
+       <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك في المنهاج الأردني.</p>
        
+       <div id="news-section" class="news-ticker-container hidden">
+           <div class="news-label">عاجل</div>
+           <div class="news-content"><span id="news-text">أهلاً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span></div>
+       </div>
+
        <div class="action-buttons">
           <button class="btn-hero btn-primary-hero" onclick="showLogin('register')"><i class="fas fa-user-plus"></i> اشترك الآن</button>
           <button class="btn-hero btn-outline-hero" onclick="showLogin('trial')"><i class="fas fa-rocket"></i> تجربة مجانية</button>
        </div>
     </div>
 
-    <!-- ✅ قسم المكتبة العامة (يظهر للزوار ومحركات البحث) -->
-    <div id="public-library">
-       <div class="section-header">
-          <h2>مكتبة الملفات والشروحات</h2>
-          <p style="color:#94a3b8">تصفح أحدث الملخصات وأوراق العمل للمنهاج الأردني</p>
-       </div>
-       
-       <!-- فلاتر البحث -->
-       <div class="container" style="margin-bottom:30px">
-           <div class="row g-2 justify-content-center">
-               <div class="col-md-4">
-                   <input id="pub-search" class="form-control" placeholder="ابحث عن ملف (مثال: فيزياء عاشر)..." onkeyup="filterPublicLib()">
-               </div>
-               <div class="col-md-3">
-                   <select id="pub-filter-class" class="form-select" onchange="filterPublicLib()">
-                       <option value="All">كل الصفوف</option>
-                       <!-- سيتم تعبئتها تلقائياً -->
-                   </select>
-               </div>
-           </div>
-       </div>
-
-       <!-- شبكة الملفات -->
-       <div id="public-lib-grid" class="pricing-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
-           <div style="text-align:center; color:#94a3b8; grid-column: 1/-1;">
-               <i class="fas fa-spinner fa-spin"></i> جاري تحميل المكتبة...
-           </div>
-       </div>
-    </div>
-
-    <!-- قسم المميزات -->
     <div id="features">
        <div class="section-header">
           <h2>مميزات المنصة</h2>
@@ -386,7 +337,6 @@
        </div>
     </div>
 
-    <!-- قسم المتجر (الباقات) -->
     <div id="store">
        <div class="section-header">
           <h2>باقات الاشتراك</h2>
@@ -394,7 +344,6 @@
        <div class="pricing-grid">
           <div class="price-card popular">
              <h3 class="plan-name">الباقة الذهبية</h3>
-             <!-- ✅ هنا تم وضع ID للسعر -->
              <div class="plan-price"><span id="disp-price-gold">15 JD</span></div>
              <ul class="plan-features">
                 <li><i class="fas fa-check-circle"></i> وصول كامل للامتحانات</li>
@@ -406,7 +355,6 @@
           </div>
           <div class="price-card">
              <h3 class="plan-name">الباقة الفصلية</h3>
-             <!-- ✅ هنا تم وضع ID للسعر -->
              <div class="plan-price"><span id="disp-price-term">35 JD</span></div>
              <ul class="plan-features">
                 <li><i class="fas fa-check-circle"></i> اشتراك لمدة فصل كامل</li>
@@ -419,7 +367,6 @@
        </div>
     </div>
 
-    <!-- قسم آراء الطلاب -->
     <div id="reviews">
        <div class="section-header">
           <h2>قالوا عن المنصة</h2>
@@ -461,7 +408,6 @@
        </div>
     </div>
 
-    <!-- قسم الأسئلة الشائعة -->
     <div id="faq">
        <div class="section-header">
           <h2>أسئلة شائعة</h2>
@@ -497,19 +443,14 @@
        </div>
     </div>
 
-    <!-- الفوتر -->
     <footer class="landing-footer">
        <div class="social-links" id="footer-socials">
-          <!-- Dynamic Links -->
-       </div>
+          </div>
        <p>&copy; 2024 منصة نبراس التعليمية. جميع الحقوق محفوظة.</p>
     </footer>
   </div>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ واجهة الدخول / التسجيل / التجربة -->
-<!-- ======================= -->
 <div id="auth-container" class="container hidden" style="max-width:400px; margin-top:60px">
   <div class="auth-card">
     <div style="text-align:center; margin-bottom:20px">
@@ -517,14 +458,12 @@
        <h2 id="auth-title" style="margin:0; color:var(--text)">تسجيل الدخول</h2>
     </div>
 
-    <!-- فورم الدخول -->
     <div id="f-login">
        <input id="le" placeholder="البريد الإلكتروني" dir="ltr">
        <input id="lp" type="password" placeholder="كلمة المرور" dir="ltr">
        <button class="btn btn-p" onclick="login()">دخول <i class="fas fa-sign-in-alt"></i></button>
     </div>
 
-    <!-- فورم التسجيل -->
     <div id="f-reg" class="hidden">
        <div style="border:2px dashed var(--border); padding:15px; border-radius:10px; margin-bottom:15px; cursor:pointer; text-align:center" onclick="document.getElementById('rp').click()" id="ph-box">
           <span id="p-txt" style="color:#94a3b8"><i class="fas fa-camera"></i> صورة شخصية</span>
@@ -539,7 +478,6 @@
        <button class="btn btn-o" onclick="switchAuth('login')">عودة للدخول</button>
     </div>
 
-    <!-- فورم التجربة المجانية -->
     <div id="f-trial" class="hidden">
        <p style="color:var(--gold); text-align:center; font-size:0.9em">استمتع بتجربة كاملة لمدة 24 ساعة!</p>
        <input id="tn" placeholder="الاسم الرباعي">
@@ -560,9 +498,6 @@
   </div>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ لوحة التحكم (Dashboard) -->
-<!-- ======================= -->
 <div id="v-dash" class="container hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px">
     <div style="display:flex; align-items:center; gap:15px; text-align:right">
@@ -577,7 +512,6 @@
         <span id="u-cls" style="color:var(--gold); font-size:14px; background:rgba(245, 158, 11, 0.1); padding:2px 8px; border-radius:10px"></span>
         <div id="social-box" style="display:flex; gap:10px; margin-top:8px;"></div>
         
-        <!-- ✅ زر مجموعة الصف الجديد -->
         <button class="btn btn-g btn-sm" onclick="joinClassGroup()" style="width:auto; margin-top:5px; padding: 5px 15px;">
             <i class="fab fa-whatsapp"></i> مجموعة الصف
         </button>
@@ -590,16 +524,11 @@
     </div>
   </div>
   
-  <!-- New Feature: Points & Level Card -->
-  <div class="level-card">
-      <div class="level-badge">المستوى: مبتدئ</div>
-      <h3 style="margin:10px 0 5px 0">نقاطي: <span id="my-points">0</span></h3>
-      <div style="background:rgba(255,255,255,0.2); height:6px; border-radius:3px;">
-          <div id="points-bar" style="background:var(--gold); width:0%; height:100%; border-radius:3px; transition:1s"></div>
-      </div>
-      <small style="display:block; margin-top:5px; opacity:0.8">تابع التقدم لفتح مستويات جديدة!</small>
+  <div id="dashboard-news-section" class="news-ticker-container hidden" style="border-left-color: var(--blue);">
+      <div class="news-label" style="background: var(--blue);">تنويه</div>
+      <div class="news-content"><span id="dashboard-news-text"></span></div>
   </div>
-
+  
   <div class="nav-tabs">
       <div class="nav-tab active" onclick="switchTab('exams', this)"><i class="fas fa-file-alt"></i> الامتحانات</div>
       <div class="nav-tab" onclick="switchTab('assign', this)"><i class="fas fa-upload"></i> الواجبات</div>
@@ -660,17 +589,6 @@
   
   <div id="tab-notes" class="hidden">
       <h3 style="text-align:right; color:var(--text); margin-top:10px"><i class="fas fa-sticky-note"></i> مفكرتي الخاصة</h3>
-      
-      <!-- New To-Do List Feature -->
-      <div class="card mb-3">
-          <h5 style="color:var(--blue)">مهامي الدراسية اليومية</h5>
-          <div class="input-group" style="display:flex; gap:5px;">
-              <input id="new-todo" placeholder="مهمة جديدة..." style="margin:0">
-              <button class="btn btn-sm btn-p" onclick="addTodo()" style="margin:0; width:auto">+</button>
-          </div>
-          <ul id="todo-list" style="list-style:none; padding:0; margin-top:10px; color:#aaa;"></ul>
-      </div>
-
       <div class="card">
           <textarea id="my-notes" rows="10" placeholder="اكتب ملاحظاتك للحفظ هنا..."></textarea>
           <button class="btn btn-p" onclick="saveNotes()">حفظ الملاحظات <i class="fas fa-save"></i></button>
@@ -688,9 +606,6 @@
   </div>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ واجهة الامتحان -->
-<!-- ======================= -->
 <div id="v-exam" class="container hidden">
   <div class="card" style="position:sticky; top:10px; z-index:100; backdrop-filter:blur(20px); background:rgba(15, 23, 42, 0.9);">
     <div style="display:flex; justify-content:space-between; align-items:center">
@@ -699,6 +614,7 @@
         <div style="font-size:12px; color:#94a3b8">عدد الأسئلة: <span id="q-count"></span></div>
       </div>
       <div style="display:flex; gap:10px; align-items:center;">
+         <div class="timer-box" id="timer-display"><i class="fas fa-clock"></i> <span id="time-val">00:00</span></div>
          <button class="btn btn-r" style="width:auto; padding:5px 15px; font-size:12px;" onclick="exitExam()">خروج <i class="fas fa-door-open"></i></button>
       </div>
     </div>
@@ -713,41 +629,6 @@
     </div>
     <button id="s-btn" class="btn btn-g hidden" onclick="sub()" style="margin-top:20px">إنهاء وتسليم الامتحان <i class="fas fa-check-circle"></i></button>
   </div>
-</div>
-
-<!-- ✅ Digital Viewer Modal (New Feature) -->
-<div id="viewer-modal">
-    <div class="viewer-header">
-        <h4 id="viewer-title" style="margin:0; color:var(--blue)">معاينة</h4>
-        <button class="btn btn-r" style="width:auto; padding:5px 15px" onclick="closeViewer()">X</button>
-    </div>
-    <div id="viewer-body" class="viewer-body">
-        <!-- Content injected here via JS -->
-    </div>
-</div>
-
-<!-- ✅ نافذة معاينة الملف العامة (Public Preview Modal) -->
-<div id="public-preview-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:10000; display:none; justify-content:center; align-items:center; flex-direction:column; padding:20px;">
-    <div style="background:var(--glass); border:1px solid var(--gold); padding:40px; border-radius:20px; max-width:600px; width:100%; text-align:center; position:relative;">
-        <i class="fas fa-times" style="position:absolute; top:15px; right:15px; color:white; cursor:pointer; font-size:20px;" onclick="closePublicPreview()"></i>
-        
-        <div style="font-size:50px; color:var(--gold); margin-bottom:20px;"><i class="fas fa-file-lock"></i></div>
-        <h2 id="pp-title" style="color:white; margin-bottom:10px;">عنوان الملف</h2>
-        <p id="pp-desc" style="color:#94a3b8; margin-bottom:30px;">
-            هذا الملف متاح حصرياً للمشتركين. يمكنك مشاهدة التفاصيل أدناه، وللتحميل الكامل يرجى تسجيل الدخول أو الاشتراك.
-        </p>
-        
-        <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:20px; text-align:right;">
-            <p><i class="fas fa-layer-group text-info"></i> <strong>الصف:</strong> <span id="pp-class"></span></p>
-            <p><i class="fas fa-book text-warning"></i> <strong>المادة:</strong> <span id="pp-subject"></span></p>
-            <p><i class="fas fa-file-alt text-success"></i> <strong>النوع:</strong> <span id="pp-type"></span></p>
-        </div>
-
-        <div style="display:flex; gap:10px; justify-content:center;">
-            <button class="btn btn-p" onclick="showLogin('login')"><i class="fas fa-sign-in-alt"></i> تسجيل دخول للتحميل</button>
-            <button class="btn btn-o" onclick="buyPlan('الباقة الذهبية')"><i class="fas fa-crown"></i> اشتراك الآن</button>
-        </div>
-    </div>
 </div>
 
 <div id="review-modal" class="container hidden" style="position:fixed; top:0; left:0; right:0; bottom:0; z-index:4000; overflow-y:auto; background:var(--bg); max-width:100%">
@@ -805,7 +686,6 @@ const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j
 const DEF_IMG = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 let token = localStorage.getItem('tk');
 let publicSettings = {}; 
-let publicLibData = [];
 
 // ✅ إنشاء معرف جهاز فريد عند أول زيارة
 let deviceId = localStorage.getItem('did');
@@ -844,15 +724,10 @@ window.onload = function() {
   document.getElementById('stamp-img').src = STAMP_URL;
   const urlParams = new URLSearchParams(window.location.search);
   const examParam = urlParams.get('exam');
-  const fileParam = urlParams.get('file');
-
   if (examParam) {
       sessionStorage.setItem('pending', examParam);
       window.history.replaceState({}, document.title, window.location.pathname);
   }
-  
-  // 1. Fetch Public Library Data on Load
-  fetchPublicLibrary();
   
   fetchPublicData();
 
@@ -861,81 +736,12 @@ window.onload = function() {
   document.addEventListener("visibilitychange", () => {
     if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
         st.cheats++;
-        // Swal removed for less annoyance
+        Swal.fire({ icon: 'warning', title: 'تحذير!', text: 'الخروج من الامتحان ممنوع!', timer: 3000, showConfirmButton: false });
     }
   });
   setInterval(checkMsgs, 60000);
   checkBroadcast();
-  loadTodos(); // New feature
 };
-
-// === Public Library & SEO ===
-function fetchPublicLibrary() {
-    callApi('getPublicLibrary').then(r => {
-        if(r && r.success) {
-            publicLibData = r.library || [];
-            renderPublicLibrary(publicLibData);
-            
-            // Populate Class Filter
-            let classes = [...new Set(publicLibData.map(item => item.cls).filter(c => c))];
-            let filterEl = document.getElementById('pub-filter-class');
-            classes.forEach(c => {
-                let opt = document.createElement('option');
-                opt.value = c; opt.innerText = c;
-                filterEl.appendChild(opt);
-            });
-        } else {
-             document.getElementById('public-lib-grid').innerHTML = '<p class="text-center text-muted">لا توجد ملفات متاحة حالياً.</p>';
-        }
-    });
-}
-
-function renderPublicLibrary(data) {
-    let grid = document.getElementById('public-lib-grid');
-    if(data.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; color:#94a3b8; grid-column:1/-1">لا توجد نتائج مطابقة.</p>';
-        return;
-    }
-    
-    let html = '';
-    data.forEach(item => {
-        let icon = item.type === 'Video' ? 'fa-youtube text-danger' : 'fa-file-pdf text-warning';
-        // Open Preview Modal instead of direct link
-        html += `<div class="price-card" style="padding:20px; cursor:pointer;" onclick="openPublicPreview('${item.title}', '${item.cls}', '${item.subject}', '${item.type}')">
-                    <i class="fab ${icon} fa-3x mb-3"></i>
-                    <h5 style="color:var(--text); font-size:16px; margin-bottom:5px">${item.title}</h5>
-                    <div style="font-size:12px; color:#94a3b8">
-                        <span class="badge bg-secondary">${item.cls}</span>
-                        <span class="badge bg-dark">${item.subject}</span>
-                    </div>
-                 </div>`;
-    });
-    grid.innerHTML = html;
-}
-
-function filterPublicLib() {
-    let search = document.getElementById('pub-search').value.toLowerCase();
-    let clsFilter = document.getElementById('pub-filter-class').value;
-    
-    let filtered = publicLibData.filter(item => {
-        let matchSearch = item.title.toLowerCase().includes(search) || item.subject.toLowerCase().includes(search);
-        let matchClass = clsFilter === 'All' || item.cls === clsFilter;
-        return matchSearch && matchClass;
-    });
-    renderPublicLibrary(filtered);
-}
-
-function openPublicPreview(title, cls, subj, type) {
-    document.getElementById('pp-title').innerText = title;
-    document.getElementById('pp-class').innerText = cls;
-    document.getElementById('pp-subject').innerText = subj;
-    document.getElementById('pp-type').innerText = type;
-    document.getElementById('public-preview-modal').style.display = 'flex';
-}
-
-function closePublicPreview() {
-    document.getElementById('public-preview-modal').style.display = 'none';
-}
 
 // === Public Data & Settings Linkage ===
 function fetchPublicData() {
@@ -951,6 +757,17 @@ function fetchPublicData() {
             // Update Prices
             if(publicSettings.Price_Gold) setText('disp-price-gold', publicSettings.Price_Gold);
             if(publicSettings.Price_Term) setText('disp-price-term', publicSettings.Price_Term);
+
+            // Update News
+            if(r.news && r.news.length > 0) {
+                let latestNews = r.news[0].text;
+                setText('dashboard-news-text', latestNews);
+                showEl('dashboard-news-section');
+                
+                // Optional: Update the hero ticker if it exists
+                setText('news-text', latestNews);
+                showEl('news-section');
+            }
 
             if(r.classes && r.classes.length > 0) {
                 let opts = '<option value="" disabled selected>اختر الصف</option>';
@@ -979,8 +796,8 @@ function fetchPublicData() {
 
             document.querySelectorAll('.wa-link-btn').forEach(btn => {
                 btn.onclick = () => {
-                     let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
-                     window.open(`https://wa.me/${waNum}`, '_blank');
+                      let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
+                      window.open(`https://wa.me/${waNum}`, '_blank');
                 };
             });
         } else {
@@ -992,9 +809,9 @@ function fetchPublicData() {
 }
 
 function buyPlan(planName) {
-     let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
-     let msg = encodeURIComponent(`مرحباً، أرغب بالاشتراك في ${planName}`);
-     window.open(`https://wa.me/${waNum}?text=${msg}`, '_blank');
+      let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
+      let msg = encodeURIComponent(`مرحباً، أرغب بالاشتراك في ${planName}`);
+      window.open(`https://wa.me/${waNum}?text=${msg}`, '_blank');
 }
 
 function joinClassGroup() {
@@ -1024,8 +841,6 @@ function showLogin(type) {
     document.getElementById('auth-container').classList.remove('hidden');
     // ✅ هنا الإصلاح: تمرير النوع مباشرة
     switchAuth(type); 
-    // إخفاء مودال المعاينة إذا كان مفتوحاً
-    closePublicPreview();
 }
 
 function switchAuth(type) {
@@ -1167,33 +982,14 @@ function loadDash(){
   callApi('getLibraryContent', {token:token}).then(r=>{
       let h='';
       if(r.library && r.library.length) {
-          // Grouping logic
-          let groups = {};
-          r.library.forEach(item => {
-              let s = item.subject || 'مواد عامة';
-              if(!groups[s]) groups[s] = [];
-              groups[s].push(item);
+          r.library.forEach(i => {
+              let icon = i.type=='Video' ? 'fa-youtube text-danger' : 'fa-file-pdf text-warning';
+              h+=`<a href="${i.link}" target="_blank" class="lib-item">
+                    <i class="fab ${icon} fa-2x" style="margin-left:15px"></i>
+                    <div><h4 style="margin:0;font-size:16px">${i.title}</h4><span style="font-size:12px;color:#94a3b8">${i.date}</span></div>
+                  </a>`;
           });
-
-          for(let subject in groups) {
-              h += `<h4 style="color:var(--gold); margin-top:20px; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:5px;"><i class="fas fa-folder-open"></i> ${subject}</h4>`;
-              h += `<div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:15px;">`;
-              
-              groups[subject].forEach(i => {
-                  let icon = i.type=='Video' ? 'fa-youtube text-danger' : 'fa-file-pdf text-warning';
-                  let action = i.type=='Video' ? `onclick="openViewer('${i.link}', 'video')"` : `onclick="openViewer('${i.link}', 'pdf')"`;
-                  
-                  h += `<div class="lib-item" ${action} style="flex-direction:column; text-align:center; gap:10px;">
-                        <i class="fab ${icon} fa-3x"></i>
-                        <div style="width:100%">
-                            <h5 style="margin:0;font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${i.title}</h5>
-                            <span style="font-size:11px;color:#94a3b8">${i.date}</span>
-                        </div>
-                      </div>`;
-              });
-              h += `</div>`;
-          }
-      } else h = '<div style="text-align:center; padding:40px; color:#94a3b8"><i class="fas fa-box-open fa-3x"></i><p>لا توجد ملفات في المكتبة حالياً</p></div>';
+      } else h = '<p style="color:#94a3b8; text-align:center">لا توجد مصادر</p>';
       document.getElementById('lib-content').innerHTML = h;
   });
   
@@ -1222,56 +1018,38 @@ function loadDash(){
   checkMsgs();
 }
 
-// ✅ New: Digital Viewer Function
-function openViewer(url, type) {
-    let body = document.getElementById('viewer-body');
-    let title = document.getElementById('viewer-title');
-    document.getElementById('viewer-modal').style.display = 'flex';
-    
-    if(type === 'video') {
-        title.innerText = "مشاهدة فيديو";
-        // Convert YouTube watch URL to embed if needed
-        let embedUrl = url.replace("watch?v=", "embed/");
-        body.innerHTML = `<iframe src="${embedUrl}" class="viewer-iframe" allowfullscreen></iframe>`;
-    } else {
-        title.innerText = "معاينة الملف";
-        // Google Docs Viewer for PDFs
-        body.innerHTML = `<iframe src="https://docs.google.com/gview?url=${url}&embedded=true" class="viewer-iframe"></iframe>`;
-    }
-}
-function closeViewer() {
-    document.getElementById('viewer-modal').style.display = 'none';
-    document.getElementById('viewer-body').innerHTML = ''; // Stop video
-}
-
 function renderSubjects() {
     let h = '';
     if(allSubjects.length === 0) {
         h = '<p style="color:#94a3b8; text-align:center;">لا توجد امتحانات متاحة حالياً.</p>';
     } else {
-        // Group Exams by Subject
-        let groups = {};
-        allSubjects.forEach(item => {
-            // Check if item has 'exams' array (it came from grouped backend) or is flat
-            // The backend getExamsList returns {subjects: [{name: 'Math', exams: [...]}]}
-            // So allSubjects is ALREADY grouped.
-            // But let's handle the render loop correctly.
-             h += `<h3 style="color:var(--blue); margin-top:20px; border-bottom:2px solid var(--border); padding-bottom:10px;">
-                     <i class="fas fa-book-reader"></i> ${item.name}
-                   </h3>
-                   <div class="grid" style="margin-bottom:20px">`;
-             
-             item.exams.forEach(x => {
-                 h += `<div class="exam-item" onclick="start('${x.title}')">
-                        <i class="fas fa-file-alt exam-icon"></i>
-                        <h3 style="margin:0;color:var(--text);font-size:16px">${x.title}</h3>
-                        <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
-                      </div>`;
-             });
-             h += `</div>`;
+        h += `<h3 style="text-align:right; color:var(--blue); margin-top:10px"><i class="fas fa-folder-open"></i> المواد الدراسية</h3>`;
+        allSubjects.forEach((sub, idx) => {
+            h += `<div class="exam-item folder-item" onclick="openSubject(${idx})">
+                    <i class="fas fa-book exam-icon"></i>
+                    <h3 style="margin:0;color:var(--text)">${sub.name}</h3>
+                    <div style="font-size:13px; color:#94a3b8; margin-top:5px">${sub.exams.length} امتحان</div>
+                  </div>`;
         });
     }
-    document.getElementById('exams-container').innerHTML = h || '<p style="text-align:center; color:#94a3b8">لا توجد امتحانات متاحة.</p>';
+    document.getElementById('exams-container').innerHTML = h;
+}
+
+function openSubject(idx) {
+    let sub = allSubjects[idx];
+    let h = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--gold); margin:0;">${sub.name}</h3>
+                <button class="btn btn-o" style="width:auto; padding:5px 10px;" onclick="renderSubjects()">↩ عودة</button>
+             </div>`;
+    
+    sub.exams.forEach(x => {
+        h += `<div class="exam-item" onclick="start('${x.title}')">
+                <i class="fas fa-file-alt exam-icon"></i>
+                <h3 style="margin:0;color:var(--text)">${x.title}</h3>
+                <div style="font-size:13px; color:#94a3b8; margin-top:5px"><i class="fas fa-hourglass-half"></i> ${x.duration} دقيقة</div>
+              </div>`;
+    });
+    document.getElementById('exams-container').innerHTML = h;
 }
 
 function editProfile() {
@@ -1359,15 +1137,22 @@ function start(t){
     document.getElementById('v-exam').classList.remove('hidden');
     document.getElementById('xt').innerText=t;
     document.getElementById('q-count').innerText = st.exam.length;
+    startTimer();
     rendQ();
   });
 }
 
-// Timer function removed
-
+function startTimer(){
+  clearInterval(st.timer);
+  st.timer = setInterval(()=>{
+    st.seconds--;
+    let m = Math.floor(st.seconds/60), s = st.seconds%60;
+    document.getElementById('time-val').innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+    if(st.seconds <= 0) { clearInterval(st.timer); submitExam(true); }
+  }, 1000);
+}
 function rendQ(){
   let q=st.exam[st.idx];
-  // Using innerHTML to render questions correctly (decode entities)
   let h=`<h3 style="color:var(--text); margin-bottom:20px"><span style="color:var(--gold)">س ${st.idx+1}:</span> ${q.text}</h3>`;
   if(q.img) h+=`<img src="${q.img}" style="max-width:100%; border-radius:12px; margin-bottom:20px; border:1px solid var(--border)">`;
   q.opts.forEach(o=>{ if(o) h+=`<div class="q-option ${st.ans[q.id]==o?'selected':''}" onclick="sl('${o}')"><div style="width:20px;height:20px;border-radius:50%;border:2px solid ${st.ans[q.id]==o?'var(--blue)':'#555'};background:${st.ans[q.id]==o?'var(--blue)':'transparent'}"></div>${o}</div>` });
@@ -1389,6 +1174,7 @@ function exitExam() {
     confirmButtonText: 'نعم، خروج'
   }).then((result) => {
     if (result.isConfirmed) {
+      clearInterval(st.timer); 
       document.getElementById('v-exam').classList.add('hidden');
       document.getElementById('v-dash').classList.remove('hidden');
       document.getElementById('notif-bell').classList.remove('hidden');
@@ -1399,6 +1185,7 @@ function exitExam() {
 
 function submitExam(forced){
   if(!forced && !confirm('هل أنت متأكد من التسليم؟')) return;
+  clearInterval(st.timer);
   ld(1); 
   callApi('submitExam', {token:token, n:st.title, a:st.ans, cheats:st.cheats}).then(res=>{ 
     ld(0); 
@@ -1469,27 +1256,84 @@ function dlCert(){
   });
 }
 
-// === To-Do List Logic ===
-function addTodo() {
-    let input = document.getElementById('new-todo');
-    let txt = input.value;
-    if(!txt) return;
-    let list = JSON.parse(localStorage.getItem('todos') || '[]');
-    list.push(txt);
-    localStorage.setItem('todos', JSON.stringify(list));
-    input.value = '';
-    loadTodos();
+function readAsFile(input) {
+  if(input.files && input.files[0]) {
+    let f = input.files[0];
+    document.getElementById('as-fname').innerText = f.name;
+    let r = new FileReader();
+    r.onload = e => { st.assignFile = e.target.result; st.assignName = f.name; };
+    r.readAsDataURL(f);
+  }
 }
-function loadTodos() {
-    let list = JSON.parse(localStorage.getItem('todos') || '[]');
-    let ul = document.getElementById('todo-list');
-    ul.innerHTML = list.map((t, i) => `<li style="padding:5px; border-bottom:1px solid #333; display:flex; justify-content:space-between">${t} <i class="fas fa-check" style="cursor:pointer; color:green" onclick="removeTodo(${i})"></i></li>`).join('');
+function uploadAss() {
+  if(!st.assignFile) return Swal.fire('تنبيه', 'يرجى اختيار ملف', 'warning');
+  ld(1);
+  let d = {
+     type: document.getElementById('as-type').value,
+     desc: document.getElementById('as-desc').value,
+     fileData: st.assignFile,
+     fileName: st.assignName,
+     mimeType: st.assignFile.split(';')[0].split(':')[1]
+  };
+  callApi('uploadStudentAssignment', {token:token, d:d}).then(r=>{
+     ld(0); if(r.success) Swal.fire('تم', 'تم تسليم الواجب بنجاح', 'success'); else Swal.fire('خطأ', r.message, 'error');
+  });
 }
-function removeTodo(i) {
-    let list = JSON.parse(localStorage.getItem('todos') || '[]');
-    list.splice(i, 1);
-    localStorage.setItem('todos', JSON.stringify(list));
-    loadTodos();
+
+function sendComplaint() {
+  let msg = document.getElementById('contact-msg').value;
+  if(!msg) return Swal.fire('تنبيه', 'اكتب الرسالة أولاً', 'warning');
+  ld(1);
+  callApi('sendComplaint', {token:token, msg:msg}).then(r=>{
+     ld(0); Swal.fire('تم', 'تم إرسال رسالتك بنجاح', 'success');
+     document.getElementById('contact-msg').value = '';
+     loadMsgHistory();
+  });
+}
+
+function loadStats() {
+    callApi('getStudentStats', {token:token}).then(r => {
+        if(!r.success) return;
+        
+        // ✅ تحديث بيانات الطالب من السيرفر لضمان المزامنة
+        if (r.name && r.cls) {
+            localStorage.setItem('nm', r.name);
+            localStorage.setItem('cl', r.cls);
+            document.getElementById('u-name').innerText = r.name;
+            document.getElementById('u-cls').innerText = r.cls;
+        }
+
+        document.getElementById('perf-chart').innerHTML = `
+            <div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div>
+            <div class="chart-bar chart-cls" style="height:${r.classAvg}%;"><span style="margin-bottom:5px">${r.classAvg}%</span></div>
+            <div style="position:absolute; bottom:-30px; left:20px; right:20px; display:flex; justify-content:space-between; color:#94a3b8; font-size:12px"><span>مستواي</span><span>متوسط الفصل</span></div>
+        `;
+        let b = '';
+        if(r.badges && r.badges.length) {
+           r.badges.forEach(badge => b += `<span class="badge-item"><i class="fas fa-medal"></i> ${badge}</span>`);
+           document.getElementById('badges-area').innerHTML = b;
+        }
+        
+        // === Render Social Icons ===
+        if(r.socials) {
+            let sHtml = '';
+            if(r.socials.whatsapp) {
+                document.getElementById('wa-btn').href = r.socials.whatsapp;
+                document.getElementById('wa-btn').classList.remove('hidden');
+            }
+            if(r.socials.facebook) sHtml += `<a href="${r.socials.facebook}" target="_blank" style="color:#1877F2; font-size:20px"><i class="fab fa-facebook"></i></a>`;
+            if(r.socials.instagram) sHtml += `<a href="${r.socials.instagram}" target="_blank" style="color:#C13584; font-size:20px"><i class="fab fa-instagram"></i></a>`;
+            if(r.socials.youtube) sHtml += `<a href="${r.socials.youtube}" target="_blank" style="color:#FF0000; font-size:20px"><i class="fab fa-youtube"></i></a>`;
+            document.getElementById('social-box').innerHTML = sHtml;
+        }
+    });
+}
+
+function genReport() {
+    let el = document.getElementById('tab-history');
+    html2canvas(el).then(canvas => {
+       let a=document.createElement('a'); a.download='Report.png'; a.href=canvas.toDataURL(); a.click();
+    });
 }
 
 function loadNotes() {
