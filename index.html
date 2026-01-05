@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <head>
-    <title>مدرسة نبراس - Nebras School</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>مدرسة نبراس | منصة تعليمية للمنهاج الأردني - شروحات وملخصات (صفوف 4-9)</title>
 
-    <meta name="description" content="موقع مدرسة نبراس التعليمي. دروس، ملخصات، ومتابعة للطلاب. تعلم بطرق حديثة ومبتكرة.">
+    <meta name="description" content="منصة مدرسة نبراس التعليمية: موقع شامل يقدم شروحات مبسطة، أوراق عمل، وتلخيصات لمواد اللغة العربية والتربية الإسلامية للمنهاج الأردني. امتحانات الكترونية، متابعة للطلاب، وشهادات تقدير فورية.">
 
-    <meta name="keywords" content="تعليم, مدرسة نبراس, دروس اونلاين, مناهج تعليمية, nebras school">
-        <meta name="google-site-verification" content="8M_RsgVZKAFYIQV6oJ51s5i8TuLIxINROXWEfeq--pw" />
+    <meta name="keywords" content="مدرسة نبراس, المنهاج الأردني, شرح لغة عربية, تربية إسلامية, الصف الرابع, الصف الخامس, الصف السادس, الصف السابع, الصف الثامن, الصف التاسع, ملخصات, أوراق عمل, امتحانات, اختبارات مقترحة, دوسيات, حل أسئلة الكتاب, تعليم أونلاين, عبد الرحمن نصر الله">
+    
+    <meta name="google-site-verification" content="8M_RsgVZKAFYIQV6oJ51s5i8TuLIxINROXWEfeq--pw" />
 
-    </head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة نبراس | التعليمية</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
   :root { 
@@ -56,7 +54,6 @@
   .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; transition: 0.3s; position: relative; }
   .nav-links a:hover { color: var(--blue); }
   
-  /* تنسيق الأزرار */
   .nav-buttons { display: flex; gap: 12px; align-items: center; }
   .nav-btn-sep {
       padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9em; cursor: pointer;
@@ -78,6 +75,7 @@
   .hero-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--gold); box-shadow: 0 0 40px rgba(245, 158, 11, 0.4); margin-bottom: 25px; object-fit: cover; animation: float 6s ease-in-out infinite; }
   @keyframes float { 0%{transform:translateY(0px)} 50%{transform:translateY(-20px)} 100%{transform:translateY(0px)} }
   
+  /* استخدام H1 للعنوان الرئيسي لأغراض السيو */
   .hero-title { font-family: 'Amiri'; font-size: 3.5em; margin: 0; color: var(--blue); text-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
   .hero-subtitle { color: #94a3b8; font-size: 1.3em; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.6; }
   
@@ -269,19 +267,14 @@
   </button>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ صفحة الهبوط الكاملة (Landing Page) -->
-<!-- ======================= -->
 <div id="landing-page" class="hidden">
   <div class="container">
-    <!-- شريط التنقل -->
     <nav class="landing-nav">
        <div class="nav-logo">
           <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--gold)">
           <span>نبراس التعليمية</span>
        </div>
        
-       <!-- روابط التنقل -->
        <div class="nav-links">
           <a href="#hero">الرئيسية</a>
           <a href="#features">المميزات</a>
@@ -290,7 +283,6 @@
           <a href="#faq">الأسئلة</a>
        </div>
        
-       <!-- ✅ فصل أزرار التفعيل والدخول بوضوح -->
        <div class="nav-buttons">
            <button class="nav-btn-sep btn-reg-nav" onclick="showLogin('register')">
                <i class="fas fa-key"></i> تفعيل كود
@@ -301,13 +293,11 @@
        </div>
     </nav>
 
-    <!-- القسم الرئيسي (Hero) -->
     <div id="hero" class="hero-section">
        <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="hero-logo">
-       <h1 class="hero-title">منصة نبراس التعليمية</h1>
-       <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك.</p>
+       <h1 class="hero-title">منصة مدرسة نبراس التعليمية</h1>
+       <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك في المنهاج الأردني.</p>
        
-       <!-- ✅ News Ticker -->
        <div id="news-section" class="news-ticker-container hidden">
            <div class="news-label">عاجل</div>
            <div class="news-content"><span id="news-text">أهلاً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span></div>
@@ -319,7 +309,6 @@
        </div>
     </div>
 
-    <!-- قسم المميزات -->
     <div id="features">
        <div class="section-header">
           <h2>مميزات المنصة</h2>
@@ -348,7 +337,6 @@
        </div>
     </div>
 
-    <!-- قسم المتجر (الباقات) -->
     <div id="store">
        <div class="section-header">
           <h2>باقات الاشتراك</h2>
@@ -356,7 +344,6 @@
        <div class="pricing-grid">
           <div class="price-card popular">
              <h3 class="plan-name">الباقة الذهبية</h3>
-             <!-- ✅ هنا تم وضع ID للسعر -->
              <div class="plan-price"><span id="disp-price-gold">15 JD</span></div>
              <ul class="plan-features">
                 <li><i class="fas fa-check-circle"></i> وصول كامل للامتحانات</li>
@@ -368,7 +355,6 @@
           </div>
           <div class="price-card">
              <h3 class="plan-name">الباقة الفصلية</h3>
-             <!-- ✅ هنا تم وضع ID للسعر -->
              <div class="plan-price"><span id="disp-price-term">35 JD</span></div>
              <ul class="plan-features">
                 <li><i class="fas fa-check-circle"></i> اشتراك لمدة فصل كامل</li>
@@ -381,7 +367,6 @@
        </div>
     </div>
 
-    <!-- قسم آراء الطلاب -->
     <div id="reviews">
        <div class="section-header">
           <h2>قالوا عن المنصة</h2>
@@ -423,7 +408,6 @@
        </div>
     </div>
 
-    <!-- قسم الأسئلة الشائعة -->
     <div id="faq">
        <div class="section-header">
           <h2>أسئلة شائعة</h2>
@@ -459,19 +443,14 @@
        </div>
     </div>
 
-    <!-- الفوتر -->
     <footer class="landing-footer">
        <div class="social-links" id="footer-socials">
-          <!-- Dynamic Links -->
-       </div>
+          </div>
        <p>&copy; 2024 منصة نبراس التعليمية. جميع الحقوق محفوظة.</p>
     </footer>
   </div>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ واجهة الدخول / التسجيل / التجربة -->
-<!-- ======================= -->
 <div id="auth-container" class="container hidden" style="max-width:400px; margin-top:60px">
   <div class="auth-card">
     <div style="text-align:center; margin-bottom:20px">
@@ -479,14 +458,12 @@
        <h2 id="auth-title" style="margin:0; color:var(--text)">تسجيل الدخول</h2>
     </div>
 
-    <!-- فورم الدخول -->
     <div id="f-login">
        <input id="le" placeholder="البريد الإلكتروني" dir="ltr">
        <input id="lp" type="password" placeholder="كلمة المرور" dir="ltr">
        <button class="btn btn-p" onclick="login()">دخول <i class="fas fa-sign-in-alt"></i></button>
     </div>
 
-    <!-- فورم التسجيل -->
     <div id="f-reg" class="hidden">
        <div style="border:2px dashed var(--border); padding:15px; border-radius:10px; margin-bottom:15px; cursor:pointer; text-align:center" onclick="document.getElementById('rp').click()" id="ph-box">
           <span id="p-txt" style="color:#94a3b8"><i class="fas fa-camera"></i> صورة شخصية</span>
@@ -501,7 +478,6 @@
        <button class="btn btn-o" onclick="switchAuth('login')">عودة للدخول</button>
     </div>
 
-    <!-- فورم التجربة المجانية -->
     <div id="f-trial" class="hidden">
        <p style="color:var(--gold); text-align:center; font-size:0.9em">استمتع بتجربة كاملة لمدة 24 ساعة!</p>
        <input id="tn" placeholder="الاسم الرباعي">
@@ -522,9 +498,6 @@
   </div>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ لوحة التحكم (Dashboard) -->
-<!-- ======================= -->
 <div id="v-dash" class="container hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px">
     <div style="display:flex; align-items:center; gap:15px; text-align:right">
@@ -539,7 +512,6 @@
         <span id="u-cls" style="color:var(--gold); font-size:14px; background:rgba(245, 158, 11, 0.1); padding:2px 8px; border-radius:10px"></span>
         <div id="social-box" style="display:flex; gap:10px; margin-top:8px;"></div>
         
-        <!-- ✅ زر مجموعة الصف الجديد -->
         <button class="btn btn-g btn-sm" onclick="joinClassGroup()" style="width:auto; margin-top:5px; padding: 5px 15px;">
             <i class="fab fa-whatsapp"></i> مجموعة الصف
         </button>
@@ -552,7 +524,6 @@
     </div>
   </div>
   
-  <!-- ✅ شريط الأخبار الداخلي للوحة الطالب -->
   <div id="dashboard-news-section" class="news-ticker-container hidden" style="border-left-color: var(--blue);">
       <div class="news-label" style="background: var(--blue);">تنويه</div>
       <div class="news-content"><span id="dashboard-news-text"></span></div>
@@ -635,9 +606,6 @@
   </div>
 </div>
 
-<!-- ======================= -->
-<!-- ✅ واجهة الامتحان -->
-<!-- ======================= -->
 <div id="v-exam" class="container hidden">
   <div class="card" style="position:sticky; top:10px; z-index:100; backdrop-filter:blur(20px); background:rgba(15, 23, 42, 0.9);">
     <div style="display:flex; justify-content:space-between; align-items:center">
@@ -828,8 +796,8 @@ function fetchPublicData() {
 
             document.querySelectorAll('.wa-link-btn').forEach(btn => {
                 btn.onclick = () => {
-                     let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
-                     window.open(`https://wa.me/${waNum}`, '_blank');
+                      let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
+                      window.open(`https://wa.me/${waNum}`, '_blank');
                 };
             });
         } else {
@@ -841,9 +809,9 @@ function fetchPublicData() {
 }
 
 function buyPlan(planName) {
-     let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
-     let msg = encodeURIComponent(`مرحباً، أرغب بالاشتراك في ${planName}`);
-     window.open(`https://wa.me/${waNum}?text=${msg}`, '_blank');
+      let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000';
+      let msg = encodeURIComponent(`مرحباً، أرغب بالاشتراك في ${planName}`);
+      window.open(`https://wa.me/${waNum}?text=${msg}`, '_blank');
 }
 
 function joinClassGroup() {
@@ -1415,4 +1383,3 @@ function loadMsgHistory() {
 </script>
 </body>
 </html>
-
