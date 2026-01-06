@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -333,6 +334,8 @@
        
        <div class="nav-links">
           <a onclick="goHome()">الرئيسية</a>
+          <!-- [NEW LINK] -->
+          <a onclick="showPublicExams()">بنك الامتحانات</a>
           <a onclick="showPublicLibrary()">المكتبة العامة</a>
           <a onclick="navToSection('features')">المميزات</a>
           <a onclick="navToSection('store')">المتجر</a>
@@ -533,6 +536,21 @@
            </div>
         </div>
     </div> <!-- End Home View -->
+    
+    <!-- [NEW] Public Exams UI -->
+    <div id="public-exams-ui" class="hidden">
+       <div class="section-header">
+          <button class="btn btn-o" style="position:absolute; right:0; width:auto" onclick="goHome()">
+             <i class="fas fa-arrow-right"></i> عودة
+          </button>
+          <h2>بنك الامتحانات التفاعلي</h2>
+          <p style="color:#94a3b8">اختبر نفسك مجاناً وتعرف على مستوى تحصيلك</p>
+       </div>
+       <div id="public-exam-grid" class="grid">
+          <div style="grid-column:1/-1; text-align:center; padding:40px; color:#94a3b8">جاري تحميل الامتحانات...</div>
+       </div>
+    </div>
+    
     <!-- Public Library Interface (NEW) -->
     <div id="public-library-ui" class="hidden">
        <div class="section-header">
@@ -826,7 +844,7 @@ if (!deviceId) {
     deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now();
     localStorage.setItem('did', deviceId);
 }
-let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
+let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '', isPreview: false };
 let allSubjects = [];
 const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
 async function callApi(action, data = {}) {
@@ -861,22 +879,28 @@ window.onload = function() {
   const fileId = urlParams.get('id');
   const examParam = urlParams.get('exam');
   fetchPublicData();
+  
+  // 1. عرض المكتبة
   if(viewMode === 'library') {
       showPublicLibrary();
-  } else if(viewMode === 'file' && fileId) {
+  } 
+  // 2. عرض الملف
+  else if(viewMode === 'file' && fileId) {
       loadPublicFilePreview(fileId);
-  } else if (examParam) {
-      if(token) start(examParam); 
-      else {
-          sessionStorage.setItem('pending', examParam);
-          showLogin('login');
-      }
+  } 
+  // 3. [NEW] عرض الامتحانات
+  else if (viewMode === 'publicExams') {
+      showPublicExams();
+  }
+  else if (examParam) {
+      // 4. عرض امتحان محدد
+      start(examParam); 
   } else {
       if(token) loadDash(); else goHome();
   }
   
   document.addEventListener("visibilitychange", () => {
-    if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
+    if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden') && !st.isPreview){
         st.cheats++;
         // Swal.fire({ icon: 'warning', title: 'تحذير!', text: 'الخروج من الامتحان ممنوع!', timer: 3000, showConfirmButton: false });
     }
@@ -887,9 +911,11 @@ function goHome() {
     document.getElementById('landing-page').classList.remove('hidden');
     document.getElementById('home-view').classList.remove('hidden'); // Show Home Content
     document.getElementById('public-library-ui').classList.add('hidden');
+    document.getElementById('public-exams-ui').classList.add('hidden');
     document.getElementById('file-preview-ui').classList.add('hidden');
     document.getElementById('auth-container').classList.add('hidden');
     document.getElementById('v-dash').classList.add('hidden');
+    document.getElementById('v-exam').classList.add('hidden');
 }
 function navToSection(id) {
     goHome(); // Ensure we are on home view
@@ -943,9 +969,47 @@ function buyPlan(planName) {
     let url = `https://wa.me/${waNum}?text=${encodeURIComponent('مرحباً، أرغب بالاشتراك في ' + planName)}`;
     window.open(url, '_blank');
 }
+// --- Public Exams (New Functions) ---
+function showPublicExams() {
+    safePushState({view:'publicExams'}, '', '?view=publicExams');
+    document.getElementById('home-view').classList.add('hidden');
+    document.getElementById('public-library-ui').classList.add('hidden');
+    document.getElementById('file-preview-ui').classList.add('hidden');
+    document.getElementById('public-exams-ui').classList.remove('hidden');
+    loadPublicExams();
+}
+function loadPublicExams() {
+    document.getElementById('public-exam-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center">جاري التحميل...</div>';
+    callApi('getPublicExamsList').then(r => {
+        let div = document.getElementById('public-exam-grid');
+        div.innerHTML = '';
+        if(r.success && r.list.length > 0) {
+            r.list.forEach(ex => {
+                div.innerHTML += `
+                <div class="file-card" onclick="start('${ex.title}')">
+                    <div style="text-align:center">
+                        <i class="fas fa-file-signature file-icon"></i>
+                        <h3 style="margin:0; font-size:1.1em">${ex.title}</h3>
+                    </div>
+                    <div style="margin-top:auto">
+                        <div class="file-meta">
+                           <span><i class="fas fa-layer-group"></i> ${ex.cls}</span>
+                           <span><i class="fas fa-clock"></i> ${ex.duration} د</span>
+                        </div>
+                        <button class="btn btn-o" style="font-size:0.9em">ابدأ الاختبار <i class="fas fa-play"></i></button>
+                    </div>
+                </div>`;
+            });
+        } else {
+            div.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#94a3b8">لا توجد امتحانات متاحة حالياً</p>';
+        }
+    });
+}
+
 function showPublicLibrary() {
     safePushState({view:'library'}, '', '?view=library');
     document.getElementById('home-view').classList.add('hidden'); // Hide Home Content
+    document.getElementById('public-exams-ui').classList.add('hidden');
     document.getElementById('file-preview-ui').classList.add('hidden');
     document.getElementById('public-library-ui').classList.remove('hidden');
     document.getElementById('landing-page').classList.remove('hidden');
@@ -991,6 +1055,7 @@ function gotoFile(id) {
 async function loadPublicFilePreview(id) {
     document.getElementById('home-view').classList.add('hidden');
     document.getElementById('public-library-ui').classList.add('hidden');
+    document.getElementById('public-exams-ui').classList.add('hidden');
     document.getElementById('landing-page').classList.remove('hidden');
     document.getElementById('file-preview-ui').classList.remove('hidden');
     
@@ -1276,35 +1341,99 @@ function loadStats() {
     });
 }
 // ================= Exam System (No Timer) =================
+// [MODIFIED] دالة Start لتدعم المعاينة إذا لم يكن هناك رمز دخول
 function start(t){
-  ld(1); 
-  callApi('getExamQuestions', {token:token, name:t}).then(r=>{
-    ld(0); 
-    if(!r || !r.success) {
-          Swal.fire('تنبيه', r ? r.message : 'خطأ غير معروف', 'warning').then(() => goHome());
-          return;
-    }
-    st.exam=r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0;
-    
-    document.getElementById('v-dash').classList.add('hidden');
-    document.getElementById('v-exam').classList.remove('hidden');
-    document.getElementById('xt').innerText=t;
-    document.getElementById('q-count').innerText = st.exam.length;
-    rendQ();
-  });
+  if(!token) {
+      // 🕵️‍♂️ وضع المعاينة العامة
+      ld(1);
+      callApi('getPublicExamPreview', {title:t}).then(r => {
+          ld(0);
+          if(r.success && r.questions) {
+             st.exam = r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0; st.isPreview=true;
+             // تجهيز الواجهة للمعاينة
+             document.getElementById('landing-page').classList.add('hidden');
+             document.getElementById('public-exams-ui').classList.add('hidden');
+             document.getElementById('v-exam').classList.remove('hidden');
+             document.getElementById('xt').innerText = t + " (معاينة تجريبية)";
+             document.getElementById('q-count').innerText = r.totalCount; 
+             rendQ();
+             Swal.fire({
+                 title: 'وضع المعاينة', 
+                 text: 'أنت في وضع المعاينة المجانية، ستظهر لك 3 أسئلة فقط من الامتحان.', 
+                 icon: 'info',
+                 confirmButtonText: 'ابدأ المعاينة'
+             });
+          } else {
+             Swal.fire('خطأ', 'تعذر تحميل الامتحان', 'error');
+          }
+      });
+  } else {
+      // الوضع الطبيعي (مسجل دخول)
+      ld(1); 
+      callApi('getExamQuestions', {token:token, name:t}).then(r=>{
+        ld(0); 
+        if(!r || !r.success) {
+              Swal.fire('تنبيه', r ? r.message : 'خطأ غير معروف', 'warning').then(() => goHome());
+              return;
+        }
+        st.exam=r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0; st.isPreview=false;
+        
+        document.getElementById('v-dash').classList.add('hidden');
+        document.getElementById('v-exam').classList.remove('hidden');
+        document.getElementById('xt').innerText=t;
+        document.getElementById('q-count').innerText = st.exam.length;
+        rendQ();
+      });
+  }
 }
+
 function rendQ(){
   let q=st.exam[st.idx];
   let h=`<h3 style="color:var(--text); margin-bottom:20px"><span style="color:var(--gold)">س ${st.idx+1}:</span> ${q.text}</h3>`;
   if(q.img) h+=`<img src="${q.img}" style="max-width:100%; border-radius:12px; margin-bottom:20px; border:1px solid var(--border)">`;
   q.opts.forEach(o=>{ if(o) h+=`<div class="q-option ${st.ans[q.id]==o?'selected':''}" onclick="sl('${o}')"><div style="width:20px;height:20px;border-radius:50%;border:2px solid ${st.ans[q.id]==o?'var(--blue)':'#555'};background:${st.ans[q.id]==o?'var(--blue)':'transparent'}"></div>${o}</div>` });
   document.getElementById('q-box').innerHTML=h;
-  document.getElementById('qs-ind').innerText = `${st.idx+1} / ${st.exam.length}`;
-  document.getElementById('s-btn').classList.toggle('hidden', st.idx!=st.exam.length-1);
   
-  let pct = ((st.idx + 1) / st.exam.length) * 100;
+  if(st.isPreview) {
+      document.getElementById('qs-ind').innerText = `${st.idx+1} / معاينة`;
+  } else {
+      document.getElementById('qs-ind').innerText = `${st.idx+1} / ${st.exam.length}`;
+  }
+  
+  // منطق الزر
+  let sBtn = document.getElementById('s-btn');
+  if (st.idx == st.exam.length - 1) {
+      if(st.isPreview) {
+          sBtn.innerText = "أكمل الامتحان (يتطلب اشتراك) 🔒";
+          sBtn.classList.remove('hidden');
+          sBtn.onclick = function() {
+              Swal.fire({
+                  title: 'انتهت المعاينة',
+                  text: 'لإكمال الامتحان ومعرفة نتيجتك، يرجى الاشتراك في المنصة.',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'اشترك الآن',
+                  cancelButtonText: 'إغلاق'
+              }).then((res) => {
+                  if(res.isConfirmed) showLogin('register');
+                  else goHome();
+              });
+          };
+      } else {
+          sBtn.innerText = "إنهاء وتسليم الامتحان";
+          sBtn.classList.remove('hidden');
+          sBtn.onclick = sub;
+      }
+  } else {
+      sBtn.classList.add('hidden');
+  }
+  
+  // Progress Bar update needs total count if in preview, just fake it
+  let total = st.isPreview ? 3 : st.exam.length; 
+  let pct = ((st.idx + 1) / total) * 100;
   document.getElementById('exam-progress').style.width = pct + '%';
 }
+
 function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
 function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
 function sub(){ submitExam(false); }
@@ -1319,8 +1448,11 @@ function exitExam() {
   }).then((result) => {
     if (result.isConfirmed) {
       document.getElementById('v-exam').classList.add('hidden');
-      document.getElementById('v-dash').classList.remove('hidden');
-      loadDash();
+      if(st.isPreview) goHome();
+      else {
+          document.getElementById('v-dash').classList.remove('hidden');
+          loadDash();
+      }
     }
   });
 }
@@ -1536,3 +1668,4 @@ function genReport() {
 </script>
 </body>
 </html>
+```
