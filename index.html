@@ -878,13 +878,14 @@ function showLoader(s) {
 async function callApi(action, data = {}) {
     showLoader(true); // زيادة العداد
     data.action = action;
+    data._t = Date.now(); // Cache buster in body
     
     // 🔥 التأكد من استخدام الرابط الصحيح
     if(API_URL && API_URL.startsWith('http')) {
         console.log(`🚀 Connecting to Real Server for: ${action}`);
         try {
             // إضافة طابع زمني لمنع التخزين المؤقت (Cache Busting)
-            const noCacheUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
+            const noCacheUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
             
             const response = await fetch(noCacheUrl, {
                 method: "POST",
