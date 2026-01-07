@@ -848,7 +848,7 @@
 </div>
 <script>
 // ============================================
-// ⚠️ هام: تم تحديث رابط النشر لضمان الاتصال الحقيقي 100%
+// ⚠️ هام: استبدل الرابط أدناه برابط النشر الجديد الخاص بك
 const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
 // ============================================
 const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
@@ -874,28 +874,37 @@ function showLoader(s) {
     document.getElementById('loader').style.display = loaderCount > 0 ? 'flex' : 'none'; 
 }
 
-// دالة الاتصال الموحدة (Unified API Bridge - Real & Secure)
+// 🔥 دالة الاتصال الجديدة (Fixed for GitHub Pages & CORS)
 async function callApi(action, data = {}) {
-    showLoader(true); // زيادة العداد
+    showLoader(true);
     data.action = action;
-    data._t = Date.now(); // Cache buster in body
-    
-    // 🔥 التأكد من استخدام الرابط الصحيح
+    data._t = Date.now(); // منع الكاش
+
     if(API_URL && API_URL.startsWith('http')) {
-        console.log(`🚀 Connecting to Real Server for: ${action}`);
+        console.log(`🚀 Connecting to: ${action}`);
         try {
-            // إضافة طابع زمني لمنع التخزين المؤقت (Cache Busting)
+            // إضافة cache busting للرابط
             const noCacheUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
             
             const response = await fetch(noCacheUrl, {
                 method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" }, // تجاوز CORS Preflight
-                cache: 'no-store', // منع الكاش من المتصفح
+                redirect: "follow", // ضروري جداً لإعادة توجيه جوجل
+                // ⚠️ الحيلة السحرية: إرسال البيانات كنص عادي لتجاوز فحص CORS Preflight
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8",
+                },
                 body: JSON.stringify(data)
             });
+            
             const textData = await response.text();
-            showLoader(false); // نجاح، إغلاق اللودر
-            try { return JSON.parse(textData); } catch(e) { return textData; }
+            showLoader(false);
+            
+            try { 
+                return JSON.parse(textData); 
+            } catch(e) { 
+                console.warn("Non-JSON response:", textData);
+                return { success: false, message: "Invalid Server Response" }; 
+            }
         } catch (e) {
             console.warn("Connection failed:", e);
             showLoader(false);
@@ -1409,13 +1418,13 @@ function submitExam(forced){
       cancelButtonColor: '#f59e0b'
     }).then((result) => {
       if (result.isDenied) {
-         showReview(st.title, isPass);
+          showReview(st.title, isPass);
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-         cert(st.title, res.percent); confetti();
-         setTimeout(loadDash, 2000);
+          cert(st.title, res.percent); confetti();
+          setTimeout(loadDash, 2000);
       } else {
-         loadDash();
-         if(isPass) confetti();
+          loadDash();
+          if(isPass) confetti();
       }
     });
   });
