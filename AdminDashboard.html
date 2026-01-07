@@ -17,16 +17,15 @@
        1. CORE VARIABLES & RESET
        ========================================= */
     :root {
-        --primary-color: #2563eb;
-        --primary-hover: #1d4ed8;
+        --primary-color: #1e40af; /* أزرق داكن احترافي */
+        --primary-hover: #1e3a8a;
         --secondary-color: #475569;
-        --accent-color: #f59e0b;
+        --accent-color: #d97706; /* ذهبي */
         --success-color: #10b981;
         --danger-color: #ef4444;
-        --info-color: #0ea5e9;
-        --light-bg: #f1f5f9;
+        --light-bg: #f8fafc;
         --white: #ffffff;
-        --dark-text: #1e293b;
+        --dark-text: #0f172a;
         --gray-text: #64748b;
         --sidebar-width: 280px;
         --header-height: 70px;
@@ -35,13 +34,6 @@
         --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
         --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    [data-theme="dark"] {
-        --primary-color: #3b82f6;
-        --light-bg: #0f172a;
-        --white: #1e293b;
-        --dark-text: #f8fafc;
-        --gray-text: #94a3b8;
     }
     body {
         font-family: 'Tajawal', sans-serif;
@@ -61,16 +53,14 @@
         display: flex; flex-direction: column; justify-content: center; align-items: center;
         color: white; transition: opacity 0.5s ease;
     }
-    
     .spinner {
         width: 60px; height: 60px;
         border: 5px solid rgba(255,255,255,0.1);
-        border-top-color: var(--primary-color);
+        border-top-color: var(--accent-color);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 20px;
     }
-    
     @keyframes spin { to { transform: rotate(360deg); } }
     /* =========================================
        3. SIDEBAR NAVIGATION
@@ -87,7 +77,6 @@
         transition: var(--transition);
         box-shadow: var(--shadow-lg);
     }
-    
     .sidebar-header {
         height: var(--header-height);
         display: flex; align-items: center;
@@ -95,12 +84,10 @@
         background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
         color: white;
     }
-    
     .logo-container {
         display: flex; align-items: center; gap: 12px;
         font-weight: 800; font-size: 1.25rem;
     }
-    
     .logo-icon {
         font-size: 1.5rem;
         background: rgba(255,255,255,0.2);
@@ -108,42 +95,17 @@
         display: flex; align-items: center; justify-content: center;
         border-radius: 8px;
     }
-    .nav-menu {
-        flex: 1;
-        padding: 20px 15px;
-        overflow-y: auto;
-    }
+    .nav-menu { flex: 1; padding: 20px 15px; overflow-y: auto; }
     .nav-item {
-        padding: 12px 16px;
-        margin-bottom: 6px;
-        border-radius: 10px;
-        cursor: pointer;
-        color: var(--gray-text);
-        font-weight: 500;
+        padding: 12px 16px; margin-bottom: 6px; border-radius: 10px;
+        cursor: pointer; color: var(--gray-text); font-weight: 500;
         display: flex; align-items: center; gap: 12px;
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
+        transition: var(--transition); position: relative; overflow: hidden;
     }
-    
-    .nav-item:hover {
-        background-color: rgba(37, 99, 235, 0.05);
-        color: var(--primary-color);
-        transform: translateX(-5px);
-    }
-    
-    .nav-item.active {
-        background-color: var(--primary-color);
-        color: white;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    }
-    
+    .nav-item:hover { background-color: rgba(37, 99, 235, 0.05); color: var(--primary-color); transform: translateX(-5px); }
+    .nav-item.active { background-color: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
     .nav-item i { width: 24px; text-align: center; }
-    
-    .sidebar-footer {
-        padding: 20px;
-        border-top: 1px solid rgba(0,0,0,0.05);
-    }
+    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(0,0,0,0.05); }
     /* =========================================
        4. MAIN CONTENT AREA
        ========================================= */
@@ -153,128 +115,65 @@
         min-height: 100vh;
         transition: var(--transition);
     }
-    
     .header-bar {
         display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 30px;
-        background: var(--white);
-        padding: 15px 25px;
-        border-radius: 16px;
-        box-shadow: var(--shadow-sm);
+        margin-bottom: 30px; background: var(--white); padding: 15px 25px;
+        border-radius: 16px; box-shadow: var(--shadow-sm);
     }
     /* =========================================
        5. COMPONENTS & CARDS
        ========================================= */
     .stat-card {
-        background: var(--white);
-        border-radius: 16px;
-        padding: 24px;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(0,0,0,0.05);
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-        height: 100%;
-        display: flex; flex-direction: column; justify-content: center;
+        background: var(--white); border-radius: 16px; padding: 24px;
+        position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: var(--shadow-sm); transition: var(--transition);
+        height: 100%; display: flex; flex-direction: column; justify-content: center;
     }
-    
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-        border-color: var(--primary-color);
-    }
-    
-    .stat-value {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--dark-text);
-        line-height: 1.2;
-        margin: 10px 0;
-    }
-    
-    .stat-label {
-        font-size: 0.9rem;
-        color: var(--gray-text);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
+    .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-color); }
+    .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--dark-text); line-height: 1.2; margin: 10px 0; }
+    .stat-label { font-size: 0.9rem; color: var(--gray-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     .stat-icon-bg {
-        position: absolute;
-        left: -10px; bottom: -20px;
-        font-size: 8rem;
-        opacity: 0.05;
-        color: var(--primary-color);
-        transform: rotate(15deg);
-        pointer-events: none;
+        position: absolute; left: -10px; bottom: -20px; font-size: 8rem; opacity: 0.05;
+        color: var(--primary-color); transform: rotate(15deg); pointer-events: none;
     }
     /* Table Styles */
     .table-container {
-        background: var(--white);
-        border-radius: 16px;
-        border: 1px solid rgba(0,0,0,0.05);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
+        background: var(--white); border-radius: 16px; border: 1px solid rgba(0,0,0,0.05);
+        overflow: hidden; box-shadow: var(--shadow-sm);
     }
-    
     .table { margin-bottom: 0; }
-    
     .table thead th {
-        background-color: #f8fafc;
-        color: var(--secondary-color);
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        padding: 18px;
-        border-bottom: 1px solid #e2e8f0;
+        background-color: #f8fafc; color: var(--secondary-color); font-weight: 700;
+        text-transform: uppercase; font-size: 0.8rem; padding: 18px; border-bottom: 1px solid #e2e8f0;
     }
-    
     .table tbody td {
-        padding: 16px;
-        vertical-align: middle;
-        color: var(--dark-text);
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 0.95rem;
+        padding: 16px; vertical-align: middle; color: var(--dark-text);
+        border-bottom: 1px solid #f1f5f9; font-size: 0.95rem;
     }
-    
     .table tbody tr:hover { background-color: #f8fafc; }
     /* Code Cards */
-    .code-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 15px;
-    }
-    
+    .code-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
     .code-item {
-        background: var(--white);
-        border: 2px dashed #cbd5e1;
-        border-radius: 12px;
-        padding: 15px;
-        text-align: center;
-        cursor: pointer;
-        position: relative;
-        transition: 0.2s;
+        background: var(--white); border: 2px dashed #cbd5e1; border-radius: 12px;
+        padding: 15px; text-align: center; cursor: pointer; position: relative; transition: 0.2s;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
     }
-    
     .code-item:hover { border-color: var(--primary-color); background-color: #eff6ff; }
     .code-item.selected { border-color: var(--primary-color); background-color: #dbeafe; border-style: solid; }
-    
     .code-val {
-        font-family: 'Courier New', monospace;
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        letter-spacing: 1px;
-        margin: 5px 0;
+        font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700;
+        color: var(--primary-color); letter-spacing: 1px; margin: 5px 0;
     }
+    .code-copy {
+        position: absolute; top: 5px; left: 5px; opacity: 0; transition: 0.2s;
+        background: #fff; border: 1px solid #ddd; padding: 2px 6px; border-radius: 4px;
+    }
+    .code-item:hover .code-copy { opacity: 1; }
+    
     /* Buttons */
     .btn {
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        display: inline-flex; align-items: center; gap: 8px;
-        transition: var(--transition);
+        padding: 10px 20px; border-radius: 8px; font-weight: 600;
+        display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);
     }
     .btn-primary { background: var(--primary-color); border: none; }
     .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
@@ -283,7 +182,6 @@
        ========================================= */
     .hidden { display: none !important; }
     .text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    
     .mobile-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
         z-index: 999; display: none; backdrop-filter: blur(2px);
@@ -380,6 +278,7 @@
                         <option value="الأول ثانوي">الأول ثانوي</option>
                         <option value="العاشر">العاشر</option>
                         <option value="التاسع">التاسع</option>
+                        <option value="الصف الثالث">الصف الثالث</option>
                     </select>
                 </div>
                 <div class="col-md-7">
@@ -445,7 +344,7 @@
             <!-- Injected via JS -->
         </div>
     </div>
-    <!-- 3. CODES VIEW (Enhanced Printing) -->
+    <!-- 3. CODES VIEW (Enhanced Printing & Manual Input) -->
     <div id="view-codes" class="view-section hidden">
         <div class="row g-4">
             <!-- Generator Panel -->
@@ -457,14 +356,24 @@
                         <input type="number" id="gen-count" class="form-control" value="10">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-muted small">الصف الدراسي</label>
-                        <select id="gen-cls" class="form-select">
-                            <option value="عام">عام (للكل)</option>
-                            <option value="التوجيهي">التوجيهي</option>
-                            <option value="الأول ثانوي">الأول ثانوي</option>
-                            <option value="العاشر">العاشر</option>
-                            <option value="التاسع">التاسع</option>
-                        </select>
+                        <label class="form-label text-muted small">الصف الدراسي (اكتب يدوياً أو اختر)</label>
+                        <input type="text" id="gen-cls" class="form-control" list="cls-datalist" placeholder="اكتب اسم الصف أو 'عام'...">
+                        <datalist id="cls-datalist">
+                            <option value="عام">
+                            <option value="التوجيهي">
+                            <option value="الأول ثانوي">
+                            <option value="العاشر">
+                            <option value="التاسع">
+                            <option value="الثامن">
+                            <option value="السابع">
+                            <option value="السادس">
+                            <option value="الخامس">
+                            <option value="الرابع">
+                            <option value="الصف الثالث">
+                            <option value="الصف الثاني">
+                            <option value="الصف الأول">
+                            <option value="KG">
+                        </datalist>
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-muted small">مدة الاشتراك (يوم)</label>
@@ -479,11 +388,17 @@
                     
                     <hr>
                     
-                    <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-print"></i> إعدادات الطباعة</h5>
-                    <input id="card-title" class="form-control mb-2" value="منصة نبراس التعليمية" placeholder="عنوان البطاقة">
-                    <input id="card-desc" class="form-control mb-2" value="لتفعيل الكود: Nebras.school" placeholder="تعليمات التفعيل">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-dark" onclick="printCodes('selected')"><i class="fas fa-check-square"></i> طباعة المحدد فقط</button>
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-print"></i> إعدادات البطاقة (للطباعة)</h5>
+                    <div class="mb-2">
+                        <label class="small text-muted">العنوان الرئيسي</label>
+                        <input id="card-title" class="form-control" value="منصة نبراس التعليمية">
+                    </div>
+                    <div class="mb-2">
+                        <label class="small text-muted">السعر (يظهر على البطاقة)</label>
+                        <input id="card-price" class="form-control" value="15 دينار">
+                    </div>
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-dark" onclick="printCodes('selected')"><i class="fas fa-check-square"></i> طباعة المحدد (تصميم للبيع)</button>
                         <button class="btn btn-outline-dark" onclick="printCodes('new')"><i class="fas fa-star"></i> طباعة كل الجديد</button>
                     </div>
                 </div>
@@ -491,16 +406,25 @@
             <!-- Codes Grid -->
             <div class="col-lg-8">
                 <div class="stat-card h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                         <h5 class="m-0">قائمة الأكواد</h5>
                         <div>
+                            <input type="text" id="search-code" class="form-control form-control-sm d-inline-block w-auto" placeholder="بحث كود..." onkeyup="renderCodes()" style="width:120px !important">
+                            <select id="filter-code-cls" class="form-select form-select-sm d-inline-block w-auto" onchange="renderCodes()">
+                                <option value="All">كل الصفوف</option>
+                                <option value="عام">عام</option>
+                                <option value="التوجيهي">التوجيهي</option>
+                                <option value="الأول ثانوي">الأول ثانوي</option>
+                                <option value="العاشر">العاشر</option>
+                                <option value="الصف الثالث">الصف الثالث</option>
+                            </select>
                             <select id="filter-code-status" class="form-select form-select-sm d-inline-block w-auto" onchange="renderCodes()">
-                                <option value="All">الكل</option>
+                                <option value="All">كل الحالات</option>
                                 <option value="New">جديد (غير مستخدم)</option>
                                 <option value="Used">مستخدم</option>
                             </select>
-                            <button class="btn btn-sm btn-success ms-2" onclick="exportCodes()"><i class="fas fa-file-excel"></i> Excel</button>
-                            <button class="btn btn-sm btn-danger ms-2" onclick="deleteSelectedCodes()"><i class="fas fa-trash"></i> حذف</button>
+                            <button class="btn btn-sm btn-success ms-1" onclick="exportCodes()"><i class="fas fa-file-excel"></i></button>
+                            <button class="btn btn-sm btn-danger ms-1" onclick="deleteSelectedCodes()"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
                     
@@ -530,8 +454,21 @@
                     </div>
                     <form onsubmit="event.preventDefault(); addToLib();">
                         <input id="lib-title" class="form-control mb-2" placeholder="عنوان الملف/الفيديو" required>
-                        <input id="lib-subj" class="form-control mb-2" placeholder="المادة (مثال: فيزياء)" required>
-                        <input id="lib-cls" class="form-control mb-2" placeholder="الصف (مثال: التوجيهي)">
+                        <input id="lib-subj" class="form-control mb-2" placeholder="المادة (مثال: لغة عربية)" required>
+                        <select id="lib-cls" class="form-select mb-2">
+                            <option value="">اختر الصف...</option>
+                            <option value="التوجيهي">التوجيهي</option>
+                            <option value="الأول ثانوي">الأول ثانوي</option>
+                            <option value="العاشر">العاشر</option>
+                            <option value="التاسع">التاسع</option>
+                            <option value="الثامن">الثامن</option>
+                            <option value="السابع">السابع</option>
+                            <option value="السادس">السادس</option>
+                            <option value="الخامس">الخامس</option>
+                            <option value="الرابع">الرابع</option>
+                            <option value="الصف الثالث">الصف الثالث</option> <!-- تمت الإضافة -->
+                            <option value="عام">عام</option>
+                        </select>
                         <select id="lib-type" class="form-select mb-2">
                             <option value="PDF">ملف PDF (معاينة ذكية)</option>
                             <option value="Video">فيديو</option>
@@ -660,6 +597,7 @@
                 <div class="col-md-4"><label class="small text-muted">الصف السادس</label><input id="grp-6" class="form-control" placeholder="رابط المجموعة"></div>
                 <div class="col-md-4"><label class="small text-muted">الصف الخامس</label><input id="grp-5" class="form-control" placeholder="رابط المجموعة"></div>
                 <div class="col-md-4"><label class="small text-muted">الصف الرابع</label><input id="grp-4" class="form-control" placeholder="رابط المجموعة"></div>
+                <div class="col-md-4"><label class="small text-muted">الصف الثالث</label><input id="grp-3" class="form-control" placeholder="رابط المجموعة"></div> <!-- تمت الإضافة -->
             </div>
             
             <button class="btn btn-primary w-100 mt-4 btn-lg" onclick="saveSettings()"><i class="fas fa-save"></i> حفظ كافة التغييرات</button>
@@ -812,6 +750,7 @@ function fillSettings(s) {
     setVal('grp-6', 'Group_السادس');
     setVal('grp-5', 'Group_الخامس');
     setVal('grp-4', 'Group_الرابع');
+    setVal('grp-3', 'Group_الثالث'); // تمت الإضافة
 }
 // --- التنقل (Navigation) ---
 function nav(v, el) {
@@ -829,14 +768,22 @@ function toggleSidebar() {
 function renderCodes() {
     let div = document.getElementById('codes-grid');
     let status = document.getElementById('filter-code-status').value;
+    let clsFilter = document.getElementById('filter-code-cls').value;
+    let search = document.getElementById('search-code').value.toLowerCase();
     div.innerHTML = '';
     
-    let filtered = DB.codes.filter(c => status === 'All' || (status === 'New' && c.status === 'New') || (status === 'Used' && c.status !== 'New'));
+    let filtered = DB.codes.filter(c => {
+        let statusMatch = (status === 'All' || (status === 'New' && c.status === 'New') || (status === 'Used' && c.status !== 'New'));
+        let clsMatch = (clsFilter === 'All' || c.cls === clsFilter);
+        let searchMatch = (c.code.toString().toLowerCase().includes(search));
+        return statusMatch && clsMatch && searchMatch;
+    });
     
     filtered.forEach(c => {
         div.innerHTML += `
         <div class="code-item ${c.status!=='New'?'opacity-50':''}" onclick="this.classList.toggle('selected'); this.querySelector('input').checked = !this.querySelector('input').checked;">
             <input type="checkbox" class="form-check-input check-overlay code-chk" value="${c.code}" onclick="event.stopPropagation()">
+            <div class="code-copy" onclick="event.stopPropagation(); navigator.clipboard.writeText('${c.code}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'تم النسخ', timer:1500, showConfirmButton:false})"><i class="fas fa-copy"></i></div>
             <div class="code-val">${c.code}</div>
             <div class="code-meta">${c.cls} • ${c.days} يوم</div>
             <span class="badge ${c.status==='New'?'bg-success':'bg-secondary'} mt-2">${c.status}</span>
@@ -858,10 +805,10 @@ async function generateCodes() {
     Swal.fire('تم', 'تم توليد الأكواد بنجاح', 'success');
     refreshData();
 }
-// ✅ نظام الطباعة الاحترافي (البطاقات A4)
+// ✅ نظام الطباعة الاحترافي للبيع (Voucher Design)
 function printCodes(mode) {
     let title = document.getElementById('card-title').value;
-    let desc = document.getElementById('card-desc').value;
+    let price = document.getElementById('card-price').value;
     
     let toPrint = [];
     if(mode === 'selected') {
@@ -872,49 +819,98 @@ function printCodes(mode) {
         toPrint = DB.codes.filter(c => c.status === 'New');
     }
     let w = window.open('','','width=1000,height=800');
-    // تنسيق الطباعة A4 (ورقتين بالصف، 8-10 بالصفحة)
+    // تنسيق الطباعة A4
     let h = `
-    <html><head><title>طباعة البطاقات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800&display=swap" rel="stylesheet">
+    <html><head><title>طباعة بطاقات الاشتراك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 20px; background: #fff; margin:0; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; }
-        
-        .ticket { 
-            border: 2px dashed #000; border-radius: 12px; padding: 15px; 
-            display: flex; justify-content: space-between; align-items: center;
-            height: 160px; page-break-inside: avoid; position: relative;
-            background-color: #fff;
+        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 0; background: #fff; margin:0; }
+        .page-container { 
+            display: grid; grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; padding: 15px; width: 100%; box-sizing: border-box;
         }
-        .ticket-left { flex: 1; text-align: right; padding-left: 15px; border-left: 2px dashed #ccc; }
-        .ticket-right { width: 110px; text-align: center; display: flex; align-items: center; justify-content: center; }
         
-        .t-title { font-size: 16px; font-weight: 800; margin-bottom: 5px; color: #000; }
-        .t-code { font-size: 26px; font-weight: 900; background: #eee; padding: 5px 15px; border-radius: 6px; display: inline-block; margin: 8px 0; letter-spacing: 2px; font-family: monospace; }
-        .t-info { font-size: 12px; color: #333; font-weight: bold; }
-        .t-desc { font-size: 10px; margin-top: 8px; color: #555; }
+        .voucher {
+            border: 2px dashed #1e40af; /* أزرق داكن */
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 150px;
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            page-break-inside: avoid;
+            overflow: hidden;
+        }
         
-        img { max-width: 100%; height: auto; }
+        /* علامة مائية */
+        .voucher::before {
+            content: 'NEBRAS';
+            position: absolute; top: 10px; left: 10px;
+            font-size: 60px; font-weight: 900;
+            color: rgba(30, 64, 175, 0.05);
+            z-index: 0; transform: rotate(-15deg);
+        }
+
+        .v-left { 
+            flex: 1; text-align: right; padding-left: 10px; border-left: 3px double #d97706; z-index: 1; 
+        }
+        .v-right { 
+            width: 110px; text-align: center; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1;
+        }
+        
+        .v-header {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+        }
+        .v-title { font-family: 'Amiri', serif; font-size: 18px; color: #1e40af; margin: 0; }
+        
+        .v-code-box {
+            background: #f1f5f9; border: 2px solid #1e40af;
+            padding: 5px 15px; border-radius: 8px;
+            display: inline-block; margin: 5px 0;
+        }
+        .v-code { font-family: 'Courier New', monospace; font-size: 24px; font-weight: 900; color: #000; letter-spacing: 2px; }
+        
+        .v-details { font-size: 11px; color: #475569; font-weight: bold; margin-top: 5px; }
+        .v-footer { font-size: 10px; color: #94a3b8; margin-top: 5px; }
+        
+        .v-price {
+            background: #d97706; color: white; padding: 2px 10px;
+            border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 5px;
+        }
+        
+        img { width: 90px; height: 90px; border: 1px solid #ddd; padding: 2px; border-radius: 5px; }
         
         @media print { 
-            body { padding: 0; margin: 0; } 
-            .grid { gap: 10px; }
-            .ticket { border: 1px dashed #333; } 
+            body { margin: 0; } 
+            .page-container { gap: 10px; padding: 10px; }
+            .voucher { border: 1px dashed #000; box-shadow: none; }
         }
     </style>
-    </head><body><div class="grid">`;
+    </head><body><div class="page-container">`;
     
     toPrint.forEach(c => {
         h += `
-        <div class="ticket">
-            <div class="ticket-left">
-                <div class="t-title">🎓 ${title}</div>
-                <div class="t-code">${c.code}</div>
-                <div class="t-info">النوع: ${c.cls} | الصلاحية: ${c.days} يوم</div>
-                <div class="t-desc">${desc}</div>
+        <div class="voucher">
+            <div class="v-left">
+                <div class="v-header">
+                    <span style="font-size:20px">🎓</span>
+                    <h3 class="v-title">${title}</h3>
+                </div>
+                <div class="v-code-box">
+                    <div class="v-code">${c.code}</div>
+                </div>
+                <div class="v-details">
+                    الصف: <span style="color:#d97706">${c.cls}</span> | الصلاحية: ${c.days} يوم
+                </div>
+                <div class="v-footer">قم بزيارة Nebras.school لتفعيل الكود</div>
             </div>
-            <div class="ticket-right">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://nebras.school?code=${c.code}" alt="QR">
+            <div class="v-right">
+                <div class="v-price">${price}</div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://nebras.school?code=${c.code}" alt="QR">
             </div>
         </div>`;
     });
@@ -969,6 +965,7 @@ async function addToLib() {
         d.link = tempFileBase64; 
     }
     if(!d.title || !d.link) return Swal.fire('تنبيه','يرجى إدخال الرابط أو رفع ملف','warning');
+    if(!d.cls) return Swal.fire('تنبيه','يرجى اختيار الصف','warning');
     
     await api('addToLibrary', {d:d});
     Swal.fire('تم النشر','','success');
@@ -1066,7 +1063,8 @@ async function saveSettings() {
         'Group_السابع': document.getElementById('grp-7').value,
         'Group_السادس': document.getElementById('grp-6').value,
         'Group_الخامس': document.getElementById('grp-5').value,
-        'Group_الرابع': document.getElementById('grp-4').value
+        'Group_الرابع': document.getElementById('grp-4').value,
+        'Group_الصف الثالث': document.getElementById('grp-3').value // تمت الإضافة
     };
     await api('saveGeneralSettings', {s:s});
     Swal.fire('تم الحفظ بنجاح');
