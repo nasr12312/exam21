@@ -863,20 +863,46 @@ if (!deviceId) {
 let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
 let allSubjects = [];
 const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
+
+// ⚙️ نظام العداد للودر (Loader Counter)
+let loaderCount = 0;
+function showLoader(s) { 
+    if(s) loaderCount++;
+    else loaderCount = Math.max(0, loaderCount - 1);
+    
+    // يظهر فقط إذا كان العداد أكبر من 0
+    document.getElementById('loader').style.display = loaderCount > 0 ? 'flex' : 'none'; 
+}
+
+// دالة الاتصال الموحدة (Unified API Bridge - Enhanced Fallback)
 async function callApi(action, data = {}) {
+    showLoader(true); // زيادة العداد
     data.action = action;
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify(data),
-        });
-        const result = await response.json();
-        return result;
-    } catch (e) {
-        console.error(e);
-        return { success: false, message: 'تعذر الاتصال بالخادم' };
+    
+    // 🔥 1. الاتصال المباشر (Direct Fetch) كخيار أول (Priority #1)
+    if(API_URL && API_URL.startsWith('http')) {
+        console.log(`🚀 Direct connection initiated for: ${action}`);
+        try {
+            // إضافة طابع زمني لمنع التخزين المؤقت (Cache Busting)
+            const noCacheUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
+            
+            const response = await fetch(noCacheUrl, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" }, // تجاوز CORS Preflight
+                cache: 'no-store', // منع الكاش من المتصفح
+                body: JSON.stringify(data)
+            });
+            const textData = await response.text();
+            showLoader(false); // نجاح، إغلاق اللودر
+            try { return JSON.parse(textData); } catch(e) { return textData; }
+        } catch (e) {
+            console.warn("Direct connection failed, falling back...", e);
+            showLoader(false);
+            return { success: false, message: 'تعذر الاتصال بالخادم' };
+        }
     }
 }
+
 // ================= PushState Helper (Sandbox Safe) =================
 function safePushState(state, title, url) {
     try {
@@ -1184,6 +1210,7 @@ function loadDash(){
   document.getElementById('u-cls').innerText = localStorage.getItem('cl');
   let ph = localStorage.getItem('ph'); document.getElementById('u-img').src = ph ? ph : DEF_IMG;
   ld(1);
+  fetchPublicData(); // 🔥 تحديث البيانات (أخبار، إعدادات) عند الدخول
   callApi('getExamsList', {token:token}).then(r=>{
     allSubjects = r.subjects || [];
     renderSubjects();
