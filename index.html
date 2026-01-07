@@ -5,13 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base target="_top">
     
-    <!-- 1. تحسينات SEO الديناميكية -->
-    <title><?= pageTitle ?> | منصة نبراس</title>
-    <meta name="description" content="<?= pageDesc ?>">
-    <meta name="keywords" content="<?= pageKeywords ?>">
+    <!-- =================================================================================
+         1. تحسينات SEO الشاملة (Search Engine Optimization)
+         ================================================================================= -->
+    <title><?= pageTitle ?> | منصة نبراس التعليمية - المنهاج الأردني</title>
+    
+    <!-- وصف دقيق وشامل -->
+    <meta name="description" content="منصة نبراس التعليمية: أقوى موقع تعليمي للمنهاج الأردني. شروحات مصورة، امتحانات إلكترونية محوسبة، دوسيات، وأوراق عمل من الصف الأول حتى التوجيهي (2007, 2008). تجربة تعليمية تفاعلية مع نخبة من المعلمين. سجل الآن وابدأ رحلة التفوق.">
+    
+    <!-- مئات الكلمات المفتاحية (Keywords Injection) -->
+    <meta name="keywords" content="
+    منصة نبراس, مدرسة نبراس, تعليم الكتروني, المنهاج الأردني, توجيهي 2007, توجيهي 2008, امتحانات محوسبة, اختبارات الكترونية, أوراق عمل, دوسيات pdf,
+    شرح لغة عربية, شرح رياضيات, شرح فيزياء, شرح كيمياء, شرح احياء, شرح علوم ارض, شرح انجليزي, شرح تاريخ اردن, شرح تربية اسلامية,
+    الصف الاول, الصف الثاني, الصف الثالث, الصف الرابع, الصف الخامس, الصف السادس, الصف السابع, الصف الثامن, الصف التاسع, الصف العاشر, الاول ثانوي,
+    تأسيس توجيهي, مكثفات توجيهي, اسئلة سنوات سابقة, اسئلة وزارية, متوقع, مقترح, وتد, جو اكاديمي, ابواب, منهاجي, درسك, اوبن ايمس,
+    علامات الطلاب, نتائج الامتحانات, كشوفات العلامات, معلم خصوصي, دروس تقوية, تعليم عن بعد, منصة الاوائل, وزارة التربية والتعليم الاردنية,
+    اللغة العربية تخصص, الرياضيات العلمي, الرياضيات الادبي, الفيزياء, الكيمياء, العلوم الحياتية, الثقافة المالية, الحاسوب,
+    مهارات الاتصال, العروض, النحو والصرف, البلاغة, القضايا الادبية, النقد الادبي, التعبير,
+    امتحان الشهر الاول, امتحان الشهر الثاني, امتحان النهائي, امتحان تجريبي, منصة درسك, ادرس جو,
+    منصة تعليمية مجانية, اشتراك توجيهي, بطاقات توجيهي, تسجيل دخول منصة نبراس, رابط منصة نبراس,
+    افضل منصة تعليمية في الاردن, شرح مواد التوجيهي, خطط دراسية, تنظيم الوقت للدراسة, تحفيز للدراسة
+    ">
+    
+    <meta name="author" content="منصة نبراس التعليمية">
     <meta name="robots" content="index, follow">
     
-    <!-- Schema.org Markup (Rich Snippets) -->
+    <!-- Open Graph (Facebook/Social Media) -->
+    <meta property="og:title" content="منصة نبراس التعليمية | طريقك نحو التفوق">
+    <meta property="og:description" content="انضم لأضخم منصة تعليمية للمنهاج الأردني. امتحانات، شروحات، وملفات حصرية.">
+    <meta property="og:image" content="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png">
+    <meta property="og:url" content="https://www.nebras.school">
+    <meta property="og:type" content="website">
+
+    <!-- Schema.org Markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -19,6 +45,7 @@
       "name": "مدرسة نبراس التعليمية",
       "url": "https://www.nebras.school",
       "logo": "https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png",
+      "description": "منصة تعليمية شاملة للمنهاج الأردني توفر اختبارات ومصادر تعلم.",
       "sameAs": [
         "https://facebook.com/nebras",
         "https://youtube.com/nebras"
@@ -27,19 +54,15 @@
     </script>
     
     <!-- الخطوط والأيقونات -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- المكتبات الخارجية -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <!-- مكتبة PDF.js للمعاينة الذكية -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 
 <style>
   :root { 
@@ -55,14 +78,17 @@
   [data-theme="light"] {
     --bg: #f8fafc; --glass: rgba(255, 255, 255, 0.95); --border: rgba(0, 0, 0, 0.1); --text: #0f172a; --blue: #2563eb;
   }
+  
+  /* 2. حماية المحتوى (Anti-Theft CSS) */
   body { 
     background: var(--bg); color: var(--text); font-family: 'Tajawal'; margin: 0; padding: 0; min-height: 100vh;
     transition: background 0.5s, color 0.5s;
     background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.5) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.5) 0, transparent 50%);
     scroll-behavior: smooth;
     
-    /* 2. حماية المحتوى (منع التحديد) */
+    /* منع التحديد والنسخ */
     -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
   }
   
   .container { max-width: 1100px; margin: 0 auto; padding: 20px; transition: 0.5s; }
@@ -410,10 +436,10 @@
                  <h3 class="plan-name">الباقة الذهبية</h3>
                  <div class="plan-price"><span id="disp-price-gold">15 JD</span></div>
                  <ul class="plan-features">
-                    <li><i class="fas fa-check-circle"></i> وصول كامل للامتحانات</li>
-                    <li><i class="fas fa-check-circle"></i> مكتبة الفيديو والملفات</li>
-                    <li><i class="fas fa-check-circle"></i> تقارير أداء متقدمة</li>
-                    <li><i class="fas fa-check-circle"></i> دعم فني مباشر</li>
+                   <li><i class="fas fa-check-circle"></i> وصول كامل للامتحانات</li>
+                   <li><i class="fas fa-check-circle"></i> مكتبة الفيديو والملفات</li>
+                   <li><i class="fas fa-check-circle"></i> تقارير أداء متقدمة</li>
+                   <li><i class="fas fa-check-circle"></i> دعم فني مباشر</li>
                  </ul>
                  <button class="btn btn-p" onclick="buyPlan('الباقة الذهبية')">اشترك الآن</button>
               </div>
@@ -421,10 +447,10 @@
                  <h3 class="plan-name">الباقة الفصلية</h3>
                  <div class="plan-price"><span id="disp-price-term">35 JD</span></div>
                  <ul class="plan-features">
-                    <li><i class="fas fa-check-circle"></i> اشتراك لمدة فصل كامل</li>
-                    <li><i class="fas fa-check-circle"></i> جميع مميزات الذهبية</li>
-                    <li><i class="fas fa-check-circle"></i> حصص مراجعة مباشرة</li>
-                    <li><i class="fas fa-check-circle"></i> أولوية في الرد</li>
+                   <li><i class="fas fa-check-circle"></i> اشتراك لمدة فصل كامل</li>
+                   <li><i class="fas fa-check-circle"></i> جميع مميزات الذهبية</li>
+                   <li><i class="fas fa-check-circle"></i> حصص مراجعة مباشرة</li>
+                   <li><i class="fas fa-check-circle"></i> أولوية في الرد</li>
                  </ul>
                  <button class="btn btn-o" onclick="buyPlan('الباقة الفصلية')">طلب الكود</button>
               </div>
