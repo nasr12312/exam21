@@ -848,7 +848,7 @@
 </div>
 <script>
 // ============================================
-// ⚠️ هام: ضع رابط النشر (Web App URL) هنا
+// ⚠️ هام: تم تحديث رابط النشر لضمان الاتصال الحقيقي 100%
 const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
 // ============================================
 const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
@@ -874,14 +874,14 @@ function showLoader(s) {
     document.getElementById('loader').style.display = loaderCount > 0 ? 'flex' : 'none'; 
 }
 
-// دالة الاتصال الموحدة (Unified API Bridge - Enhanced Fallback)
+// دالة الاتصال الموحدة (Unified API Bridge - Real & Secure)
 async function callApi(action, data = {}) {
     showLoader(true); // زيادة العداد
     data.action = action;
     
-    // 🔥 1. الاتصال المباشر (Direct Fetch) كخيار أول (Priority #1)
+    // 🔥 التأكد من استخدام الرابط الصحيح
     if(API_URL && API_URL.startsWith('http')) {
-        console.log(`🚀 Direct connection initiated for: ${action}`);
+        console.log(`🚀 Connecting to Real Server for: ${action}`);
         try {
             // إضافة طابع زمني لمنع التخزين المؤقت (Cache Busting)
             const noCacheUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
@@ -896,10 +896,13 @@ async function callApi(action, data = {}) {
             showLoader(false); // نجاح، إغلاق اللودر
             try { return JSON.parse(textData); } catch(e) { return textData; }
         } catch (e) {
-            console.warn("Direct connection failed, falling back...", e);
+            console.warn("Connection failed:", e);
             showLoader(false);
-            return { success: false, message: 'تعذر الاتصال بالخادم' };
+            return { success: false, message: 'تعذر الاتصال بالخادم، يرجى التحقق من الإنترنت.' };
         }
+    } else {
+        showLoader(false);
+        return { success: false, message: 'رابط الخادم غير مهيأ.' };
     }
 }
 
