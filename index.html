@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base target="_top">
     
-    <!-- دعم SEO الديناميكي -->
+    <!-- 1. تحسينات SEO الديناميكية -->
     <title><?= pageTitle ?> | منصة نبراس</title>
     <meta name="description" content="<?= pageDesc ?>">
     <meta name="keywords" content="<?= pageKeywords ?>">
+    <meta name="robots" content="index, follow">
     
-    <!-- Schema.org -->
+    <!-- Schema.org Markup (Rich Snippets) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "name": "مدرسة نبراس التعليمية",
-      "url": "https://www.nebras.school"
+      "url": "https://www.nebras.school",
+      "logo": "https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png",
+      "sameAs": [
+        "https://facebook.com/nebras",
+        "https://youtube.com/nebras"
+      ]
     }
     </script>
     
@@ -24,12 +30,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- المكتبات الخارجية المطلوبة -->
+    <!-- المكتبات الخارجية -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- مكتبة PDF.js (إصدار متوافق) -->
+    <!-- مكتبة PDF.js للمعاينة الذكية -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -54,6 +60,9 @@
     transition: background 0.5s, color 0.5s;
     background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.5) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.5) 0, transparent 50%);
     scroll-behavior: smooth;
+    
+    /* 2. حماية المحتوى (منع التحديد) */
+    -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
   }
   
   .container { max-width: 1100px; margin: 0 auto; padding: 20px; transition: 0.5s; }
@@ -232,19 +241,18 @@
       flex-direction: column;
       align-items: center;
       border: 1px solid #333;
-      overflow: hidden; /* لمنع التمرير خارج المنطقة */
+      overflow: hidden; 
   }
   .doc-container-scrollable {
       width: 100%;
       height: 100%;
-      overflow-y: auto; /* السماح بالتمرير الداخلي */
+      overflow-y: auto; 
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 20px;
   }
-  /* Iframe and Canvas styling */
   .doc-canvas, .doc-iframe {
       display: block;
       width: 100%;
@@ -256,7 +264,7 @@
   .doc-iframe {
       height: 2000px; /* طول وهمي للسماح بعرض جزء من الملف */
       border: none;
-      pointer-events: none; /* منع التفاعل داخل الـ iframe (إيقاف النسخ والتحميل) */
+      pointer-events: none; /* منع التفاعل داخل الـ iframe */
   }
   /* طبقة القفل (Overlay) */
   .doc-overlay {
@@ -307,7 +315,7 @@
   @media (max-width: 850px) { .cert-scaler { transform: scale(0.45); margin-top: 50px; } }
 </style>
 </head>
-<body>
+<body oncontextmenu="return false;"> <!-- تعطيل القائمة المنسدلة لليمين -->
 <div id="loader">
   <div style="font-size:50px;margin-bottom:15px;color:var(--blue)"><i class="fas fa-circle-notch fa-spin"></i></div>
   <div style="color:white">جاري المعالجة...</div>
@@ -745,8 +753,8 @@
         <div style="font-size:12px; color:#94a3b8">عدد الأسئلة: <span id="q-count"></span></div>
       </div>
       <div style="display:flex; gap:10px; align-items:center;">
-         <!-- Timer Removed -->
-         <button class="btn btn-r" style="width:auto; padding:5px 15px; font-size:12px;" onclick="exitExam()">خروج <i class="fas fa-door-open"></i></button>
+          <!-- Timer Removed -->
+          <button class="btn btn-r" style="width:auto; padding:5px 15px; font-size:12px;" onclick="exitExam()">خروج <i class="fas fa-door-open"></i></button>
       </div>
     </div>
     <!-- Progress Bar -->
