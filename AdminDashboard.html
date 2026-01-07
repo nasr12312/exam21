@@ -255,7 +255,7 @@
             <button class="btn btn-light d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
             <div>
                 <h4 class="mb-0 fw-bold">أهلاً بك، المدير العام 👋</h4>
-                <small class="text-muted">نظرة عامة على أداء المنصة <span id="conn-status" class="badge bg-success ms-2">متصل (RealTime)</span></small>
+                <small class="text-muted">نظرة عامة على أداء المنصة <span id="conn-status" class="badge bg-success ms-2">متصل (Secure)</span></small>
             </div>
         </div>
         <div class="d-flex gap-2">
@@ -614,7 +614,7 @@
 // ============================================
 // ⚠️ إعدادات الاتصال (API Configuration)
 // ============================================
-// 🔥 تم تحديث الرابط لضمان الاتصال الحقيقي 100%
+// 🔥 استبدل الرابط أدناه برابط النشر الجديد الخاص بك
 const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec";
 
 let DB = { students:[], codes:[], results:[], library:[], assignments:[], complaints:[] };
@@ -642,6 +642,7 @@ function showLoader(s) {
 async function api(action, data = {}) {
     showLoader(true);
     data.action = action;
+    data._t = Date.now(); // Cache busting for fetch requests
 
     return new Promise(async (resolve, reject) => {
         // 1. محاولة الاتصال عبر google.script.run (الأسرع داخل المنصة)
@@ -665,19 +666,29 @@ async function api(action, data = {}) {
     });
 }
 
-// دالة الاتصال المباشر (Direct Fetch Backup)
+// دالة الاتصال المباشر (Direct Fetch Backup - Enhanced for GitHub)
 async function useFetch(action, data, resolve) {
     console.log(`🌐 Connecting via Fetch API: ${action}`);
     try {
         // إضافة cache busting
         const url = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+        
         const response = await fetch(url, {
             method: 'POST',
+            // ⚠️ الحيلة السحرية: إرسال البيانات كنص عادي لتجاوز فحص CORS Preflight
+            headers: { 
+                "Content-Type": "text/plain;charset=utf-8" 
+            },
+            redirect: 'follow', // ضروري جداً
             body: JSON.stringify(data)
         });
+        
         const text = await response.text();
         showLoader(false);
-        try { resolve(JSON.parse(text)); } catch (e) { resolve(text); }
+        try { resolve(JSON.parse(text)); } catch (e) { 
+            console.warn("Non-JSON Response", text);
+            resolve({ success: false, message: "Invalid Server Response" }); 
+        }
     } catch (err) {
         showLoader(false);
         Swal.fire('خطأ في الاتصال', 'تأكد من اتصال الإنترنت أو صحة الرابط', 'error');
