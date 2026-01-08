@@ -1,1133 +1,1618 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الإدارة المركزية | منصة نبراس التعليمية</title>
-<!-- === المكتبات الخارجية === -->
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<style>
-    /* =========================================
-       1. CORE VARIABLES & RESET
-       ========================================= */
-    :root {
-        --primary-color: #1e40af; /* أزرق داكن احترافي */
-        --primary-hover: #1e3a8a;
-        --secondary-color: #475569;
-        --accent-color: #d97706; /* ذهبي */
-        --success-color: #10b981;
-        --danger-color: #ef4444;
-        --light-bg: #f8fafc;
-        --white: #ffffff;
-        --dark-text: #0f172a;
-        --gray-text: #64748b;
-        --sidebar-width: 280px;
-        --header-height: 70px;
-        --border-radius: 12px;
-        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-        --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    body {
-        font-family: 'Tajawal', sans-serif;
-        background-color: var(--light-bg);
-        color: var(--dark-text);
-        overflow-x: hidden;
-        margin: 0;
-        padding: 0;
-    }
-    /* =========================================
-       2. LOADER STYLES
-       ========================================= */
-    #loader {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(15, 23, 42, 0.98); 
-        z-index: 99999;
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        color: white; transition: opacity 0.5s ease;
-    }
-    .spinner {
-        width: 60px; height: 60px;
-        border: 5px solid rgba(255,255,255,0.1);
-        border-top-color: var(--accent-color);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    /* =========================================
-       3. SIDEBAR NAVIGATION
-       ========================================= */
-    .sidebar {
-        width: var(--sidebar-width);
-        height: 100vh;
-        position: fixed;
-        right: 0; top: 0;
-        background: var(--white);
-        border-left: 1px solid rgba(0,0,0,0.05);
-        z-index: 1000;
-        display: flex; flex-direction: column;
-        transition: var(--transition);
-        box-shadow: var(--shadow-lg);
-    }
-    .sidebar-header {
-        height: var(--header-height);
-        display: flex; align-items: center;
-        padding: 0 24px;
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-        color: white;
-    }
-    .logo-container {
-        display: flex; align-items: center; gap: 12px;
-        font-weight: 800; font-size: 1.25rem;
-    }
-    .logo-icon {
-        font-size: 1.5rem;
-        background: rgba(255,255,255,0.2);
-        width: 40px; height: 40px;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 8px;
-    }
-    .nav-menu { flex: 1; padding: 20px 15px; overflow-y: auto; }
-    .nav-item {
-        padding: 12px 16px; margin-bottom: 6px; border-radius: 10px;
-        cursor: pointer; color: var(--gray-text); font-weight: 500;
-        display: flex; align-items: center; gap: 12px;
-        transition: var(--transition); position: relative; overflow: hidden;
-    }
-    .nav-item:hover { background-color: rgba(37, 99, 235, 0.05); color: var(--primary-color); transform: translateX(-5px); }
-    .nav-item.active { background-color: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
-    .nav-item i { width: 24px; text-align: center; }
-    .sidebar-footer { padding: 20px; border-top: 1px solid rgba(0,0,0,0.05); }
-    /* =========================================
-       4. MAIN CONTENT AREA
-       ========================================= */
-    .main-content {
-        margin-right: var(--sidebar-width);
-        padding: 30px;
-        min-height: 100vh;
-        transition: var(--transition);
-    }
-    .header-bar {
-        display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 30px; background: var(--white); padding: 15px 25px;
-        border-radius: 16px; box-shadow: var(--shadow-sm);
-    }
-    /* =========================================
-       5. COMPONENTS & CARDS
-       ========================================= */
-    .stat-card {
-        background: var(--white); border-radius: 16px; padding: 24px;
-        position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);
-        box-shadow: var(--shadow-sm); transition: var(--transition);
-        height: 100%; display: flex; flex-direction: column; justify-content: center;
-    }
-    .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-color); }
-    .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--dark-text); line-height: 1.2; margin: 10px 0; }
-    .stat-label { font-size: 0.9rem; color: var(--gray-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-icon-bg {
-        position: absolute; left: -10px; bottom: -20px; font-size: 8rem; opacity: 0.05;
-        color: var(--primary-color); transform: rotate(15deg); pointer-events: none;
-    }
-    /* Table Styles */
-    .table-container {
-        background: var(--white); border-radius: 16px; border: 1px solid rgba(0,0,0,0.05);
-        overflow: hidden; box-shadow: var(--shadow-sm);
-    }
-    .table { margin-bottom: 0; }
-    .table thead th {
-        background-color: #f8fafc; color: var(--secondary-color); font-weight: 700;
-        text-transform: uppercase; font-size: 0.8rem; padding: 18px; border-bottom: 1px solid #e2e8f0;
-    }
-    .table tbody td {
-        padding: 16px; vertical-align: middle; color: var(--dark-text);
-        border-bottom: 1px solid #f1f5f9; font-size: 0.95rem;
-    }
-    .table tbody tr:hover { background-color: #f8fafc; }
-    /* Code Cards */
-    .code-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-    .code-item {
-        background: var(--white); border: 2px dashed #cbd5e1; border-radius: 12px;
-        padding: 15px; text-align: center; cursor: pointer; position: relative; transition: 0.2s;
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-    }
-    .code-item:hover { border-color: var(--primary-color); background-color: #eff6ff; }
-    .code-item.selected { border-color: var(--primary-color); background-color: #dbeafe; border-style: solid; }
-    .code-val {
-        font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700;
-        color: var(--primary-color); letter-spacing: 1px; margin: 5px 0;
-    }
-    .code-copy {
-        position: absolute; top: 5px; left: 5px; opacity: 0; transition: 0.2s;
-        background: #fff; border: 1px solid #ddd; padding: 2px 6px; border-radius: 4px;
-    }
-    .code-item:hover .code-copy { opacity: 1; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base target="_top">
     
-    /* Buttons */
-    .btn {
-        padding: 10px 20px; border-radius: 8px; font-weight: 600;
-        display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);
+    <!-- =================================================================================
+         1. تحسينات SEO الشاملة (Search Engine Optimization)
+         ================================================================================= -->
+    <title>منصة نبراس التعليمية | المنهاج الأردني</title>
+    
+    <!-- وصف دقيق وشامل -->
+    <meta name="description" content="منصة نبراس التعليمية: أقوى موقع تعليمي للمنهاج الأردني. شروحات مصورة، امتحانات إلكترونية محوسبة، دوسيات، وأوراق عمل من الصف الأول حتى التوجيهي. تجربة تعليمية تفاعلية مع نخبة من المعلمين. سجل الآن وابدأ رحلة التفوق.">
+    
+    <!-- مئات الكلمات المفتاحية (Keywords Injection) -->
+    <meta name="keywords" content="
+    منصة نبراس, مدرسة نبراس, تعليم الكتروني, المنهاج الأردني, توجيهي 2007, توجيهي 2008, امتحانات محوسبة, اختبارات الكترونية, أوراق عمل, دوسيات pdf,
+    شرح لغة عربية, شرح رياضيات, شرح فيزياء, شرح كيمياء, شرح احياء, شرح علوم ارض, شرح انجليزي, شرح تاريخ اردن, شرح تربية اسلامية,
+    الصف الاول, الصف الثاني, الصف الثالث, الصف الرابع, الصف الخامس, الصف السادس, الصف السابع, الصف الثامن, الصف التاسع, الصف العاشر, الاول ثانوي,
+    تأسيس توجيهي, مكثفات توجيهي, اسئلة سنوات سابقة, اسئلة وزارية, متوقع, مقترح, وتد, جو اكاديمي, ابواب, منهاجي, درسك, اوبن ايمس,
+    علامات الطلاب, نتائج الامتحانات, كشوفات العلامات, معلم خصوصي, دروس تقوية, تعليم عن بعد, منصة الاوائل, وزارة التربية والتعليم الاردنية,
+    اللغة العربية تخصص, الرياضيات العلمي, الرياضيات الادبي, الفيزياء, الكيمياء, العلوم الحياتية, الثقافة المالية, الحاسوب,
+    مهارات الاتصال, العروض, النحو والصرف, البلاغة, القضايا الادبية, النقد الادبي, التعبير,
+    امتحان الشهر الاول, امتحان الشهر الثاني, امتحان النهائي, امتحان تجريبي, منصة درسك, ادرس جو,
+    منصة تعليمية مجانية, اشتراك توجيهي, بطاقات توجيهي, تسجيل دخول منصة نبراس, رابط منصة نبراس,
+    افضل منصة تعليمية في الاردن, شرح مواد التوجيهي, خطط دراسية, تنظيم الوقت للدراسة, تحفيز للدراسة
+    ">
+    
+    <meta name="author" content="منصة نبراس التعليمية">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph (Facebook/Social Media) -->
+    <meta property="og:title" content="منصة نبراس التعليمية | طريقك نحو التفوق">
+    <meta property="og:description" content="انضم لأضخم منصة تعليمية للمنهاج الأردني. امتحانات، شروحات، وملفات حصرية.">
+    <meta property="og:image" content="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png">
+    <meta property="og:url" content="https://www.nebras.school">
+    <meta property="og:type" content="website">
+
+    <!-- Schema.org Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "مدرسة نبراس التعليمية",
+      "url": "https://www.nebras.school",
+      "logo": "https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png",
+      "description": "منصة تعليمية شاملة للمنهاج الأردني توفر اختبارات ومصادر تعلم.",
+      "sameAs": [
+        "https://facebook.com/nebras",
+        "https://youtube.com/nebras"
+      ]
     }
-    .btn-primary { background: var(--primary-color); border: none; }
-    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-    /* =========================================
-       6. UTILITIES & RESPONSIVE
-       ========================================= */
-    .hidden { display: none !important; }
-    .text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .mobile-overlay {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
-        z-index: 999; display: none; backdrop-filter: blur(2px);
-    }
-    @media (max-width: 992px) {
-        .sidebar { transform: translateX(100%); }
-        .sidebar.active { transform: translateX(0); }
-        .main-content { margin-right: 0; padding: 15px; }
-        .mobile-overlay.active { display: block; }
-        .stat-value { font-size: 2rem; }
-    }
+    </script>
+    
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- المكتبات الخارجية -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+
+<style>
+  :root { 
+    --bg: #0f172a; 
+    --glass: rgba(30, 41, 59, 0.95); 
+    --border: rgba(255, 255, 255, 0.1);
+    --blue: #3b82f6; 
+    --gold: #f59e0b; 
+    --red: #ef4444; 
+    --green: #10b981; 
+    --text: #f8fafc;
+  }
+  [data-theme="light"] {
+    --bg: #f8fafc; --glass: rgba(255, 255, 255, 0.95); --border: rgba(0, 0, 0, 0.1); --text: #0f172a; --blue: #2563eb;
+  }
+  
+  /* 2. حماية المحتوى (Anti-Theft CSS) */
+  body { 
+    background: var(--bg); color: var(--text); font-family: 'Tajawal'; margin: 0; padding: 0; min-height: 100vh;
+    transition: background 0.5s, color 0.5s;
+    background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.5) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.5) 0, transparent 50%);
+    scroll-behavior: smooth;
+    
+    /* منع التحديد والنسخ */
+    -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+  }
+  
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; transition: 0.5s; }
+  .hidden { display: none !important; }
+  
+  /* === Landing Page Navigation === */
+  .landing-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 0; margin-bottom: 40px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 1000; background: var(--bg);
+      backdrop-filter: blur(10px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.2em; color: var(--text); cursor:pointer; }
+  
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; transition: 0.3s; position: relative; cursor: pointer; }
+  .nav-links a:hover { color: var(--blue); }
+  
+  .nav-buttons { display: flex; gap: 12px; align-items: center; }
+  .nav-btn-sep {
+      padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9em; cursor: pointer;
+      transition: 0.3s; border: 1px solid transparent; display: flex; align-items: center; gap: 5px;
+  }
+  .btn-login-nav { background: var(--blue); color: white; }
+  .btn-reg-nav { background: transparent; border-color: var(--gold); color: var(--gold); }
+  .btn-reg-nav:hover { background: var(--gold); color: black; }
+  @media (max-width: 768px) { 
+      .nav-links { display: none !important; } 
+      .nav-buttons { width: 100%; justify-content: center; margin-top: 15px; }
+      .nav-btn-sep { width: 48%; justify-content: center; font-size: 0.85em; }
+  }
+  /* === Sections === */
+  #landing-page { animation: fadeIn 1s; }
+  .hero-section { text-align: center; padding: 60px 0 100px; }
+  .hero-logo { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--gold); box-shadow: 0 0 40px rgba(245, 158, 11, 0.4); margin-bottom: 25px; object-fit: cover; animation: float 6s ease-in-out infinite; }
+  @keyframes float { 0%{transform:translateY(0px)} 50%{transform:translateY(-20px)} 100%{transform:translateY(0px)} }
+  
+  .hero-title { font-family: 'Amiri'; font-size: 3.5em; margin: 0; color: var(--blue); text-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+  .hero-subtitle { color: #94a3b8; font-size: 1.3em; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+  
+  .section-header { text-align: center; margin-bottom: 50px; position: relative; padding-bottom: 15px; padding-top: 40px; }
+  .section-header h2 { font-family: 'Amiri'; font-size: 2.5em; color: var(--gold); margin: 0; }
+  .section-header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: var(--blue); border-radius: 2px; }
+  /* Features */
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 80px; }
+  .feature-box { background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid var(--border); transition: 0.3s; text-align: center; position: relative; overflow: hidden; }
+  .feature-box:hover { transform: translateY(-10px); border-color: var(--blue); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .feature-icon { font-size: 3em; color: var(--gold); margin-bottom: 20px; background: rgba(245, 158, 11, 0.1); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 20px; }
+  /* Store */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 80px; justify-content: center; }
+  .price-card { background: var(--glass); padding: 40px 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; transition: 0.3s; position: relative; }
+  .price-card:hover { transform: translateY(-5px); border-color: var(--blue); }
+  .price-card.popular { border: 2px solid var(--gold); transform: scale(1.05); z-index: 1; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
+  .price-card.popular::before { content: 'الأكثر طلباً'; position: absolute; top: 12px; right: -32px; background: var(--gold); color: #000; padding: 5px 40px; transform: rotate(45deg); font-weight: bold; font-size: 12px; }
+  .plan-name { font-size: 1.5em; font-weight: bold; color: var(--text); margin-bottom: 10px; }
+  .plan-price { font-size: 3em; font-weight: 800; color: var(--blue); margin: 20px 0; font-family: 'Amiri'; }
+  .plan-price span { font-size: 0.4em; color: #94a3b8; font-weight: normal; }
+  .plan-features { list-style: none; padding: 0; margin: 30px 0; text-align: right; }
+  .plan-features li { margin-bottom: 12px; color: #cbd5e1; display: flex; align-items: center; gap: 10px; }
+  .plan-features li i { color: var(--green); }
+  .plan-features li.off i { color: var(--red); }
+  .plan-features li.off { color: #64748b; text-decoration: line-through; }
+  /* Reviews */
+  .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 80px; }
+  .review-card { background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; border: 1px solid var(--border); }
+  .stars { color: var(--gold); margin-bottom: 15px; }
+  .review-text { font-style: italic; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px; }
+  .reviewer { display: flex; align-items: center; gap: 10px; }
+  .reviewer img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--blue); }
+  /* FAQ */
+  .faq-container { max-width: 800px; margin: 0 auto 80px; }
+  .faq-item { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
+  .faq-question { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1em; }
+  .faq-answer { padding: 0 20px 20px; display: none; color: #94a3b8; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+  .faq-item.active { border-color: var(--blue); }
+  .faq-item.active .faq-answer { display: block; }
+  .faq-item.active .faq-question { color: var(--blue); }
+  .faq-toggle { transition: 0.3s; }
+  .faq-item.active .faq-toggle { transform: rotate(180deg); }
+  /* Footer */
+  .landing-footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: #64748b; margin-top: 50px; }
+  .social-links { margin-bottom: 20px; }
+  .social-links a { color: #94a3b8; margin: 0 10px; font-size: 1.5em; transition: 0.3s; }
+  .social-links a:hover { color: var(--blue); transform: translateY(-3px); display: inline-block; }
+  /* Buttons */
+  .action-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .btn-hero { padding: 15px 30px; border-radius: 50px; font-size: 1em; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; width: auto; display: flex; align-items: center; gap: 10px; }
+  .btn-hero:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+  .btn-primary-hero { background: linear-gradient(45deg, var(--blue), #1d4ed8); color: white; box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4); }
+  .btn-outline-hero { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+  .btn-outline-hero:hover { background: var(--gold); color: black; }
+  /* === General UI === */
+  .card, .auth-card { 
+    background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border); border-radius: 20px; padding: 30px; margin-bottom: 25px; 
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;
+  }
+  .auth-card { max-width: 400px; margin: 50px auto; }
+  input, select, textarea { 
+    width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(128,128,128,0.1); 
+    border: 1px solid var(--border); border-radius: 12px; color: var(--text); box-sizing: border-box; font-family: inherit; transition: 0.3s;
+  }
+  input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+  select option { background: var(--bg); color: var(--text); } 
+  .btn { 
+    width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+    font-size: 16px; margin-top: 5px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+  .btn-p { background: linear-gradient(135deg, var(--blue), #2563eb); color: white; } 
+  .btn-g { background: linear-gradient(135deg, var(--gold), #d97706); color: white; }
+  .btn-o { background: rgba(128,128,128,0.1); border: 1px solid var(--border); color: var(--text); }
+  .btn-r { background: linear-gradient(135deg, var(--red), #b91c1c); color: white; }
+  /* === Tabs & Dashboard === */
+  .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .nav-tab { 
+    flex: 1; padding: 15px; background: rgba(128,128,128,0.1); border-radius: 12px; text-align: center; 
+    cursor: pointer; border: 1px solid var(--border); color: #94a3b8; font-weight: bold; transition: 0.3s; 
+  }
+  .nav-tab:hover, .nav-tab.active { background: var(--blue); color: white; border-color: var(--blue); transform: translateY(-3px); }
+  /* === Items & Lists === */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .exam-item { 
+    background: rgba(128,128,128,0.05); padding: 25px; border-radius: 16px; border: 1px solid var(--border); 
+    cursor: pointer; transition: 0.3s; text-align: right; position: relative;
+  }
+  .exam-item:hover { border-color: var(--blue); background: rgba(59,130,246,0.1); transform: translateY(-5px); }
+  .exam-icon { font-size: 30px; color: var(--gold); margin-bottom: 10px; display: block; }
+  .folder-item { background: rgba(59, 130, 246, 0.1); border-color: var(--blue); }
+  .folder-item .exam-icon { color: var(--blue); }
+  
+  .lib-item { 
+    display:flex; align-items:center; background:rgba(128,128,128,0.05); padding:15px; border-radius:12px; 
+    margin-bottom:10px; transition:0.3s; text-decoration:none; color:inherit; border:1px solid transparent; 
+  }
+  .lib-item:hover { background:rgba(128,128,128,0.1); border-color:var(--blue); transform:translateX(-5px); }
+  
+  /* === Tables & Stats === */
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 12px; overflow: hidden; }
+  th { background: rgba(59,130,246,0.2); color: var(--gold); padding: 15px; font-size: 14px; text-align: right; }
+  td { padding: 14px; border-bottom: 1px solid var(--border); text-align: right; font-size: 14px; }
+  
+  .chart-box { display: flex; align-items: flex-end; gap: 20px; height: 200px; padding: 20px; background: rgba(128,128,128,0.1); border-radius: 12px; margin-top: 20px; }
+  .chart-bar { flex: 1; border-radius: 8px 8px 0 0; position: relative; transition: height 1s; display: flex; align-items: flex-end; justify-content: center; color: white; font-weight: bold; padding-bottom: 5px; }
+  .chart-me { background: var(--blue); }
+  .chart-cls { background: var(--gold); }
+  /* === Exam UI (Updated) === */
+  .q-option { 
+    padding: 18px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; cursor: pointer; 
+    background: rgba(128,128,128,0.05); transition: 0.2s; display: flex; align-items: center; gap: 10px; 
+  }
+  .q-option:hover { background: rgba(128,128,128,0.1); }
+  .q-option.selected { background: rgba(59,130,246,0.2); border-color: var(--blue); }
+  
+  /* === New Library & SEO Styles === */
+  .search-box {
+      background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 15px;
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .file-card {
+      background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+      transition: 0.3s; position: relative; overflow: hidden; display: flex; flex-direction: column; height: 100%;
+  }
+  .file-card:hover { transform: translateY(-5px); border-color: var(--blue); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+  .file-icon { font-size: 40px; margin-bottom: 15px; color: var(--gold); }
+  .file-meta { font-size: 0.85em; color: #94a3b8; margin-bottom: 15px; display: flex; justify-content: space-between; }
+  
+  /* === Professional Document Preview & Smart Mask === */
+  .doc-preview-wrapper {
+      background: #525659;
+      padding: 0;
+      border-radius: 10px;
+      height: 700px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #333;
+      overflow: hidden; 
+  }
+  .doc-container-scrollable {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto; 
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+  }
+  .doc-canvas, .doc-iframe {
+      display: block;
+      width: 100%;
+      max-width: 800px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+  }
+  .doc-iframe {
+      height: 2000px; /* طول وهمي للسماح بعرض جزء من الملف */
+      border: none;
+      pointer-events: none; /* منع التفاعل داخل الـ iframe */
+  }
+  /* طبقة القفل (Overlay) */
+  .doc-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 400px; /* ارتفاع القناع لتغطية أسفل المستند */
+      background: linear-gradient(to bottom, transparent 0%, rgba(248, 250, 252, 0.98) 40%, #f8fafc 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      pointer-events: all;
+  }
+  .lock-message-box {
+      background: rgba(255,255,255,0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      text-align: center;
+      border: 1px solid #ddd;
+      max-width: 400px;
+      animation: float 4s ease-in-out infinite;
+  }
+  /* === Other UI === */
+  .badge-item { display: inline-block; padding: 5px 10px; border-radius: 20px; background: var(--gold); color: black; font-size: 12px; margin: 2px; }
+  #wa-btn { 
+    position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; width: 60px; height: 60px; 
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 9000; text-decoration: none; transition: 0.3s; 
+  }
+  #wa-btn:hover { transform: scale(1.1); }
+  
+  /* === Loader === */
+  #loader { 
+    position: fixed; inset: 0; background: rgba(15,23,42,0.95); z-index: 9999; display: none; 
+    justify-content: center; align-items: center; flex-direction: column; 
+  }
+  
+  /* === Certificate === */
+  #cert-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; justify-content: center; align-items: center; overflow: auto; }
+  .cert-scaler { transform-origin: center top; width: 100%; display: flex; justify-content: center; padding: 20px 0; }
+  .cert-box { background: white; color: black; width: 800px; min-width: 800px; padding: 40px; border-radius: 15px; text-align: center; border: 10px double #1e3a8a; outline: 5px solid #f59e0b; outline-offset: -20px; position: relative; overflow: hidden; box-sizing: border-box; }
+  .cert-student-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #f59e0b; margin: 10px auto; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .stamp-seal { position: absolute; bottom: 40px; left: 40px; width: 140px; height: 140px; opacity: 0.9; transform: rotate(-10deg); z-index: 10; mix-blend-mode: multiply; }
+  @media (max-width: 850px) { .cert-scaler { transform: scale(0.45); margin-top: 50px; } }
 </style>
 </head>
-<body>
-<!-- Loader Screen -->
+<body oncontextmenu="return false;"> <!-- تعطيل القائمة المنسدلة لليمين -->
 <div id="loader">
-    <div class="spinner"></div>
-    <h3 style="font-weight: 300;">جاري الاتصال الآمن بالنظام...</h3>
+  <div style="font-size:50px;margin-bottom:15px;color:var(--blue)"><i class="fas fa-circle-notch fa-spin"></i></div>
+  <div style="color:white">جاري المعالجة...</div>
 </div>
-<div class="mobile-overlay" onclick="toggleSidebar()"></div>
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="logo-container">
-            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
-            <span>لوحة المدير</span>
+<div id="direct-link" class="hidden"></div>
+<a href="#" target="_blank" id="wa-btn" class="hidden"><i class="fab fa-whatsapp"></i></a>
+<!-- Theme Toggle -->
+<div style="position:fixed; top:20px; left:20px; z-index:1000; display:flex; gap:15px; align-items:center">
+  <button class="btn btn-o" style="width:auto; padding:10px; border-radius:50%" onclick="toggleTheme()">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+</div>
+<!-- =========================
+     1. LANDING PAGE
+     ================================= -->
+<div id="landing-page" class="hidden">
+  <div class="container">
+    <nav class="landing-nav">
+       <div class="nav-logo" onclick="goHome()">
+          <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--gold)">
+          <span>نبراس التعليمية</span>
+       </div>
+       
+       <div class="nav-links">
+          <a onclick="goHome()">الرئيسية</a>
+          <a onclick="showPublicLibrary()">المكتبة العامة</a>
+          <a onclick="navToSection('features')">المميزات</a>
+          <a onclick="navToSection('store')">المتجر</a>
+          <a onclick="navToSection('reviews')">الآراء</a>
+       </div>
+       
+       <div class="nav-buttons">
+           <button class="nav-btn-sep btn-reg-nav" onclick="showLogin('register')">
+               <i class="fas fa-key"></i> تفعيل كود
+           </button>
+           <button class="nav-btn-sep btn-login-nav" onclick="showLogin('login')">
+               تسجيل دخول
+           </button>
+       </div>
+    </nav>
+    <!-- WRAPPER FOR HOME CONTENT -->
+    <div id="home-view">
+        <!-- Hero Section -->
+        <div id="hero" class="hero-section">
+           <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" class="hero-logo">
+           <h1 class="hero-title">منصة مدرسة نبراس التعليمية</h1>
+           <p class="hero-subtitle">انطلق في رحلة تعليمية متكاملة تجمع بين الإبداع والتطور التقني. نقدم لك محتوى دراسي شامل، اختبارات تفاعلية ذكية، وتقييم مستمر لمستواك في المنهاج الأردني.</p>
+           
+           <div id="news-section" class="news-ticker-container hidden">
+               <div class="news-label">عاجل</div>
+               <div class="news-content"><span id="news-text">أهلاً بكم في منصة نبراس التعليمية... تابعوا كل جديد هنا!</span></div>
+           </div>
+           <div class="action-buttons">
+              <button class="btn-hero btn-primary-hero" onclick="showLogin('register')"><i class="fas fa-user-plus"></i> اشترك الآن</button>
+              <button class="btn-hero btn-outline-hero" style="border-color:var(--green); color:var(--green)" onclick="showLogin('trial')"><i class="fas fa-rocket"></i> تجربة مجانية</button>
+              <button class="btn-hero btn-outline-hero" onclick="showPublicLibrary()"><i class="fas fa-book-open"></i> تصفح المكتبة</button>
+           </div>
         </div>
-        <button class="btn btn-sm btn-light me-auto d-lg-none" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        <div id="features">
+           <div class="section-header">
+              <h2>مميزات المنصة</h2>
+           </div>
+           <div class="feature-grid">
+              <div class="feature-box">
+                 <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
+                 <h3>نظام امتحانات ذكي</h3>
+                 <p style="color:#94a3b8">اختبارات تفاعلية متنوعة مع تصحيح تلقائي فوري ونتائج دقيقة.</p>
+              </div>
+              <div class="feature-box">
+                 <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                 <h3>تحليل أداء متطور</h3>
+                 <p style="color:#94a3b8">رسوم بيانية توضح نقاط القوة والضعف لديك ومقارنة مستواك.</p>
+              </div>
+              <div class="feature-box">
+                 <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+                 <h3>شهادات تقدير فورية</h3>
+                 <p style="color:#94a3b8">احصل على شهادات موثقة عند اجتيازك الاختبارات بتفوق.</p>
+              </div>
+              <div class="feature-box">
+                 <div class="feature-icon"><i class="fas fa-book-reader"></i></div>
+                 <h3>مكتبة شاملة</h3>
+                 <p style="color:#94a3b8">شروحات فيديو وملفات PDF لكل المواد الدراسية في مكان واحد.</p>
+              </div>
+           </div>
+        </div>
+        <div id="store">
+           <div class="section-header">
+              <h2>باقات الاشتراك</h2>
+           </div>
+           <div class="pricing-grid">
+              <div class="price-card popular">
+                 <h3 class="plan-name">الباقة الذهبية</h3>
+                 <div class="plan-price"><span id="disp-price-gold">15 JD</span></div>
+                 <ul class="plan-features">
+                   <li><i class="fas fa-check-circle"></i> وصول كامل للامتحانات</li>
+                   <li><i class="fas fa-check-circle"></i> مكتبة الفيديو والملفات</li>
+                   <li><i class="fas fa-check-circle"></i> تقارير أداء متقدمة</li>
+                   <li><i class="fas fa-check-circle"></i> دعم فني مباشر</li>
+                 </ul>
+                 <button class="btn btn-p" onclick="buyPlan('الباقة الذهبية')">اشترك الآن</button>
+              </div>
+              <div class="price-card">
+                 <h3 class="plan-name">الباقة الفصلية</h3>
+                 <div class="plan-price"><span id="disp-price-term">35 JD</span></div>
+                 <ul class="plan-features">
+                   <li><i class="fas fa-check-circle"></i> اشتراك لمدة فصل كامل</li>
+                   <li><i class="fas fa-check-circle"></i> جميع مميزات الذهبية</li>
+                   <li><i class="fas fa-check-circle"></i> حصص مراجعة مباشرة</li>
+                   <li><i class="fas fa-check-circle"></i> أولوية في الرد</li>
+                 </ul>
+                 <button class="btn btn-o" onclick="buyPlan('الباقة الفصلية')">طلب الكود</button>
+              </div>
+           </div>
+        </div>
+        <div id="reviews">
+           <div class="section-header">
+              <h2>قالوا عن المنصة</h2>
+           </div>
+           <div class="reviews-grid">
+              <div class="review-card">
+                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                 <p class="review-text">"منصة رائعة جداً، ساعدتني في تنظيم دراستي وتحسين علاماتي بشكل ملحوظ. أنصح الجميع بها!"</p>
+                 <div class="reviewer">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                    <div><h5 style="margin:0">أحمد محمد</h5><small style="color:#94a3b8">طالب توجيهي</small></div>
+                 </div>
+              </div>
+              <div class="review-card">
+                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                 <p class="review-text">"أفضل ميزة هي الشهادات الفورية وتحليل الأداء، بتعطيك دافع كبير للاستمرار."</p>
+                 <div class="reviewer">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135823.png">
+                    <div><h5 style="margin:0">عمر خالد</h5><small style="color:#94a3b8">الصف التاسع</small></div>
+                 </div>
+              </div>
+              <!-- New Reviews -->
+              <div class="review-card">
+                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                 <p class="review-text">"كنت أعاني من مادة اللغة العربية، لكن بفضل شروحات نبراس حصلت على العلامة الكاملة."</p>
+                 <div class="reviewer">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png">
+                    <div><h5 style="margin:0">سارة العلي</h5><small style="color:#94a3b8">أول ثانوي</small></div>
+                 </div>
+              </div>
+              <div class="review-card">
+                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                 <p class="review-text">"المكتبة غنية جداً بالملفات المفيدة، وتوفير الامتحانات التجريبية ساعدني على كسر حاجز الخوف."</p>
+                 <div class="reviewer">
+                    <img src="https://cdn-icons-png.flaticon.com/512/194/194938.png">
+                    <div><h5 style="margin:0">أم يوسف</h5><small style="color:#94a3b8">ولية أمر</small></div>
+                 </div>
+              </div>
+              <div class="review-card">
+                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                 <p class="review-text">"الدعم الفني متميز وسريع، والمنصة سهلة الاستخدام جداً."</p>
+                 <div class="reviewer">
+                    <img src="https://cdn-icons-png.flaticon.com/512/147/147144.png">
+                    <div><h5 style="margin:0">خالد جمال</h5><small style="color:#94a3b8">الصف العاشر</small></div>
+                 </div>
+              </div>
+           </div>
+        </div>
+        <div id="faq">
+           <div class="section-header">
+              <h2>أسئلة شائعة</h2>
+           </div>
+           <div class="faq-container">
+              <div class="faq-item" onclick="toggleFaq(this)">
+                 <div class="faq-question">
+                    كيف يمكنني الاشتراك في المنصة؟
+                    <i class="fas fa-chevron-down faq-toggle"></i>
+                 </div>
+                 <div class="faq-answer">
+                    يمكنك الاشتراك عن طريق شراء كود تفعيل من نقاط البيع المعتمدة أو التواصل معنا عبر الواتساب للحصول على الكود مباشرة.
+                 </div>
+              </div>
+              <div class="faq-item" onclick="toggleFaq(this)">
+                 <div class="faq-question">
+                    هل يمكنني تجربة المنصة قبل الدفع؟
+                    <i class="fas fa-chevron-down faq-toggle"></i>
+                 </div>
+                 <div class="faq-answer">
+                    نعم، نوفر خيار "تجربة مجانية" يتيح لك الوصول للمحتوى لمدة 24 ساعة لتجربة مميزات المنصة قبل الاشتراك.
+                 </div>
+              </div>
+              <!-- New FAQs -->
+              <div class="faq-item" onclick="toggleFaq(this)">
+                 <div class="faq-question">
+                    هل يمكنني فتح المنصة من أكثر من جهاز؟
+                    <i class="fas fa-chevron-down faq-toggle"></i>
+                 </div>
+                 <div class="faq-answer">
+                    نعم، يمكنك الدخول من هاتفك أو جهاز الكمبيوتر أو التابلت، ولكن يفضل استخدام جهاز واحد لضمان استقرار الجلسة.
+                 </div>
+              </div>
+              <div class="faq-item" onclick="toggleFaq(this)">
+                 <div class="faq-question">
+                    هل المحتوى محدث حسب المنهاج الجديد؟
+                    <i class="fas fa-chevron-down faq-toggle"></i>
+                 </div>
+                 <div class="faq-answer">
+                    بالتأكيد، يتم تحديث كافة الشروحات والملفات بشكل دوري لتتوافق مع آخر تعديلات وزارة التربية والتعليم الأردنية.
+                 </div>
+              </div>
+              <div class="faq-item" onclick="toggleFaq(this)">
+                 <div class="faq-question">
+                    ما هي طرق الدفع المتوفرة؟
+                    <i class="fas fa-chevron-down faq-toggle"></i>
+                 </div>
+                 <div class="faq-answer">
+                    نوفر طرق دفع متعددة تشمل المحافظ الإلكترونية (زين كاش، أورانج موني) والتحويل البنكي. تواصل معنا لمزيد من التفاصيل.
+                 </div>
+              </div>
+              <div class="faq-item" onclick="toggleFaq(this)">
+                 <div class="faq-question">
+                    كيف يمكنني التواصل مع المعلم؟
+                    <i class="fas fa-chevron-down faq-toggle"></i>
+                 </div>
+                 <div class="faq-answer">
+                    يمكنك التواصل المباشر عبر مجموعات الواتساب الخاصة بكل صف، أو إرسال استفسارك من خلال نظام الشكاوى داخل لوحة الطالب.
+                 </div>
+              </div>
+           </div>
+        </div>
+    </div> <!-- End Home View -->
+    <!-- Public Library Interface (NEW) -->
+    <div id="public-library-ui" class="hidden">
+       <div class="section-header">
+          <button class="btn btn-o" style="position:absolute; right:0; width:auto" onclick="goHome()">
+             <i class="fas fa-arrow-right"></i> عودة
+          </button>
+          <h2>المكتبة العامة</h2>
+          <p style="color:#94a3b8">مصادر تعليمية مفتوحة للبحث والاطلاع</p>
+       </div>
+       
+       <div class="search-box">
+          <select id="lib-filter-cls" style="flex:1">
+             <option value="All">كل الصفوف</option>
+             <!-- JS will populate -->
+          </select>
+          <select id="lib-filter-subj" style="flex:1">
+             <option value="All">كل المواد</option>
+             <!-- JS will populate -->
+          </select>
+          <button class="btn btn-p" style="width:auto; padding:0 30px" onclick="loadPublicLibrary()">بحث <i class="fas fa-search"></i></button>
+       </div>
+       
+       <div id="public-lib-grid" class="grid">
+          <div style="grid-column:1/-1; text-align:center; padding:40px; color:#94a3b8">جاري تحميل المكتبة...</div>
+       </div>
     </div>
-    
-    <div class="nav-menu">
-        <div class="nav-item active" onclick="nav('home', this)">
-            <i class="fas fa-th-large"></i> <span>الرئيسية والإحصائيات</span>
-        </div>
-        <div class="nav-item" onclick="nav('students', this)">
-            <i class="fas fa-users"></i> <span>الطلاب والمستخدمين</span>
-        </div>
-        <div class="nav-item" onclick="nav('codes', this)">
-            <i class="fas fa-barcode"></i> <span>الأكواد والبطاقات</span>
-        </div>
-        <div class="nav-item" onclick="nav('library', this)">
-            <i class="fas fa-book-open"></i> <span>المكتبة والمعاينة</span>
-        </div>
-        <div class="nav-item" onclick="nav('results', this)">
-            <i class="fas fa-chart-pie"></i> <span>النتائج والتقارير</span>
-        </div>
-        <div class="nav-item" onclick="nav('assignments', this)">
-            <i class="fas fa-file-upload"></i> <span>الواجبات المستلمة</span>
-        </div>
-        <div class="nav-item" onclick="nav('complaints', this)">
-            <i class="fas fa-headset"></i> <span>الدعم والشكاوى</span>
-            <span id="comp-badge" class="badge bg-danger rounded-pill ms-auto d-none">!</span>
-        </div>
-        <div class="nav-item" onclick="nav('settings', this)">
-            <i class="fas fa-cogs"></i> <span>إعدادات النظام</span>
-        </div>
-    </div>
-    
-    <div class="sidebar-footer">
-        <button class="btn btn-outline-danger w-100" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i> إغلاق اللوحة
-        </button>
-    </div>
-</aside>
-<!-- Main Content -->
-<main class="main-content">
-    
-    <!-- Top Header -->
-    <div class="header-bar">
-        <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-light d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <div>
-                <h4 class="mb-0 fw-bold">أهلاً بك، المدير العام 👋</h4>
-                <small class="text-muted">نظرة عامة على أداء المنصة <span id="conn-status" class="badge bg-success ms-2">متصل (Secure)</span></small>
-            </div>
-        </div>
-        <div class="d-flex gap-2">
-            <!-- 🔥 الزر الجديد للربط -->
-            <button class="btn btn-info shadow-sm text-white" onclick="showConnectionInfo()"><i class="fas fa-link"></i> ربط واجهة الطالب</button>
-            <button class="btn btn-light shadow-sm" onclick="location.reload()" title="تحديث الصفحة"><i class="fas fa-sync-alt"></i></button>
-            <button class="btn btn-primary shadow-sm" onclick="refreshData()"><i class="fas fa-database"></i> تحديث البيانات</button>
-        </div>
-    </div>
-    <!-- 1. HOME VIEW (DASHBOARD) -->
-    <div id="view-home" class="view-section">
-        <!-- Notification Widget -->
-        <div class="stat-card mb-4 border-start border-4 border-primary">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold text-primary m-0"><i class="fas fa-bullhorn"></i> إرسال تنبيه منبثق (Popup)</h5>
-            </div>
-            <div class="row g-2">
-                <div class="col-md-3">
-                    <select id="notif-target" class="form-select">
-                        <option value="All">الجميع (رسالة عامة)</option>
-                        <option value="التوجيهي">التوجيهي</option>
-                        <option value="الأول ثانوي">الأول ثانوي</option>
-                        <option value="العاشر">العاشر</option>
-                        <option value="التاسع">التاسع</option>
-                        <option value="الصف الثالث">الصف الثالث</option>
-                    </select>
-                </div>
-                <div class="col-md-7">
-                    <input id="notif-msg" class="form-control" placeholder="اكتب نص الرسالة هنا...">
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-primary w-100" onclick="sendNotification()">إرسال <i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-        <!-- Quick Stats -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">إجمالي الطلاب</span>
-                    <div class="stat-value" id="st-std">0</div>
-                    <div class="stat-icon-bg"><i class="fas fa-users"></i></div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">الامتحانات المفعلة</span>
-                    <div class="stat-value text-success" id="st-exam">0</div>
-                    <div class="stat-icon-bg"><i class="fas fa-file-alt"></i></div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <span class="stat-label">أكواد التفعيل المتاحة</span>
-                    <div class="stat-value text-warning" id="st-code">0</div>
-                    <div class="stat-icon-bg"><i class="fas fa-barcode"></i></div>
-                </div>
-            </div>
-        </div>
-        <!-- Charts -->
-        <div class="row g-4">
-            <div class="col-lg-8">
-                <div class="stat-card h-100">
-                    <h5 class="mb-4">تحليل الأداء الأكاديمي (متوسط الدرجات)</h5>
-                    <canvas id="chart-performance" height="250"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="stat-card h-100">
-                    <h5 class="mb-4">توزيع الطلاب حسب الصفوف</h5>
-                    <canvas id="chart-students" height="250"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 2. STUDENTS VIEW -->
-    <div id="view-students" class="view-section hidden">
-        <div class="d-flex justify-content-between mb-4 flex-wrap gap-2">
-            <div class="input-group" style="max-width: 400px;">
-                <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
-                <input type="text" id="search-std" class="form-control" placeholder="بحث عن طالب..." onkeyup="renderStudents()">
-            </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary" onclick="alert('سيتم إضافة ميزة تصدير كشف الأسماء قريباً')"><i class="fas fa-print"></i> كشف الأسماء</button>
-            </div>
-        </div>
-        <div class="row g-3" id="students-container">
-            <!-- Injected via JS -->
-        </div>
-    </div>
-    <!-- 3. CODES VIEW (Enhanced Printing & Manual Input) -->
-    <div id="view-codes" class="view-section hidden">
-        <div class="row g-4">
-            <!-- Generator Panel -->
-            <div class="col-lg-4">
-                <div class="stat-card">
-                    <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-magic"></i> توليد أكواد جديدة</h5>
-                    <div class="mb-3">
-                        <label class="form-label text-muted small">عدد الأكواد</label>
-                        <input type="number" id="gen-count" class="form-control" value="10">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted small">الصف الدراسي (اكتب يدوياً أو اختر)</label>
-                        <input type="text" id="gen-cls" class="form-control" list="cls-datalist" placeholder="اكتب اسم الصف أو 'عام'...">
-                        <datalist id="cls-datalist">
-                            <option value="عام">
-                            <option value="التوجيهي">
-                            <option value="الأول ثانوي">
-                            <option value="العاشر">
-                            <option value="التاسع">
-                            <option value="الثامن">
-                            <option value="السابع">
-                            <option value="السادس">
-                            <option value="الخامس">
-                            <option value="الرابع">
-                            <option value="الصف الثالث">
-                            <option value="الصف الثاني">
-                            <option value="الصف الأول">
-                            <option value="KG">
-                        </datalist>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted small">مدة الاشتراك (يوم)</label>
-                        <select id="gen-days" class="form-select">
-                            <option value="120">فصل دراسي (120 يوم)</option>
-                            <option value="365">سنة كاملة (365 يوم)</option>
-                            <option value="30">شهر واحد</option>
-                            <option value="7">تجريبي (7 أيام)</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary w-100 mb-3" onclick="generateCodes()">توليد وحفظ</button>
-                    
-                    <hr>
-                    
-                    <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-print"></i> إعدادات البطاقة (للطباعة)</h5>
-                    <div class="mb-2">
-                        <label class="small text-muted">العنوان الرئيسي</label>
-                        <input id="card-title" class="form-control" value="منصة نبراس التعليمية">
-                    </div>
-                    <div class="mb-2">
-                        <label class="small text-muted">السعر (يظهر على البطاقة)</label>
-                        <input id="card-price" class="form-control" value="15 دينار">
-                    </div>
-                    <div class="d-grid gap-2 mt-3">
-                        <button class="btn btn-dark" onclick="printCodes('selected')"><i class="fas fa-check-square"></i> طباعة المحدد (تصميم للبيع)</button>
-                        <button class="btn btn-outline-dark" onclick="printCodes('new')"><i class="fas fa-star"></i> طباعة كل الجديد</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Codes Grid -->
-            <div class="col-lg-8">
-                <div class="stat-card h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                        <h5 class="m-0">قائمة الأكواد</h5>
-                        <div>
-                            <input type="text" id="search-code" class="form-control form-control-sm d-inline-block w-auto" placeholder="بحث كود..." onkeyup="renderCodes()" style="width:120px !important">
-                            <select id="filter-code-cls" class="form-select form-select-sm d-inline-block w-auto" onchange="renderCodes()">
-                                <option value="All">كل الصفوف</option>
-                                <option value="عام">عام</option>
-                                <option value="التوجيهي">التوجيهي</option>
-                                <option value="الأول ثانوي">الأول ثانوي</option>
-                                <option value="العاشر">العاشر</option>
-                                <option value="الصف الثالث">الصف الثالث</option>
-                            </select>
-                            <select id="filter-code-status" class="form-select form-select-sm d-inline-block w-auto" onchange="renderCodes()">
-                                <option value="All">كل الحالات</option>
-                                <option value="New">جديد (غير مستخدم)</option>
-                                <option value="Used">مستخدم</option>
-                            </select>
-                            <button class="btn btn-sm btn-success ms-1" onclick="exportCodes()"><i class="fas fa-file-excel"></i></button>
-                            <button class="btn btn-sm btn-danger ms-1" onclick="deleteSelectedCodes()"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-2 p-2 bg-light rounded">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="check-all-codes" onchange="toggleAllCodes(this)">
-                            <label class="form-check-label user-select-none fw-bold" for="check-all-codes">تحديد الكل</label>
-                            <span class="badge bg-secondary ms-2" id="codes-count">0</span>
-                        </div>
-                    </div>
-                    <div id="codes-grid" class="code-grid" style="max-height: 600px; overflow-y: auto; padding: 5px;">
-                        <!-- Codes injected here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 4. LIBRARY VIEW (Enhanced for Digital Preview) -->
-    <div id="view-library" class="view-section hidden">
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="stat-card">
-                    <h5 class="fw-bold mb-3 text-success"><i class="fas fa-plus-circle"></i> إضافة محتوى للمكتبة</h5>
-                    
-                    <div class="alert alert-info py-2" style="font-size:0.85rem">
-                        <i class="fas fa-info-circle"></i> <strong>نظام المعاينة الرقمية:</strong> عند رفع ملف PDF أو وضع رابطه، سيقوم النظام بعرض الصفحات الأولى فقط للزوار، وسيظهر قفل الاشتراك تلقائياً بعد الحد المسموح به.
-                    </div>
-                    <form onsubmit="event.preventDefault(); addToLib();">
-                        <input id="lib-title" class="form-control mb-2" placeholder="عنوان الملف/الفيديو" required>
-                        <input id="lib-subj" class="form-control mb-2" placeholder="المادة (مثال: لغة عربية)" required>
-                        <select id="lib-cls" class="form-select mb-2">
-                            <option value="">اختر الصف...</option>
-                            <option value="التوجيهي">التوجيهي</option>
-                            <option value="الأول ثانوي">الأول ثانوي</option>
-                            <option value="العاشر">العاشر</option>
-                            <option value="التاسع">التاسع</option>
-                            <option value="الثامن">الثامن</option>
-                            <option value="السابع">السابع</option>
-                            <option value="السادس">السادس</option>
-                            <option value="الخامس">الخامس</option>
-                            <option value="الرابع">الرابع</option>
-                            <option value="الصف الثالث">الصف الثالث</option> <!-- تمت الإضافة -->
-                            <option value="عام">عام</option>
-                        </select>
-                        <select id="lib-type" class="form-select mb-2">
-                            <option value="PDF">ملف PDF (معاينة ذكية)</option>
-                            <option value="Video">فيديو</option>
-                        </select>
-                        <div class="mb-2">
-                            <label class="small text-muted fw-bold">رابط الملف أو رفعه:</label>
-                            <div class="input-group">
-                                <input id="lib-link" class="form-control" placeholder="رابط Google Drive المباشر (مفضل)..." >
-                                <label class="btn btn-outline-secondary" for="lib-file-upload"><i class="fas fa-upload"></i> رفع</label>
-                                <input type="file" id="lib-file-upload" hidden onchange="handleFileSelect(this)">
-                            </div>
-                            <small id="file-name-display" class="text-success d-block mt-1 fw-bold"></small>
-                            <small class="text-danger" style="font-size:0.75rem">* لملفات PDF الكبيرة، يفضل استخدام رابط Drive لضمان سرعة المعاينة.</small>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small text-muted">وصف الملف (يظهر أسفل المعاينة):</label>
-                            <textarea id="lib-desc" class="form-control" rows="3" placeholder="اكتب وصفاً جذاباً للمحتوى..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">نشر في المكتبة <i class="fas fa-check"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="table-container">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead><tr><th>العنوان</th><th>النوع</th><th>الصف</th><th>الوصف</th><th>تحكم</th></tr></thead>
-                            <tbody id="library-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 5. RESULTS & ASSIGNMENTS & COMPLAINTS -->
-    <div id="view-results" class="view-section hidden">
-        <div class="d-flex justify-content-between mb-3">
-            <h4>سجل النتائج والتقارير</h4>
-            <button class="btn btn-success" onclick="exportResults()"><i class="fas fa-file-excel"></i> تصدير Excel</button>
-        </div>
-        <div class="table-container">
-            <div class="table-responsive" style="max-height: 70vh;">
-                <table class="table table-hover" id="res-tbl">
-                    <thead><tr><th>التاريخ</th><th>الطالب</th><th>الامتحان</th><th>الدرجة</th><th>غش؟</th><th>حذف</th></tr></thead>
-                    <tbody id="results-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
-    <div id="view-assignments" class="view-section hidden">
-        <h4>الواجبات المستلمة من الطلاب</h4>
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead><tr><th>التاريخ</th><th>الطالب</th><th>الوصف</th><th>الملف</th><th>الدرجة</th><th>رصد</th></tr></thead>
-                    <tbody id="assign-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
-    <div id="view-complaints" class="view-section hidden">
-        <h4>الدعم الفني والشكاوى</h4>
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead><tr><th>التاريخ</th><th>الاسم</th><th>الرسالة</th><th>الرد</th></tr></thead>
-                    <tbody id="comp-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <!-- 6. SETTINGS VIEW (Enhanced) -->
-    <div id="view-settings" class="view-section hidden">
-        <div class="stat-card mb-4">
-            <h5 class="fw-bold mb-4 text-primary"><i class="fas fa-cogs"></i> إعدادات النظام الرئيسية</h5>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">اسم المعلم/المنصة (للشهادات)</label>
-                    <input id="set-name" class="form-control">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">رقم واتساب الإدارة</label>
-                    <input id="set-wa" class="form-control">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">حالة الصيانة</label>
-                    <select id="set-maint" class="form-select"><option value="Off">النظام يعمل</option><option value="On">وضع الصيانة</option></select>
-                </div>
-            </div>
-            <h5 class="fw-bold mt-4 mb-3 text-danger"><i class="fas fa-lock"></i> إعدادات المعاينة الذكية (Smart Preview)</h5>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">نسبة المعاينة المسموحة (%)</label>
-                    <input type="number" id="set-preview-pct" class="form-control" placeholder="30">
-                    <small class="text-muted">النسبة المئوية من الملف التي تظهر للطالب قبل ظهور القفل (الافتراضي: 30%).</small>
-                </div>
-                <div class="col-md-6 d-flex align-items-center">
-                    <div class="form-check form-switch mt-4">
-                        <input class="form-check-input" type="checkbox" id="set-preview-active" checked>
-                        <label class="form-check-label fw-bold" for="set-preview-active">تفعيل نظام القفل التلقائي</label>
-                    </div>
-                </div>
-            </div>
+    <!-- Professional Document Preview Interface (Updated) -->
+    <div id="file-preview-ui" class="hidden">
+        <div class="container" style="max-width:900px">
+            <button class="btn btn-o" onclick="showPublicLibrary()" style="width:auto; margin-bottom:15px">
+                <i class="fas fa-arrow-right"></i> عودة للمكتبة
+            </button>
             
-            <h5 class="fw-bold mt-4 mb-3 text-warning"><i class="fas fa-store"></i> إعدادات المتجر والأسعار</h5>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">سعر الباقة الذهبية</label>
-                    <input id="set-price-gold" class="form-control" placeholder="مثال: 15 JD">
+            <div class="doc-preview-wrapper">
+                <div class="doc-container-scrollable" id="preview-container-inner">
+                    <h2 id="prev-title" style="text-align:center; margin-bottom:10px; color:#000; border-bottom:2px solid #000; padding:10px"></h2>
+                    
+                    <!-- Area where content (Canvas or Iframe) is injected -->
+                    <div id="content-area" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+                    
+                    <div id="text-fallback" class="hidden" style="padding:20px; white-space: pre-line; text-align:right; font-family:'Times New Roman'; font-size:18px; line-height:1.8; color:#000; width:100%; box-sizing:border-box;"></div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">سعر الباقة الفصلية</label>
-                    <input id="set-price-term" class="form-control" placeholder="مثال: 35 JD">
+                
+                <!-- The Lock Overlay (Fixed at bottom of wrapper) -->
+                <div class="doc-overlay">
+                    <div class="lock-message-box">
+                        <i class="fas fa-lock" style="font-size:40px; color:var(--red); margin-bottom:15px"></i>
+                        <h3 style="color:#333; margin:0 0 10px 0">انتهت المعاينة المجانية</h3>
+                        <p style="color:#666; margin-bottom:20px">لإكمال القراءة وتحميل الملف كاملاً، يرجى الاشتراك في المنصة.</p>
+                        <button class="btn btn-g" onclick="showLogin('register')" style="font-size:18px; padding:12px 30px">
+                            <i class="fas fa-unlock"></i> اشترك الآن
+                        </button>
+                    </div>
                 </div>
             </div>
-            <h5 class="fw-bold mt-4 mb-3 text-info"><i class="fab fa-whatsapp"></i> روابط مجموعات الواتساب (لجميع الصفوف)</h5>
-            <div class="row g-3">
-                <div class="col-md-4"><label class="small text-muted">التوجيهي</label><input id="grp-12" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الأول ثانوي</label><input id="grp-11" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف العاشر</label><input id="grp-10" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف التاسع</label><input id="grp-9" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف الثامن</label><input id="grp-8" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف السابع</label><input id="grp-7" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف السادس</label><input id="grp-6" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف الخامس</label><input id="grp-5" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف الرابع</label><input id="grp-4" class="form-control" placeholder="رابط المجموعة"></div>
-                <div class="col-md-4"><label class="small text-muted">الصف الثالث</label><input id="grp-3" class="form-control" placeholder="رابط المجموعة"></div> <!-- تمت الإضافة -->
-            </div>
-            
-            <button class="btn btn-primary w-100 mt-4 btn-lg" onclick="saveSettings()"><i class="fas fa-save"></i> حفظ كافة التغييرات</button>
         </div>
+    </div>
+    <footer class="landing-footer">
+       <div class="social-links" id="footer-socials"></div>
+       <p>&copy; 2024 منصة نبراس التعليمية. جميع الحقوق محفوظة.</p>
+    </footer>
+  </div>
+</div>
+<!-- =========================
+     2. AUTHENTICATION
+     ========================= -->
+<div id="auth-container" class="container hidden" style="max-width:400px; margin-top:60px">
+  <div class="auth-card">
+    <div style="text-align:center; margin-bottom:20px">
+       <i class="fas fa-arrow-right" style="float:right; cursor:pointer; color:var(--text)" onclick="goHome()"></i>
+       <h2 id="auth-title" style="margin:0; color:var(--text)">تسجيل الدخول</h2>
+    </div>
+    <div id="f-login">
+       <input id="le" placeholder="البريد الإلكتروني" dir="ltr">
+       <input id="lp" type="password" placeholder="كلمة المرور" dir="ltr">
+       <button class="btn btn-p" onclick="login()">دخول <i class="fas fa-sign-in-alt"></i></button>
+    </div>
+    <div id="f-reg" class="hidden">
+       <div style="border:2px dashed var(--border); padding:15px; border-radius:10px; margin-bottom:15px; cursor:pointer; text-align:center" onclick="document.getElementById('rp').click()" id="ph-box">
+          <span id="p-txt" style="color:#94a3b8"><i class="fas fa-camera"></i> صورة شخصية</span>
+          <input type="file" id="rp" hidden onchange="readP(this)">
+       </div>
+       <input id="rc" placeholder="كود التفعيل" required>
+       <input id="rn" placeholder="الاسم الرباعي (مطلوب)" required minlength="10">
+       <input id="rph" placeholder="رقم الهاتف (07xxxxxxxx)" required pattern="07[789][0-9]{7}">
+       <input id="re" type="email" placeholder="البريد الإلكتروني" dir="ltr" required>
+       <input id="rpa" type="password" placeholder="كلمة المرور" dir="ltr" required minlength="6">
+       <button class="btn btn-g" onclick="reg()">تفعيل الاشتراك</button>
+       <button class="btn btn-o" onclick="switchAuth('login')">عودة للدخول</button>
+    </div>
+    <div id="f-trial" class="hidden">
+       <p style="color:var(--gold); text-align:center; font-size:0.9em">استمتع بتجربة كاملة لمدة 24 ساعة!</p>
+       <input id="tn" placeholder="الاسم الرباعي">
+       <input id="tph" placeholder="رقم الهاتف">
+       <select id="tcl" class="form-select mb-3">
+           <option value="" disabled selected>جاري تحميل الصفوف...</option>
+       </select>
+       <input id="te" placeholder="البريد الإلكتروني" dir="ltr">
+       <button class="btn btn-p" onclick="createTrial()">بدء التجربة الآن 🚀</button>
+       <button class="btn btn-o" onclick="switchAuth('login')">إلغاء</button>
+    </div>
+  </div>
+</div>
+<!-- =========================
+     3. STUDENT DASHBOARD
+     ========================= -->
+<div id="v-dash" class="container hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px">
+    <div style="display:flex; align-items:center; gap:15px; text-align:right">
+      <div style="position:relative">
+         <img id="u-img" src="" style="width:75px; height:75px; border-radius:50%; object-fit:cover; border:3px solid var(--blue); background:#333">
+         <div onclick="editProfile()" style="position:absolute; bottom:0; left:0; background:var(--gold); color:black; width:25px; height:25px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer" title="تعديل الملف">
+            <i class="fas fa-pen" style="font-size:12px"></i>
+         </div>
+      </div>
+      <div>
+        <h3 id="u-name" style="margin:0; color:var(--text); font-size:20px"></h3>
+        <span id="u-cls" style="color:var(--gold); font-size:14px; background:rgba(245, 158, 11, 0.1); padding:2px 8px; border-radius:10px"></span>
+        <div id="social-box" style="display:flex; gap:10px; margin-top:8px;"></div>
         
-        <div class="stat-card border-danger border">
-            <h5 class="text-danger fw-bold"><i class="fas fa-exclamation-triangle"></i> أدوات النظام المتقدمة</h5>
-            <p class="text-muted small">استخدم هذه الأدوات فقط عند الضرورة أو وجود مشاكل في قاعدة البيانات.</p>
-            <button class="btn btn-warning w-100" onclick="smartRepair()">🛠️ إصلاح النظام وإعادة بناء الجداول المفقودة</button>
-        </div>
+        <button class="btn btn-g btn-sm" onclick="joinClassGroup()" style="width:auto; margin-top:5px; padding: 5px 15px;">
+            <i class="fab fa-whatsapp"></i> مجموعة الصف
+        </button>
+        <div id="badges-area" style="margin-top:5px"></div>
+      </div>
     </div>
-</main>
+    <div style="display:flex; flex-direction:column; gap:5px">
+        <button class="btn btn-o" style="width:auto; color:var(--red); border-color:var(--red)" onclick="logout()"><i class="fas fa-power-off"></i> خروج</button>
+    </div>
+  </div>
+  
+  <div id="dashboard-news-section" class="news-ticker-container hidden" style="border-left-color: var(--blue);">
+      <div class="news-label" style="background: var(--blue);">تنويه</div>
+      <div class="news-content"><span id="dashboard-news-text"></span></div>
+  </div>
+  
+  <div class="nav-tabs">
+      <div class="nav-tab active" onclick="switchTab('exams', this)"><i class="fas fa-file-alt"></i> الامتحانات</div>
+      <div class="nav-tab" onclick="switchTab('library', this)"><i class="fas fa-book-reader"></i> مكتبة الصف</div>
+      <div class="nav-tab" onclick="switchTab('assign', this)"><i class="fas fa-upload"></i> الواجبات</div>
+      <div class="nav-tab" onclick="switchTab('leader', this)"><i class="fas fa-crown"></i> الأوائل</div>
+      <div class="nav-tab" onclick="switchTab('history', this)"><i class="fas fa-history"></i> سجلي</div>
+      <div class="nav-tab" onclick="switchTab('notes', this)"><i class="fas fa-sticky-note"></i> مفكرتي</div>
+  </div>
+  <div id="tab-exams">
+      <div id="exams-container" class="grid"></div>
+  </div>
+  
+  <!-- New Student Library Tab -->
+  <div id="tab-library" class="hidden">
+      <div class="card">
+         <h3 style="color:var(--gold); margin-top:0"><i class="fas fa-book-open"></i> مكتبة ومصادر التعلم</h3>
+         <p style="color:#94a3b8; font-size:0.9em; margin-bottom:20px">جميع الملفات الخاصة بصفك متاحة للتحميل مجاناً.</p>
+         <div id="std-lib-list"></div>
+      </div>
+  </div>
+  <div id="tab-assign" class="hidden">
+      <h3 style="text-align:right; color:var(--green); margin-top:10px"><i class="fas fa-file-upload"></i> تسليم الواجبات</h3>
+      <div class="card">
+        <label>نوع الواجب:</label>
+        <select id="as-type"><option value="ورقة عمل">ورقة عمل</option><option value="موضوع تعبير">موضوع تعبير</option></select>
+        <label>الوصف:</label>
+        <textarea id="as-desc" rows="3" placeholder="ملاحظاتك..."></textarea>
+        <div style="border:2px dashed var(--border); padding:20px; border-radius:12px; margin-bottom:15px; cursor:pointer; text-align:center" onclick="document.getElementById('as-file').click()">
+            <i class="fas fa-cloud-upload-alt fa-2x" style="color:var(--blue)"></i><br>اضغط لرفع ملف
+            <input type="file" id="as-file" hidden onchange="readAsFile(this)">
+            <div id="as-fname" style="margin-top:5px; color:#94a3b8; font-size:12px"></div>
+        </div>
+        <button class="btn btn-p" onclick="uploadAss()">إرسال الواجب <i class="fas fa-paper-plane"></i></button>
+      </div>
+  </div>
+  <div id="tab-leader" class="hidden">
+      <div class="card" style="margin-top:10px; border-top: 4px solid var(--gold)">
+         <h3 style="color:var(--gold); margin:0 0 15px 0; text-align:right"><i class="fas fa-crown"></i> لوحة المتصدرين</h3>
+         <table id="leader-tbl"><thead><tr><th>#</th><th>الطالب</th><th>الدرجة</th></tr></thead><tbody id="leader-body"></tbody></table>
+      </div>
+  </div>
+  <div id="tab-history" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px">
+          <h3 style="text-align:right; color:var(--green); margin:0"><i class="fas fa-history"></i> سجلي الدراسي</h3>
+          <button class="btn btn-g" style="width:auto; padding:5px 15px" onclick="genReport()">📄 تقرير PDF</button>
+      </div>
+      <div class="card" style="margin-top:15px">
+         <h4 style="margin:0 0 10px 0; color:#94a3b8">مقارنة مع متوسط الصف</h4>
+         <div id="perf-chart" class="chart-box">
+             <div style="text-align:center; flex:1">جاري التحميل...</div>
+         </div>
+      </div>
+      <div class="card" style="padding:0; overflow:hidden">
+        <table><thead><tr><th>الامتحان</th><th>الدرجة</th><th>الإجراء</th></tr></thead><tbody id="res-list"></tbody></table>
+      </div>
+  </div>
+  
+  <div id="tab-notes" class="hidden">
+      <h3 style="text-align:right; color:var(--text); margin-top:10px"><i class="fas fa-sticky-note"></i> مفكرتي الخاصة</h3>
+      <div class="card">
+          <textarea id="my-notes" rows="10" placeholder="اكتب ملاحظاتك للحفظ هنا..."></textarea>
+          <button class="btn btn-p" onclick="saveNotes()">حفظ الملاحظات <i class="fas fa-save"></i></button>
+      </div>
+  </div>
+</div>
+<!-- =========================
+     4. EXAM UI (MODIFIED - NO TIMER)
+     ========================= -->
+<div id="v-exam" class="container hidden">
+  <div class="card" style="position:sticky; top:10px; z-index:100; backdrop-filter:blur(20px); background:rgba(15, 23, 42, 0.9);">
+    <div style="display:flex; justify-content:space-between; align-items:center">
+      <div>
+        <h2 id="xt" style="margin:0; color:var(--blue); font-size:18px"></h2>
+        <div style="font-size:12px; color:#94a3b8">عدد الأسئلة: <span id="q-count"></span></div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+          <!-- Timer Removed -->
+          <button class="btn btn-r" style="width:auto; padding:5px 15px; font-size:12px;" onclick="exitExam()">خروج <i class="fas fa-door-open"></i></button>
+      </div>
+    </div>
+    <!-- Progress Bar -->
+    <div style="height:4px; background:#444; margin-top:10px; border-radius:2px; overflow:hidden">
+         <div id="exam-progress" style="height:100%; width:0%; background:var(--green); transition:0.3s"></div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div id="q-box" style="text-align:right"></div>
+    <div style="height:1px; background:var(--border); margin:20px 0"></div>
+    <div style="display:flex; gap:10px; justify-content:space-between">
+      <button class="btn btn-o" style="width:auto" onclick="nav(-1)"><i class="fas fa-arrow-right"></i> السابق</button>
+      <div id="qs-ind" style="display:flex; gap:5px; align-items:center; color:#94a3b8"></div>
+      <button class="btn btn-p" style="width:auto" onclick="nav(1)">التالي <i class="fas fa-arrow-left"></i></button>
+    </div>
+    <button id="s-btn" class="btn btn-g hidden" onclick="sub()" style="margin-top:20px">إنهاء وتسليم الامتحان <i class="fas fa-check-circle"></i></button>
+  </div>
+</div>
+<!-- =========================
+     MODALS
+     ========================= -->
+<div id="review-modal" class="container hidden" style="position:fixed; top:0; left:0; right:0; bottom:0; z-index:4000; overflow-y:auto; background:var(--bg); max-width:100%">
+  <div class="container" style="max-width:800px; margin-top:20px">
+    <div class="card" style="border-top:4px solid var(--blue)">
+        <div id="cert-review-btn" style="text-align:center; margin-bottom:20px" class="hidden">
+           <button class="btn btn-g" style="width:auto; display:inline-flex" onclick="cert(st.title, st.lastScore)">📜 تحميل الشهادة الآن</button>
+        </div>
+        <h2 style="text-align:center; color:var(--text)">مراجعة الإجابات النموذجية</h2>
+        <div id="review-content"></div>
+        <button class="btn btn-o" onclick="closeReview()">إغلاق المراجعة والعودة</button>
+    </div>
+  </div>
+</div>
+<div id="cert-modal">
+  <div class="cert-scaler">
+    <div class="cert-box" id="cert-node">
+      <div style="text-align: center; margin-bottom: 10px;">
+          <img src="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png" alt="Logo" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; border:2px solid #f59e0b">
+          <h2 style="color:#1e3a8a; margin:0; font-family:'Amiri'; font-size: 32px;">منصة نبراس </h2>
+          <p style="color:#d97706; margin:0; font-size: 16px;">للتميز والإبداع</p>
+      </div>
+      <img id="c-img" class="cert-student-img" src="">
+      <h1 style="font-family:'Amiri'; font-size:48px; color:#1e3a8a; margin:10px 0">شهادة تفوق</h1>
+      <p style="font-size:24px; margin: 10px 0;">يسرنا منح الطالب/ة:</p>
+      <h2 id="c-name" style="color:black; font-size:38px; margin:5px 0; border-bottom:2px solid #ccc; display:inline-block; padding:0 40px; font-family:'Amiri'"></h2>
+      <p style="margin-top:20px; font-size: 20px;">لاجتيازه اختبار <b id="c-ex" style="color:#d97706"></b> بنتيجة:</p>
+      <h1 id="c-sc" style="color:#1e3a8a; font-size:60px; margin:10px 0; font-family:'Tajawal'"></h1>
+        
+      <div style="margin-top:60px; display:flex; justify-content:space-between; align-items:flex-end; padding: 0 30px;">
+        <div style="text-align:right;">
+          <p style="margin:0; font-weight:bold; color:#555; font-size:18px">مدير المنصة</p>
+          <h3 id="t-name" style="margin:5px 0; font-family:'Amiri'; font-size:30px; color:#000">أ. عبد الرحمن نصر الله</h3>
+        </div>
+        <div style="position:relative; width:160px; height:130px">
+            <img id="stamp-img" src="" class="stamp-seal" crossorigin="anonymous">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute; bottom:20px; width:100%; text-align:center; z-index:9999; display:flex; gap:10px; justify-content:center">
+    <button class="btn btn-g" style="width:auto; padding:10px 40px" onclick="dlCert()">💾 حفظ الصورة</button>
+    <button class="btn btn-o" style="width:auto; background:white; color:black" onclick="document.getElementById('cert-modal').style.display='none'">إغلاق</button>
+  </div>
+</div>
 <script>
 // ============================================
 // ⚠️ إعدادات الاتصال (API Configuration)
 // ============================================
 // 🔥 [الحل الجذري]: قراءة الرابط ديناميكياً من السيرفر
 const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
-
-let DB = { students:[], codes:[], results:[], library:[], assignments:[], complaints:[] };
-let loadTimer = null;
-let tempFileBase64 = null; // للملفات المرفوعة
-
 // ============================================
-// 🚀 بدء التشغيل - تم التعديل ليعمل فوراً
-// ============================================
-window.onload = function() {
-    refreshData(); // استدعاء البيانات مباشرة
-};
+const STAMP_URL = "https://i.ibb.co/Cs658hNV/Gemini-Generated-Image-7gpx1j7gpx1j7gpx.png";
+const DEF_IMG = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+let token = localStorage.getItem('tk');
+let publicSettings = {}; 
+let deviceId = localStorage.getItem('did');
+if (!deviceId) {
+    deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now();
+    localStorage.setItem('did', deviceId);
+}
+let st = { photo:null, exam:[], ans:{}, idx:0, title:'', timer:null, seconds:0, cheats:0, lastScore: 0, assignFile: null, assignName: '' };
+let allSubjects = [];
+const ld = (s) => document.getElementById('loader').style.display = s ? 'flex' : 'none';
 
-// 🔥 دالة عرض رابط الربط
-function showConnectionInfo() {
-    Swal.fire({
-        title: '🔗 ربط واجهة الطالب الخارجية',
-        html: `
-            <div style="text-align:left; direction:ltr; background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:15px; word-break:break-all; font-family:monospace; font-weight:bold; color:#1e40af;">
-                ${API_URL}
-            </div>
-            <p style="text-align:right; font-size:0.9em; color:#555;">
-                1. انسخ الرابط أعلاه.<br>
-                2. اذهب إلى ملف <b>index.html</b> المرفوع على GitHub.<br>
-                3. ابحث عن السطر: <code>const API_URL = "..."</code>.<br>
-                4. استبدل ما بين علامتي التنصيص بهذا الرابط.
-            </p>
-        `,
-        confirmButtonText: 'نسخ الرابط',
-        showCloseButton: true,
-    }).then((result) => {
-        if (result.isConfirmed) {
-            navigator.clipboard.writeText(API_URL);
-            Swal.fire('تم النسخ!', 'الرابط الآن في الحافظة.', 'success');
-        }
-    });
+// ⚙️ نظام العداد للودر (Loader Counter)
+let loaderCount = 0;
+function showLoader(s) { 
+    if(s) loaderCount++;
+    else loaderCount = Math.max(0, loaderCount - 1);
+    
+    // يظهر فقط إذا كان العداد أكبر من 0
+    document.getElementById('loader').style.display = loaderCount > 0 ? 'flex' : 'none'; 
 }
 
-// --- أدوات التحميل (Loader Utils) ---
-function showLoader(s) {
-    let l = document.getElementById('loader');
-    if(s) {
-        l.style.display = 'flex';
-    } else {
-        l.style.display = 'none';
-    }
-}
-
-// --- الجسر الذكي للاتصال (Smart Hybrid Bridge) ---
-async function api(action, data = {}) {
+// 🔥 دالة الاتصال الجديدة (Fixed for GitHub Pages & CORS)
+async function callApi(action, data = {}) {
     showLoader(true);
     data.action = action;
-    data._t = Date.now(); // Cache busting for fetch requests
+    data._t = Date.now(); // منع الكاش
 
-    return new Promise(async (resolve, reject) => {
-        // 1. محاولة الاتصال عبر google.script.run (الأسرع داخل المنصة)
-        if (typeof google !== 'undefined' && google.script && google.script.run) {
-            console.log(`📡 Connecting via google.script.run: ${action}`);
-            google.script.run
-                .withSuccessHandler(response => {
-                    showLoader(false);
-                    try { resolve(JSON.parse(response)); } catch (e) { resolve(response); }
-                })
-                .withFailureHandler(error => {
-                    console.warn("google.script.run failed, trying Fetch...", error);
-                    // في حال الفشل (أو التشغيل خارج إطار جوجل)، ننتقل للاتصال المباشر
-                    useFetch(action, data, resolve);
-                })
-                .handleAdminRequest(JSON.stringify(data));
-        } else {
-            // 2. استخدام Fetch المباشر (للاستخدام الخارجي أو المحلي)
-            useFetch(action, data, resolve);
+    if(API_URL && API_URL.startsWith('http')) {
+        console.log(`🚀 Connecting to: ${action}`);
+        try {
+            // إضافة cache busting للرابط
+            const noCacheUrl = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+            
+            const response = await fetch(noCacheUrl, {
+                method: "POST",
+                redirect: "follow", // ضروري جداً لإعادة توجيه جوجل
+                // ⚠️ الحيلة السحرية: إرسال البيانات كنص عادي لتجاوز فحص CORS Preflight
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8",
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const textData = await response.text();
+            showLoader(false);
+            
+            try { 
+                return JSON.parse(textData); 
+            } catch(e) { 
+                console.warn("Non-JSON response:", textData);
+                return { success: false, message: "Invalid Server Response" }; 
+            }
+        } catch (e) {
+            console.warn("Connection failed:", e);
+            showLoader(false);
+            return { success: false, message: 'تعذر الاتصال بالخادم، يرجى التحقق من الإنترنت.' };
         }
-    });
+    } else {
+        showLoader(false);
+        return { success: false, message: 'رابط الخادم غير مهيأ.' };
+    }
 }
 
-// دالة الاتصال المباشر (Direct Fetch Backup - Enhanced for GitHub)
-async function useFetch(action, data, resolve) {
-    console.log(`🌐 Connecting via Fetch API: ${action}`);
+// ================= PushState Helper (Sandbox Safe) =================
+function safePushState(state, title, url) {
     try {
-        if (!API_URL || API_URL.length < 5) throw new Error("API URL is missing");
-        
-        // إضافة cache busting
-        const url = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
-        
-        const response = await fetch(url, {
-            method: 'POST',
-            // ⚠️ الحيلة السحرية: إرسال البيانات كنص عادي لتجاوز فحص CORS Preflight
-            headers: { 
-                "Content-Type": "text/plain;charset=utf-8" 
-            },
-            redirect: 'follow', // ضروري جداً
-            body: JSON.stringify(data)
-        });
-        
-        const text = await response.text();
-        showLoader(false);
-        try { resolve(JSON.parse(text)); } catch (e) { 
-            console.warn("Non-JSON Response", text);
-            resolve({ success: false, message: "Invalid Server Response" }); 
-        }
-    } catch (err) {
-        showLoader(false);
-        Swal.fire('خطأ في الاتصال', 'تأكد من اتصال الإنترنت أو صحة الرابط', 'error');
-        console.error(err);
-        resolve({ success: false, message: err.toString() });
+        window.history.pushState(state, title, url);
+    } catch (e) {
+        console.warn("History API restricted (Sandbox mode):", e);
     }
+}
+// ================= Routing & Init =================
+window.onload = function() {
+  document.getElementById('stamp-img').src = STAMP_URL;
+  
+  // URL Parameter Handling for SEO and Direct Links
+  const urlParams = new URLSearchParams(window.location.search);
+  const viewMode = urlParams.get('view');
+  const fileId = urlParams.get('id');
+  const examParam = urlParams.get('exam');
+  fetchPublicData();
+  if(viewMode === 'library') {
+      showPublicLibrary();
+  } else if(viewMode === 'file' && fileId) {
+      loadPublicFilePreview(fileId);
+  } else if (examParam) {
+      if(token) start(examParam); 
+      else {
+          sessionStorage.setItem('pending', examParam);
+          showLogin('login');
+      }
+  } else {
+      if(token) loadDash(); else goHome();
+  }
+  
+  document.addEventListener("visibilitychange", () => {
+    if(document.hidden && !document.getElementById('v-exam').classList.contains('hidden')){
+        st.cheats++;
+        // Swal.fire({ icon: 'warning', title: 'تحذير!', text: 'الخروج من الامتحان ممنوع!', timer: 3000, showConfirmButton: false });
+    }
+  });
+};
+function goHome() {
+    safePushState({}, '', window.location.pathname);
+    document.getElementById('landing-page').classList.remove('hidden');
+    document.getElementById('home-view').classList.remove('hidden'); // Show Home Content
+    document.getElementById('public-library-ui').classList.add('hidden');
+    document.getElementById('file-preview-ui').classList.add('hidden');
+    document.getElementById('auth-container').classList.add('hidden');
+    document.getElementById('v-dash').classList.add('hidden');
+}
+function navToSection(id) {
+    goHome(); // Ensure we are on home view
+    setTimeout(() => {
+        const el = document.getElementById(id);
+        if(el) el.scrollIntoView({behavior: 'smooth'});
+    }, 100);
+}
+// Helper for backward compatibility
+function showLanding() { goHome(); }
+// Helper for FAQ toggle
+function toggleFaq(el) {
+    el.classList.toggle('active');
+}
+// ================= Public Data & Library =================
+function fetchPublicData() {
+    callApi('getPublicData').then(r => {
+        if(r && r.success) {
+            publicSettings = r.settings || {};
+            
+            // ✅ تحديث الأسعار ديناميكياً
+            if(publicSettings.Price_Gold) document.getElementById('disp-price-gold').innerText = publicSettings.Price_Gold;
+            if(publicSettings.Price_Term) document.getElementById('disp-price-term').innerText = publicSettings.Price_Term;
+
+            if(r.news && r.news.length > 0) {
+                let latestNews = r.news[0].text;
+                document.getElementById('dashboard-news-text').innerText = latestNews;
+                document.getElementById('dashboard-news-section').classList.remove('hidden');
+                document.getElementById('news-text').innerText = latestNews;
+                document.getElementById('news-section').classList.remove('hidden');
+            }
+            if(r.classes && r.classes.length > 0) {
+                let opts = '<option value="All">كل الصفوف</option>';
+                let trialOpts = '<option value="" disabled selected>جاري تحميل الصفوف...</option>';
+                
+                r.classes.forEach(c => {
+                    opts += `<option value="${c}">${c}</option>`;
+                    trialOpts += `<option value="${c}">${c}</option>`;
+                });
+                
+                document.getElementById('lib-filter-cls').innerHTML = opts;
+                document.getElementById('tcl').innerHTML = trialOpts; // Populate Trial Select
+            }
+            if(publicSettings.WhatsApp_Link) {
+                let waNum = String(publicSettings.WhatsApp_Link).replace(/\D/g,''); 
+                let waUrl = `https://wa.me/${waNum}`;
+                document.getElementById('wa-btn').href = waUrl;
+                document.getElementById('wa-btn').classList.remove('hidden');
+            }
+        }
+    });
+}
+function buyPlan(planName) {
+    let waNum = publicSettings.WhatsApp_Link ? String(publicSettings.WhatsApp_Link).replace(/\D/g,'') : '96270000000'; 
+    let url = `https://wa.me/${waNum}?text=${encodeURIComponent('مرحباً، أرغب بالاشتراك في ' + planName)}`;
+    window.open(url, '_blank');
+}
+function showPublicLibrary() {
+    safePushState({view:'library'}, '', '?view=library');
+    document.getElementById('home-view').classList.add('hidden'); // Hide Home Content
+    document.getElementById('file-preview-ui').classList.add('hidden');
+    document.getElementById('public-library-ui').classList.remove('hidden');
+    document.getElementById('landing-page').classList.remove('hidden');
+    loadPublicLibrary();
+}
+function loadPublicLibrary() {
+    let cls = document.getElementById('lib-filter-cls').value;
+    let subj = document.getElementById('lib-filter-subj').value;
+    
+    document.getElementById('public-lib-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center">جاري البحث...</div>';
+    
+    callApi('getPublicLibraryData', {filterClass: cls, filterSubject: subj}).then(r => {
+        let div = document.getElementById('public-lib-grid');
+        div.innerHTML = '';
+        if(r.success && r.list.length > 0) {
+            r.list.forEach(f => {
+                let icon = f.type === 'Video' ? 'fa-play-circle text-danger' : 'fa-file-pdf text-danger';
+                div.innerHTML += `
+                <div class="file-card" onclick="gotoFile(${f.id})">
+                    <div style="text-align:center">
+                        <i class="fas ${icon} file-icon"></i>
+                        <h3 style="margin:0; font-size:1.1em">${f.title}</h3>
+                    </div>
+                    <div style="margin-top:auto">
+                        <div class="file-meta">
+                           <span><i class="fas fa-layer-group"></i> ${f.cls}</span>
+                           <span><i class="fas fa-book"></i> ${f.subject}</span>
+                        </div>
+                        <button class="btn btn-o" style="font-size:0.9em">معاينة <i class="fas fa-eye"></i></button>
+                    </div>
+                </div>`;
+            });
+        } else {
+            div.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#94a3b8">لا توجد نتائج</p>';
+        }
+    });
+}
+function gotoFile(id) {
+    safePushState({view:'file', id:id}, '', '?view=file&id='+id);
+    loadPublicFilePreview(id);
+}
+// 🔥 دالة المعاينة الاحترافية (HYBRID MODE)
+async function loadPublicFilePreview(id) {
+    document.getElementById('home-view').classList.add('hidden');
+    document.getElementById('public-library-ui').classList.add('hidden');
+    document.getElementById('landing-page').classList.remove('hidden');
+    document.getElementById('file-preview-ui').classList.remove('hidden');
+    
+    document.getElementById('prev-title').innerText = "جاري التحميل...";
+    const container = document.getElementById('content-area');
+    const fallbackBox = document.getElementById('text-fallback');
+    
+    // Reset view
+    container.innerHTML = '';
+    fallbackBox.classList.add('hidden');
+    
+    callApi('getPublicFileDetails', {fileId: id}).then(r => {
+        if(r.success) {
+            document.getElementById('prev-title').innerText = r.data.title;
+            let pdfUrl = r.data.link;
+            
+            // 1. إذا كان رابط Google Drive، نستخدم Iframe Mask (الحل المضمون)
+            if(pdfUrl && (pdfUrl.includes('drive.google.com') || pdfUrl.includes('docs.google.com'))) {
+                const fileIdMatch = pdfUrl.match(/[-\w]{25,}/);
+                if(fileIdMatch) {
+                    const fileId = fileIdMatch[0];
+                    // رابط العرض الخاص بجوجل (Embed)
+                    const embedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                    
+                    // إنشاء Iframe معطل التفاعل (pointer-events: none في CSS)
+                    container.innerHTML = `
+                        <iframe src="${embedUrl}" class="doc-iframe" allow="autoplay"></iframe>
+                    `;
+                    // القناع (Mask) موجود بالفعل في HTML (doc-overlay)
+                    return;
+                }
+            }
+            
+            // 2. إذا كان ملف مباشر (Direct Link) أو غير درايف، نحاول استخدام PDF.js
+            if(pdfUrl && (r.data.type === 'PDF' || pdfUrl.endsWith('.pdf'))) {
+                // محاولة تشغيل PDF.js
+                pdfjsLib.getDocument(pdfUrl).promise.then(async function(pdf) {
+                    // Smart Loop: عرض 30% من الصفحات فقط
+                    const totalPages = pdf.numPages;
+                    let allowedPages = Math.ceil(totalPages * 0.3); 
+                    if(allowedPages < 1) allowedPages = 1;
+                    
+                    for(let i = 1; i <= allowedPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const scale = 1.5;
+                        const viewport = page.getViewport({scale: scale});
+                        const canvas = document.createElement('canvas');
+                        canvas.className = 'doc-canvas';
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        container.appendChild(canvas);
+                        await page.render({canvasContext: canvas.getContext('2d'), viewport: viewport}).promise;
+                    }
+                }).catch(err => {
+                    // إذا فشل (CORS مثلاً)، نعرض الوصف فقط
+                    console.error(err);
+                    fallbackBox.innerText = r.data.desc || "تعذر عرض الملف، يرجى الاشتراك للتحميل.";
+                    fallbackBox.classList.remove('hidden');
+                });
+            } else {
+                // ليس PDF أو رابط غير معروف، نعرض الوصف
+                fallbackBox.innerText = r.data.desc || "لا يوجد وصف متاح.";
+                fallbackBox.classList.remove('hidden');
+            }
+            
+        } else {
+            document.getElementById('prev-title').innerText = "ملف غير موجود";
+        }
+    });
 }
 
-// --- جلب وتحديث البيانات (Refresh) ---
-async function refreshData() {
-    let d = await api('getAdminData_V2');
-    if(!d || !d.success && !d.stats) d = await api('getAdminData'); // Fallback
+// ================= Auth =================
+function showLogin(type) {
+    document.getElementById('landing-page').classList.add('hidden');
+    document.getElementById('auth-container').classList.remove('hidden');
+    switchAuth(type);
+}
+function switchAuth(type) {
+    ['f-login', 'f-reg', 'f-trial'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    let title = 'تسجيل الدخول';
+    if(type === 'register') title = 'تفعيل اشتراك جديد';
+    if(type === 'trial') title = 'تجربة مجانية';
+    document.getElementById('auth-title').innerText = title;
     
-    if(d && d.stats) {
-        DB.codes = d.codes || [];
-        updateStats(d.stats);
-        
-        if(d.settings) fillSettings(d.settings);
-        
-        renderCodes();
-        
-        // Lazy loads for performance
-        api('getStudentsForCards').then(r => { DB.students = r||[]; renderStudents(); updateCharts(); });
-        api('getLibraryForAdmin').then(r => { DB.library = r||[]; renderLib(); });
-        api('getAllResultsForAdmin').then(r => { DB.results = r||[]; renderResults(); });
-        api('getComplaintsForAdmin').then(r => { DB.complaints = r||[]; renderComp(); });
-        api('getAssignmentsForAdmin').then(r => { DB.assignments = r||[]; renderAssign(); });
-    }
+    if(type === 'register') document.getElementById('f-reg').classList.remove('hidden');
+    else if(type === 'trial') document.getElementById('f-trial').classList.remove('hidden');
+    else document.getElementById('f-login').classList.remove('hidden');
 }
-function updateStats(s) {
-    document.getElementById('st-std').innerText = s.students || 0;
-    document.getElementById('st-exam').innerText = s.exams || 0;
-    document.getElementById('st-code').innerText = DB.codes.length || 0;
+function login(){
+  let e=document.getElementById('le').value, p=document.getElementById('lp').value;
+  ld(1); 
+  callApi('loginUser', {email:e, pass:p, deviceId:deviceId}).then(r=>{ 
+      ld(0); 
+      if(r.success){ 
+          sv(r); checkPending(); 
+      } else {
+          Swal.fire('خطأ',r.message,'error'); 
+      }
+  });
 }
-function fillSettings(s) {
-    const setVal = (id, k) => { let el = document.getElementById(id); if(el) el.value = s[k] || ''; };
-    setVal('set-name', 'TeacherName');
-    setVal('set-wa', 'WhatsApp');
-    setVal('set-maint', 'Maintenance');
-    setVal('set-preview-pct', 'Preview_Percent');
-    
-    // Store Prices
-    setVal('set-price-gold', 'Price_Gold');
-    setVal('set-price-term', 'Price_Term');
-    // Groups
-    setVal('grp-12', 'Group_التوجيهي');
-    setVal('grp-11', 'Group_الأول ثانوي');
-    setVal('grp-10', 'Group_العاشر');
-    setVal('grp-9', 'Group_التاسع');
-    setVal('grp-8', 'Group_الثامن');
-    setVal('grp-7', 'Group_السابع');
-    setVal('grp-6', 'Group_السادس');
-    setVal('grp-5', 'Group_الخامس');
-    setVal('grp-4', 'Group_الرابع');
-    setVal('grp-3', 'Group_الثالث'); // تمت الإضافة
+function reg(){
+  let name = document.getElementById('rn').value.trim();
+  let phone = document.getElementById('rph').value.trim();
+  let email = document.getElementById('re').value.trim();
+  let pass = document.getElementById('rpa').value;
+  let code = document.getElementById('rc').value.trim();
+  // === Validation Layer (Security) ===
+  if(!code) return Swal.fire('تنبيه', 'أدخل كود التفعيل', 'warning');
+  
+  // 1. Name Check (At least 3 parts)
+  if (name.split(' ').length < 3) return Swal.fire('تنبيه', 'الرجاء كتابة الاسم الثلاثي على الأقل', 'warning');
+  
+  // 2. Phone Check (Jordanian Format: 07xxxxxxxx)
+  if (!/^07[789]\d{7}$/.test(phone)) return Swal.fire('تنبيه', 'رقم الهاتف غير صحيح (يجب أن يبدأ بـ 07 ويتكون من 10 خانات)', 'warning');
+  // 3. Email Check
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return Swal.fire('تنبيه', 'البريد الإلكتروني غير صالح', 'warning');
+  // 4. Password Length
+  if (pass.length < 6) return Swal.fire('تنبيه', 'كلمة المرور يجب أن تكون 6 خانات على الأقل', 'warning');
+  let d={code:code, name:name, phone:phone, email:email, password:pass, photoData:st.photo, deviceId:deviceId};
+  
+  ld(1); 
+  callApi('registerStudent', {d:d}).then(r=>{ 
+      ld(0); 
+      if(r.success){ sv(r); Swal.fire('تم','أهلاً بك','success').then(checkPending); } else Swal.fire('خطأ',r.message,'error'); 
+  });
 }
-// --- التنقل (Navigation) ---
-function nav(v, el) {
-    document.querySelectorAll('.view-section').forEach(x => x.classList.add('hidden'));
-    document.getElementById('view-'+v).classList.remove('hidden');
-    document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-    el.classList.add('active');
-    if(window.innerWidth < 992) toggleSidebar();
-}
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
-    document.querySelector('.mobile-overlay').classList.toggle('active');
-}
-// --- الأكواد والطباعة (Codes & Printing) ---
-function renderCodes() {
-    let div = document.getElementById('codes-grid');
-    let status = document.getElementById('filter-code-status').value;
-    let clsFilter = document.getElementById('filter-code-cls').value;
-    let search = document.getElementById('search-code').value.toLowerCase();
-    div.innerHTML = '';
-    
-    let filtered = DB.codes.filter(c => {
-        let statusMatch = (status === 'All' || (status === 'New' && c.status === 'New') || (status === 'Used' && c.status !== 'New'));
-        let clsMatch = (clsFilter === 'All' || c.cls === clsFilter);
-        let searchMatch = (c.code.toString().toLowerCase().includes(search));
-        return statusMatch && clsMatch && searchMatch;
-    });
-    
-    filtered.forEach(c => {
-        div.innerHTML += `
-        <div class="code-item ${c.status!=='New'?'opacity-50':''}" onclick="this.classList.toggle('selected'); this.querySelector('input').checked = !this.querySelector('input').checked;">
-            <input type="checkbox" class="form-check-input check-overlay code-chk" value="${c.code}" onclick="event.stopPropagation()">
-            <div class="code-copy" onclick="event.stopPropagation(); navigator.clipboard.writeText('${c.code}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'تم النسخ', timer:1500, showConfirmButton:false})"><i class="fas fa-copy"></i></div>
-            <div class="code-val">${c.code}</div>
-            <div class="code-meta">${c.cls} • ${c.days} يوم</div>
-            <span class="badge ${c.status==='New'?'bg-success':'bg-secondary'} mt-2">${c.status}</span>
-        </div>`;
-    });
-    document.getElementById('codes-count').innerText = filtered.length;
-}
-function toggleAllCodes(el) {
-    document.querySelectorAll('.code-chk').forEach(c => {
-        c.checked = el.checked;
-        c.parentElement.classList.toggle('selected', el.checked);
-    });
-}
-async function generateCodes() {
-    let n = document.getElementById('gen-count').value;
-    let c = document.getElementById('gen-cls').value;
-    let d = document.getElementById('gen-days').value;
-    await api('generateNewCodes', {count:n, cls:c, days:d});
-    Swal.fire('تم', 'تم توليد الأكواد بنجاح', 'success');
-    refreshData();
-}
-// ✅ نظام الطباعة الاحترافي للبيع (Voucher Design)
-function printCodes(mode) {
-    let title = document.getElementById('card-title').value;
-    let price = document.getElementById('card-price').value;
-    
-    let toPrint = [];
-    if(mode === 'selected') {
-        let vals = [...document.querySelectorAll('.code-chk:checked')].map(c=>c.value);
-        if(vals.length===0) return Swal.fire('تنبيه','اختر أكواد أولاً','warning');
-        toPrint = DB.codes.filter(c => vals.includes(String(c.code)));
-    } else {
-        toPrint = DB.codes.filter(c => c.status === 'New');
-    }
-    let w = window.open('','','width=1000,height=800');
-    // تنسيق الطباعة A4
-    let h = `
-    <html><head><title>طباعة بطاقات الاشتراك</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Tajawal', sans-serif; direction: rtl; padding: 0; background: #fff; margin:0; }
-        .page-container { 
-            display: grid; grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; padding: 15px; width: 100%; box-sizing: border-box;
-        }
-        
-        .voucher {
-            border: 2px dashed #1e40af; /* أزرق داكن */
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 150px;
-            position: relative;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            page-break-inside: avoid;
-            overflow: hidden;
-        }
-        
-        /* علامة مائية */
-        .voucher::before {
-            content: 'NEBRAS';
-            position: absolute; top: 10px; left: 10px;
-            font-size: 60px; font-weight: 900;
-            color: rgba(30, 64, 175, 0.05);
-            z-index: 0; transform: rotate(-15deg);
-        }
-
-        .v-left { 
-            flex: 1; text-align: right; padding-left: 10px; border-left: 3px double #d97706; z-index: 1; 
-        }
-        .v-right { 
-            width: 110px; text-align: center; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1;
-        }
-        
-        .v-header {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-        }
-        .v-title { font-family: 'Amiri', serif; font-size: 18px; color: #1e40af; margin: 0; }
-        
-        .v-code-box {
-            background: #f1f5f9; border: 2px solid #1e40af;
-            padding: 5px 15px; border-radius: 8px;
-            display: inline-block; margin: 5px 0;
-        }
-        .v-code { font-family: 'Courier New', monospace; font-size: 24px; font-weight: 900; color: #000; letter-spacing: 2px; }
-        
-        .v-details { font-size: 11px; color: #475569; font-weight: bold; margin-top: 5px; }
-        .v-footer { font-size: 10px; color: #94a3b8; margin-top: 5px; }
-        
-        .v-price {
-            background: #d97706; color: white; padding: 2px 10px;
-            border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 5px;
-        }
-        
-        img { width: 90px; height: 90px; border: 1px solid #ddd; padding: 2px; border-radius: 5px; }
-        
-        @media print { 
-            body { margin: 0; } 
-            .page-container { gap: 10px; padding: 10px; }
-            .voucher { border: 1px dashed #000; box-shadow: none; }
-        }
-    </style>
-    </head><body><div class="page-container">`;
-    
-    toPrint.forEach(c => {
-        h += `
-        <div class="voucher">
-            <div class="v-left">
-                <div class="v-header">
-                    <span style="font-size:20px">🎓</span>
-                    <h3 class="v-title">${title}</h3>
-                </div>
-                <div class="v-code-box">
-                    <div class="v-code">${c.code}</div>
-                </div>
-                <div class="v-details">
-                    الصف: <span style="color:#d97706">${c.cls}</span> | الصلاحية: ${c.days} يوم
-                </div>
-                <div class="v-footer">قم بزيارة Nebras.school لتفعيل الكود</div>
-            </div>
-            <div class="v-right">
-                <div class="v-price">${price}</div>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://nebras.school?code=${c.code}" alt="QR">
-            </div>
-        </div>`;
-    });
-    h += `</div></body></html>`;
-    
-    w.document.write(h);
-    w.document.close();
-    w.focus();
-    setTimeout(() => { w.print(); }, 1000);
-}
-function exportCodes() {
-    let ws = XLSX.utils.json_to_sheet(DB.codes);
-    let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Codes");
-    XLSX.writeFile(wb, "Codes.xlsx");
-}
-async function deleteSelectedCodes() {
-    if(confirm('هل أنت متأكد من حذف الأكواد المحددة؟')) {
-        await api('deleteUsedCodes'); 
-        Swal.fire('تم التنظيف'); refreshData();
-    }
-}
-// --- المكتبة ---
-function handleFileSelect(input) {
-    if(input.files && input.files[0]) {
-        let f = input.files[0];
-        // Warning for files > 300KB as they might fail on Sheets storage
-        if(f.size > 1024 * 300) { 
-             Swal.fire('تنبيه هام', 'الملف كبير نسبياً (أكبر من 300KB). تخزين الملفات الكبيرة مباشرة في جداول البيانات قد يفشل. يفضل بشدة استخدام رابط Google Drive لضمان عمل المعاينة بشكل صحيح.', 'warning');
-        }
-        document.getElementById('file-name-display').innerText = "تم اختيار الملف: " + f.name;
-        
-        // Convert to Base64
-        let r = new FileReader();
-        r.onload = e => { 
-            tempFileBase64 = e.target.result;
-        };
-        r.readAsDataURL(f);
-    }
-}
-async function addToLib() {
+function createTrial() {
     let d = {
-        title: document.getElementById('lib-title').value,
-        subject: document.getElementById('lib-subj').value,
-        cls: document.getElementById('lib-cls').value,
-        type: document.getElementById('lib-type').value,
-        link: document.getElementById('lib-link').value,
-        desc: document.getElementById('lib-desc').value
+        name: document.getElementById('tn').value, phone: document.getElementById('tph').value,
+        classLevel: document.getElementById('tcl').value, email: document.getElementById('te').value,
+        deviceId: deviceId
     };
-    
-    // الأولوية للملف المرفوع إذا وجد
-    if(tempFileBase64) {
-        d.link = tempFileBase64; 
-    }
-    if(!d.title || !d.link) return Swal.fire('تنبيه','يرجى إدخال الرابط أو رفع ملف','warning');
-    if(!d.cls) return Swal.fire('تنبيه','يرجى اختيار الصف','warning');
-    
-    await api('addToLibrary', {d:d});
-    Swal.fire('تم النشر','','success');
-    
-    // Reset form
-    document.getElementById('lib-link').value = '';
-    document.getElementById('lib-file-upload').value = '';
-    tempFileBase64 = null;
-    document.getElementById('file-name-display').innerText = '';
-    
-    refreshData();
+    if(!d.name || !d.email || !d.classLevel) return Swal.fire('تنبيه','أكمل البيانات','warning');
+    ld(1);
+    callApi('createTrialAccount', {d:d}).then(r => {
+        ld(0);
+        if(r.success) {
+            sv(r);
+            Swal.fire({ title: '🎉 تم تفعيل التجربة!', html: `كلمة مرورك المؤقتة هي: <b style="font-size:20px">${r.tempPass}</b>`, icon: 'success' }).then(checkPending);
+        } else Swal.fire('خطأ', r.message, 'error');
+    });
 }
-function renderLib() {
-    let h=''; 
-    if(Array.isArray(DB.library)) {
-        DB.library.forEach(i => h+=`<tr><td>${i.title}</td><td>${i.subject}</td><td>${i.cls}</td><td class="text-truncate-2" style="max-width:200px">${i.desc}</td><td><button class="btn btn-sm btn-danger" onclick="delLib(${i.rowId})"><i class="fas fa-trash"></i></button></td></tr>`);
-    }
-    document.getElementById('library-body').innerHTML = h;
+function sv(r){ 
+  localStorage.setItem('tk',r.token); localStorage.setItem('nm',r.name); localStorage.setItem('cl',r.classLevel); 
+  if(r.photo && r.photo.length > 50) localStorage.setItem('ph', r.photo);
+  token=r.token; 
 }
-async function delLib(id) { if(confirm('حذف؟')) await api('deleteLibraryItem',{rowId:id}); refreshData(); }
-// --- الطلاب والنتائج ---
-function renderStudents() {
-    let s = document.getElementById('search-std').value.toLowerCase();
-    let div = document.getElementById('students-container');
-    div.innerHTML = '';
+function checkPending(){ let p=sessionStorage.getItem('pending'); if(p){ sessionStorage.removeItem('pending'); start(p); } else loadDash(); }
+function logout(){ localStorage.clear(); location.reload(); }
+// ================= Student Dashboard =================
+function loadDash(){
+  document.getElementById('landing-page').classList.add('hidden'); 
+  document.getElementById('auth-container').classList.add('hidden'); 
+  document.getElementById('v-exam').classList.add('hidden'); 
+  document.getElementById('v-dash').classList.remove('hidden'); 
+  document.getElementById('u-name').innerText = localStorage.getItem('nm'); 
+  document.getElementById('u-cls').innerText = localStorage.getItem('cl');
+  let ph = localStorage.getItem('ph'); document.getElementById('u-img').src = ph ? ph : DEF_IMG;
+  ld(1);
+  fetchPublicData(); // 🔥 تحديث البيانات (أخبار، إعدادات) عند الدخول
+  callApi('getExamsList', {token:token}).then(r=>{
+    allSubjects = r.subjects || [];
+    renderSubjects();
+    ld(0);
+  });
+  callApi('getLeaderboard', {token:token}).then(r=>{
+    let h='';
+    if(r.list) {
+      r.list.forEach((l,i)=>{ 
+        h+=`<tr><td style="color:var(--gold)">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</td><td>${l.name}</td><td style="color:var(--blue);font-weight:bold">${l.score}%</td></tr>`; 
+      });
+      document.getElementById('leader-body').innerHTML=h || '<tr><td colspan="3">لا يوجد متصدرين</td></tr>';
+    }
+  });
+  callApi('getStudentResults', {token:token}).then(r=>{
+    let h='';
+    if(r.results) {
+        r.results.forEach(x=>{
+          let pass=parseInt(x.percent)>=50;
+          h+=`<tr><td>${x.exam}</td><td style="color:${pass?'var(--green)':'var(--red)'}">${x.percent}</td><td>${pass?`<button class="btn-g" style="width:auto;padding:5px 10px;font-size:12px;margin:0" onclick="cert('${x.exam}','${x.percent}')">📜</button>`:'-'}</td></tr>`;
+        });
+        document.getElementById('res-list').innerHTML=h;
+    }
+  });
+  loadStats(); 
+}
+function switchTab(tabId, el) {
+    ['exams', 'library', 'leader', 'history', 'assign', 'notes'].forEach(id => document.getElementById('tab-'+id).classList.add('hidden'));
+    document.getElementById('tab-'+tabId).classList.remove('hidden');
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
     
-    if (Array.isArray(DB.students)) {
-        DB.students.filter(x => x.name && x.name.toLowerCase().includes(s)).forEach(st => {
-            div.innerHTML += `
-            <div class="col-md-6 col-lg-4">
-                <div class="stat-card d-flex flex-row align-items-center gap-3 p-3">
-                    <img src="${st.photo||'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" style="width:50px;height:50px;border-radius:50%">
-                    <div class="flex-grow-1 overflow-hidden">
-                        <h6 class="m-0 text-truncate">${st.name}</h6>
-                        <small class="text-muted">${st.cls}</small>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-danger" onclick="delStudent('${st.email}')">حذف</a></li>
-                            <li><a class="dropdown-item text-warning" onclick="resetDev('${st.email}')">فك حظر الجهاز</a></li>
-                            <li><a class="dropdown-item" onclick="changePass('${st.email}')">تغيير السر</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>`;
+    if(tabId === 'history') loadStats();
+    if(tabId === 'library') loadStudentLibrary();
+}
+function renderSubjects() {
+    let h = '';
+    if(allSubjects.length === 0) {
+        h = '<p style="color:#94a3b8; text-align:center;">لا توجد امتحانات متاحة حالياً.</p>';
+    } else {
+        h += `<h3 style="text-align:right; color:var(--blue); margin-top:10px"><i class="fas fa-folder-open"></i> المواد الدراسية</h3>`;
+        allSubjects.forEach((sub, idx) => {
+            h += `<div class="exam-item folder-item" onclick="openSubject(${idx})">
+                    <i class="fas fa-book exam-icon"></i>
+                    <h3 style="margin:0;color:var(--text)">${sub.name}</h3>
+                    <div style="font-size:13px; color:#94a3b8; margin-top:5px">${sub.exams.length} امتحان</div>
+                  </div>`;
         });
     }
+    document.getElementById('exams-container').innerHTML = h;
 }
-async function delStudent(e) { if(confirm('حذف؟')) await api('deleteStudent',{email:e}); refreshData(); }
-async function resetDev(e) { await api('resetStudentDevice', {email:e}); Swal.fire('تم فك الحظر'); }
-async function changePass(e) { let p = prompt('كلمة السر الجديدة:'); if(p) await api('adminResetPass', {email:e, newPass:p}); }
-function renderResults(){
-    let h=''; 
-    if(Array.isArray(DB.results)) {
-        DB.results.forEach(r=>h+=`<tr><td>${r.date}</td><td>${r.name}</td><td>${r.exam}</td><td>${r.score}</td><td>${r.cheats}</td><td><button class="btn btn-sm btn-danger" onclick="delRes(${r.rowId})">x</button></td></tr>`);
-    }
-    document.getElementById('results-body').innerHTML=h;
-}
-async function delRes(id) { if(confirm('حذف؟')) await api('deleteResultRow',{rowId:id}); refreshData(); }
-function exportResults() { let ws = XLSX.utils.table_to_sheet(document.getElementById('res-tbl')); let wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Results"); XLSX.writeFile(wb, "Results.xlsx"); }
-function renderComp(){
-    let h=''; 
-    if(Array.isArray(DB.complaints)) {
-        DB.complaints.forEach(c=>h+=`<tr><td>${c.date}</td><td>${c.name}</td><td>${c.msg}</td><td>${c.reply||`<button class="btn btn-sm btn-warning" onclick="reply('${c.rowId}')">رد</button>`}</td></tr>`);
-    }
-    document.getElementById('comp-body').innerHTML=h;
-}
-async function reply(id) { let r = prompt('الرد:'); if(r) await api('replyToComplaint', {rowId:id, reply:r}); refreshData(); }
-function renderAssign() {
-    let h=''; 
-    if(Array.isArray(DB.assignments)) {
-        DB.assignments.forEach(a=>h+=`<tr><td>${a.date}</td><td>${a.name}</td><td>${a.type}</td><td><a href="${a.link}" target="_blank">عرض</a></td><td>${a.grade}</td><td><button class="btn btn-sm btn-primary" onclick="grade('${a.rowId}')">رصد</button></td></tr>`);
-    }
-    document.getElementById('assign-body').innerHTML=h;
-}
-async function grade(id) { let g = prompt('الدرجة:'); if(g) await api('gradeAssignment', {rowId:id, grade:g}); refreshData(); }
-// --- إعدادات ---
-async function saveSettings() {
-    let s = {
-        'TeacherName': document.getElementById('set-name').value,
-        'WhatsApp': document.getElementById('set-wa').value,
-        'Maintenance': document.getElementById('set-maint').value,
-        'Preview_Percent': document.getElementById('set-preview-pct').value,
-        
-        // Store Prices
-        'Price_Gold': document.getElementById('set-price-gold').value,
-        'Price_Term': document.getElementById('set-price-term').value,
-        // Groups
-        'Group_التوجيهي': document.getElementById('grp-12').value,
-        'Group_الأول ثانوي': document.getElementById('grp-11').value,
-        'Group_العاشر': document.getElementById('grp-10').value,
-        'Group_التاسع': document.getElementById('grp-9').value,
-        'Group_الثامن': document.getElementById('grp-8').value,
-        'Group_السابع': document.getElementById('grp-7').value,
-        'Group_السادس': document.getElementById('grp-6').value,
-        'Group_الخامس': document.getElementById('grp-5').value,
-        'Group_الرابع': document.getElementById('grp-4').value,
-        'Group_الصف الثالث': document.getElementById('grp-3').value // تمت الإضافة
-    };
-    await api('saveGeneralSettings', {s:s});
-    Swal.fire('تم الحفظ بنجاح');
-}
-async function smartRepair() {
-    if(confirm('هل أنت متأكد من إصلاح النظام؟ سيتم إنشاء الجداول المفقودة.')) {
-        await api('fullSystemSetup');
-        Swal.fire('تم الإصلاح');
-    }
-}
-async function sendNotification() {
-    let t = document.getElementById('notif-target').value;
-    let m = document.getElementById('notif-msg').value;
-    await api('sendTargetedMessage', {target:t, msg:m});
-    Swal.fire('تم الإرسال');
-}
-// --- Charts ---
-function updateCharts() {
-    if(window.myChart) window.myChart.destroy();
-    let ctx = document.getElementById('chart-students').getContext('2d');
-    let classes = {}; 
-    if(Array.isArray(DB.students)) {
-        DB.students.forEach(s => classes[s.cls] = (classes[s.cls]||0)+1);
-    }
+function openSubject(idx) {
+    let sub = allSubjects[idx];
+    let h = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--gold); margin:0;">${sub.name}</h3>
+                <button class="btn btn-o" style="width:auto; padding:5px 10px;" onclick="renderSubjects()">↩ عودة</button>
+             </div>`;
     
-    window.myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(classes),
-            datasets: [{ data: Object.values(classes), backgroundColor: ['#2563eb', '#1e40af', '#f59e0b', '#10b981', '#ef4444'] }]
+    sub.exams.forEach(x => {
+        h += `<div class="exam-item" onclick="start('${x.title}')">
+                <i class="fas fa-file-alt exam-icon"></i>
+                <h3 style="margin:0;color:var(--text)">${x.title}</h3>
+              </div>`;
+    });
+    document.getElementById('exams-container').innerHTML = h;
+}
+function loadStudentLibrary() {
+    document.getElementById('std-lib-list').innerHTML = 'جاري التحميل...';
+    callApi('getLibraryContent', {token:token}).then(r => {
+        let h = '';
+        if(r.library && r.library.length) {
+            r.library.forEach(f => {
+                let icon = f.type === 'Video' ? 'fa-play' : 'fa-file-pdf';
+                h += `
+                <div style="display:flex; align-items:center; gap:10px; padding:15px; background:rgba(255,255,255,0.05); margin-bottom:10px; border-radius:10px">
+                    <i class="fas ${icon} fa-2x" style="color:var(--text)"></i>
+                    <div style="flex:1">
+                        <div style="font-weight:bold">${f.title}</div>
+                        <div style="font-size:0.8em; color:#94a3b8">${f.subject} • ${f.date}</div>
+                    </div>
+                    <a href="${f.link}" target="_blank" class="btn btn-g" style="width:auto; text-decoration:none">
+                       ${f.type==='Video'?'مشاهدة':'تحميل'} <i class="fas fa-download"></i>
+                    </a>
+                </div>`;
+            });
+        } else {
+            h = '<p>لا توجد ملفات حالياً.</p>';
+        }
+        document.getElementById('std-lib-list').innerHTML = h;
+    });
+}
+function loadStats() {
+    callApi('getStudentStats', {token:token}).then(r => {
+        if(!r.success) return;
+        
+        if (r.name && r.cls) {
+            localStorage.setItem('nm', r.name);
+            localStorage.setItem('cl', r.cls);
+            document.getElementById('u-name').innerText = r.name;
+            document.getElementById('u-cls').innerText = r.cls;
+        }
+        document.getElementById('perf-chart').innerHTML = `
+            <div class="chart-bar chart-me" style="height:${r.myAvg}%;"><span style="margin-bottom:5px">${r.myAvg}%</span></div>
+            <div class="chart-bar chart-cls" style="height:${r.classAvg}%;"><span style="margin-bottom:5px">${r.classAvg}%</span></div>
+            <div style="position:absolute; bottom:-30px; left:20px; right:20px; display:flex; justify-content:space-between; color:#94a3b8; font-size:12px"><span>مستواي</span><span>متوسط الفصل</span></div>
+        `;
+        let b = '';
+        if(r.badges && r.badges.length) {
+           r.badges.forEach(badge => b += `<span class="badge-item"><i class="fas fa-medal"></i> ${badge}</span>`);
+           document.getElementById('badges-area').innerHTML = b;
+        }
+        
+        if(r.socials) {
+            let sHtml = '';
+            if(r.socials.whatsapp) {
+                document.getElementById('wa-btn').href = r.socials.whatsapp;
+                document.getElementById('wa-btn').classList.remove('hidden');
+            }
+            if(r.socials.facebook) sHtml += `<a href="${r.socials.facebook}" target="_blank" style="color:#1877F2; font-size:20px"><i class="fab fa-facebook"></i></a>`;
+            if(r.socials.instagram) sHtml += `<a href="${r.socials.instagram}" target="_blank" style="color:#C13584; font-size:20px"><i class="fab fa-instagram"></i></a>`;
+            if(r.socials.youtube) sHtml += `<a href="${r.socials.youtube}" target="_blank" style="color:#FF0000; font-size:20px"><i class="fab fa-youtube"></i></a>`;
+            document.getElementById('social-box').innerHTML = sHtml;
         }
     });
 }
-function logout() { 
-    if(typeof google !== 'undefined' && google.script && google.script.host) {
-        google.script.host.close();
-    } else {
-        window.close(); // Fallback
+// ================= Exam System (No Timer) =================
+function start(t){
+  ld(1); 
+  callApi('getExamQuestions', {token:token, name:t}).then(r=>{
+    ld(0); 
+    if(!r || !r.success) {
+          Swal.fire('تنبيه', r ? r.message : 'خطأ غير معروف', 'warning').then(() => goHome());
+          return;
     }
+    st.exam=r.questions; st.title=t; st.idx=0; st.ans={}; st.cheats=0;
+    
+    document.getElementById('v-dash').classList.add('hidden');
+    document.getElementById('v-exam').classList.remove('hidden');
+    document.getElementById('xt').innerText=t;
+    document.getElementById('q-count').innerText = st.exam.length;
+    rendQ();
+  });
+}
+function rendQ(){
+  let q=st.exam[st.idx];
+  let h=`<h3 style="color:var(--text); margin-bottom:20px"><span style="color:var(--gold)">س ${st.idx+1}:</span> ${q.text}</h3>`;
+  if(q.img) h+=`<img src="${q.img}" style="max-width:100%; border-radius:12px; margin-bottom:20px; border:1px solid var(--border)">`;
+  q.opts.forEach(o=>{ if(o) h+=`<div class="q-option ${st.ans[q.id]==o?'selected':''}" onclick="sl('${o}')"><div style="width:20px;height:20px;border-radius:50%;border:2px solid ${st.ans[q.id]==o?'var(--blue)':'#555'};background:${st.ans[q.id]==o?'var(--blue)':'transparent'}"></div>${o}</div>` });
+  document.getElementById('q-box').innerHTML=h;
+  document.getElementById('qs-ind').innerText = `${st.idx+1} / ${st.exam.length}`;
+  document.getElementById('s-btn').classList.toggle('hidden', st.idx!=st.exam.length-1);
+  
+  let pct = ((st.idx + 1) / st.exam.length) * 100;
+  document.getElementById('exam-progress').style.width = pct + '%';
+}
+function sl(v){ st.ans[st.exam[st.idx].id]=v; rendQ(); }
+function nav(d){ if(st.idx+d>=0 && st.idx+d<st.exam.length){ st.idx+=d; rendQ(); } }
+function sub(){ submitExam(false); }
+function exitExam() {
+  Swal.fire({
+    title: 'تأكيد الخروج؟',
+    text: "سيتم إلغاء الامتحان.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    confirmButtonText: 'نعم'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      document.getElementById('v-exam').classList.add('hidden');
+      document.getElementById('v-dash').classList.remove('hidden');
+      loadDash();
+    }
+  });
+}
+function submitExam(forced){
+  if(!forced && !confirm('هل أنت متأكد من التسليم؟')) return;
+  ld(1); 
+  callApi('submitExam', {token:token, n:st.title, a:st.ans, cheats:st.cheats}).then(res=>{ 
+    ld(0); 
+    document.getElementById('v-exam').classList.add('hidden');
+    let isPass = parseInt(res.percent)>=50;
+    st.lastScore = res.percent; 
+    Swal.fire({
+      title: isPass ? '🎉 مبروك!' : 'حظاً أوفر',
+      html: `النتيجة: <b style="font-size:30px; color:${isPass?'green':'red'}">${res.percent}</b>`,
+      icon: isPass ? 'success' : 'error',
+      showDenyButton: true,
+      showCancelButton: isPass, 
+      confirmButtonText: '🏠 الرئيسية',
+      denyButtonText: '🔍 مراجعة الإجابات',
+      cancelButtonText: '📜 تحميل الشهادة',
+      cancelButtonColor: '#f59e0b'
+    }).then((result) => {
+      if (result.isDenied) {
+          showReview(st.title, isPass);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+          cert(st.title, res.percent); confetti();
+          setTimeout(loadDash, 2000);
+      } else {
+          loadDash();
+          if(isPass) confetti();
+      }
+    });
+  });
+}
+function showReview(examTitle, isPass) {
+  ld(1);
+  callApi('getReviewData', {token:token, title:examTitle}).then(r => {
+    ld(0);
+    document.getElementById('review-modal').classList.remove('hidden');
+    if(isPass) document.getElementById('cert-review-btn').classList.remove('hidden');
+    else document.getElementById('cert-review-btn').classList.add('hidden');
+    let h = '';
+    st.exam.forEach((q, i) => {
+      let userAns = st.ans[q.id];
+      let correctAns = r.answers[q.id];
+      let isCorrect = userAns === correctAns;
+      h += `<div style="background:rgba(128,128,128,0.05); padding:15px; border-radius:10px; margin-bottom:15px; border-right:4px solid ${isCorrect?'var(--green)':'var(--red)'}">
+              <p style="font-weight:bold; margin:0 0 10px 0; text-align:right">س${i+1}: ${q.text}</p>
+              ${q.img ? `<img src="${q.img}" style="max-height:100px; display:block; margin-bottom:10px">` : ''}
+              <div style="font-size:14px; text-align:right">
+                <span style="color:#94a3b8">إجابتك: </span> <span style="color:${isCorrect?'var(--green)':'var(--red)'}">${userAns || 'لم يتم الإجابة'}</span><br>
+                ${!isCorrect ? `<span style="color:#94a3b8">الإجابة الصحيحة: </span> <span style="color:var(--green)">${correctAns}</span>` : ''}
+              </div>
+            </div>`;
+    });
+    document.getElementById('review-content').innerHTML = h;
+  });
+}
+function closeReview(){ document.getElementById('review-modal').classList.add('hidden'); loadDash(); }
+function cert(e,s){
+  document.getElementById('c-name').innerText=localStorage.getItem('nm');
+  document.getElementById('c-ex').innerText=e; document.getElementById('c-sc').innerText=s;
+  let ph = localStorage.getItem('ph'); document.getElementById('c-img').src = ph ? ph : DEF_IMG;
+  document.getElementById('cert-modal').style.display='flex';
+}
+function dlCert(){
+  let node = document.getElementById('cert-node');
+  html2canvas(node, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' }).then(c=>{
+    let a=document.createElement('a'); a.download='Certificate.png'; a.href=c.toDataURL(); a.click();
+  });
+}
+function readP(i){ 
+  if(i.files[0]){ 
+    let r=new FileReader(); 
+    r.onload=e=>{
+      let img = new Image(); img.src = e.target.result;
+      img.onload = function() {
+        let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
+        let MAX_W = 150; let scale = MAX_W / img.width;
+        canvas.width = MAX_W; canvas.height = img.height * scale;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        st.photo = canvas.toDataURL('image/jpeg', 0.7);
+        document.getElementById('p-txt').innerHTML='<i class="fas fa-check-circle" style="color:var(--green)"></i> تم الاختيار';
+        document.getElementById('ph-box').style.borderColor = 'var(--green)';
+      }
+    }; r.readAsDataURL(i.files[0]); 
+  } 
+}
+function readAsFile(input) {
+  if(input.files && input.files[0]) {
+    let f = input.files[0];
+    document.getElementById('as-fname').innerText = f.name;
+    let r = new FileReader();
+    r.onload = e => { st.assignFile = e.target.result; st.assignName = f.name; };
+    r.readAsDataURL(f);
+  }
+}
+function uploadAss() {
+  if(!st.assignFile) return Swal.fire('تنبيه', 'يرجى اختيار ملف', 'warning');
+  ld(1);
+  let d = {
+     type: document.getElementById('as-type').value,
+     desc: document.getElementById('as-desc').value,
+     fileData: st.assignFile,
+     fileName: st.assignName,
+     mimeType: st.assignFile.split(';')[0].split(':')[1]
+  };
+  callApi('uploadStudentAssignment', {token:token, d:d}).then(r=>{
+     ld(0); if(r.success) Swal.fire('تم', 'تم تسليم الواجب بنجاح', 'success'); else Swal.fire('خطأ', r.message, 'error');
+  });
+}
+function editProfile() {
+    Swal.fire({
+        title: 'تعديل الملف الشخصي',
+        html: `
+            <div style="margin-bottom:15px; border:2px dashed #ccc; padding:10px; cursor:pointer;" onclick="document.getElementById('sw-file').click()">
+                <i class="fas fa-camera"></i> تغيير الصورة
+                <input type="file" id="sw-file" hidden onchange="readP_SW(this)">
+            </div>
+            <input id="sw-pass" type="password" class="swal2-input" placeholder="كلمة المرور الجديدة (اختياري)">
+            <button class="btn btn-r" style="margin-top:10px" onclick="deleteMyAccount()">❌ حذف حسابي نهائياً</button>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'حفظ',
+        cancelButtonText: 'إلغاء',
+        preConfirm: () => {
+            return { pass: document.getElementById('sw-pass').value, photo: window.tempPhoto };
+        }
+    }).then((res) => {
+        if(res.isConfirmed) {
+            ld(1);
+            callApi('updateProfile', {token:token, newPass:res.value.pass, newPhoto:res.value.photo}).then(r => {
+                ld(0);
+                if(r.success) { 
+                    if(res.value.photo) { localStorage.setItem('ph', res.value.photo); document.getElementById('u-img').src = res.value.photo; }
+                    Swal.fire('تم', r.message, 'success'); 
+                }
+            });
+        }
+        window.tempPhoto = null;
+    });
+}
+function readP_SW(input) {
+    if(input.files && input.files[0]) {
+        let r = new FileReader();
+        r.onload = function(e) {
+            let img = new Image(); img.src = e.target.result;
+            img.onload = function() {
+                let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
+                let MAX_W = 150; let scale = MAX_W / img.width;
+                canvas.width = MAX_W; canvas.height = img.height * scale;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                window.tempPhoto = canvas.toDataURL('image/jpeg', 0.7);
+                Swal.showValidationMessage('تم اختيار الصورة! اضغط حفظ.');
+            }
+        };
+        r.readAsDataURL(input.files[0]);
+    }
+}
+function deleteMyAccount() {
+    Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "سيتم حذف حسابك ولن تتمكن من الدخول مجدداً!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'نعم، حذف'
+    }).then((r) => {
+        if(r.isConfirmed) {
+            ld(1);
+            callApi('softDeleteAccount', {token:token}).then(res => {
+                ld(0);
+                if(res.success) Swal.fire('تم الحذف', res.message, 'success').then(logout);
+                else Swal.fire('خطأ', res.message, 'error');
+            });
+        }
+    });
+}
+function toggleTheme() {
+    let b = document.body;
+    if(b.getAttribute('data-theme') == 'light') {
+        b.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-icon').className = 'fas fa-moon';
+    } else {
+        b.setAttribute('data-theme', 'light');
+        document.getElementById('theme-icon').className = 'fas fa-sun';
+    }
+}
+function joinClassGroup() {
+    let cls = localStorage.getItem('cl');
+    if(!cls) return Swal.fire('تنبيه', 'لم يتم تحديد صفك الدراسي', 'warning');
+    let groupLink = publicSettings[`Group_${cls}`] || publicSettings['WhatsApp_Link'];
+    if(groupLink) {
+         let url = String(groupLink).includes('http') ? groupLink : `https://wa.me/${String(groupLink).replace(/\D/g,'')}`;
+         window.open(url, '_blank');
+    } else {
+         Swal.fire('تنبيه', 'رابط المجموعة غير متوفر حالياً', 'info');
+    }
+}
+function saveNotes() {
+    let txt = document.getElementById('my-notes').value;
+    callApi('saveStudentNote', {token:token, text:txt}).then(r => {
+        const Toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 3000});
+        Toast.fire({icon: 'success', title: 'تم الحفظ'});
+    });
+}
+function genReport() {
+    let el = document.getElementById('tab-history');
+    html2canvas(el).then(canvas => {
+       let a=document.createElement('a'); a.download='Report.png'; a.href=canvas.toDataURL(); a.click();
+    });
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
