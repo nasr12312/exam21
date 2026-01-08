@@ -259,6 +259,8 @@
             </div>
         </div>
         <div class="d-flex gap-2">
+            <!-- 🔥 الزر الجديد للربط -->
+            <button class="btn btn-info shadow-sm text-white" onclick="showConnectionInfo()"><i class="fas fa-link"></i> ربط واجهة الطالب</button>
             <button class="btn btn-light shadow-sm" onclick="location.reload()" title="تحديث الصفحة"><i class="fas fa-sync-alt"></i></button>
             <button class="btn btn-primary shadow-sm" onclick="refreshData()"><i class="fas fa-database"></i> تحديث البيانات</button>
         </div>
@@ -614,8 +616,8 @@
 // ============================================
 // ⚠️ إعدادات الاتصال (API Configuration)
 // ============================================
-// 🔥 استبدل الرابط أدناه برابط النشر الجديد الخاص بك
-const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec";
+// 🔥 [الحل الجذري]: قراءة الرابط ديناميكياً من السيرفر
+const API_URL = "https://script.google.com/macros/s/AKfycbyJ8FX2Hd_OAakWU0Gbo35jcLq5b-tjwGdoGb4RimJtJCfgZqWnM4OSa7kGV-usUwgX/exec"; 
 
 let DB = { students:[], codes:[], results:[], library:[], assignments:[], complaints:[] };
 let loadTimer = null;
@@ -627,6 +629,31 @@ let tempFileBase64 = null; // للملفات المرفوعة
 window.onload = function() {
     refreshData(); // استدعاء البيانات مباشرة
 };
+
+// 🔥 دالة عرض رابط الربط
+function showConnectionInfo() {
+    Swal.fire({
+        title: '🔗 ربط واجهة الطالب الخارجية',
+        html: `
+            <div style="text-align:left; direction:ltr; background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:15px; word-break:break-all; font-family:monospace; font-weight:bold; color:#1e40af;">
+                ${API_URL}
+            </div>
+            <p style="text-align:right; font-size:0.9em; color:#555;">
+                1. انسخ الرابط أعلاه.<br>
+                2. اذهب إلى ملف <b>index.html</b> المرفوع على GitHub.<br>
+                3. ابحث عن السطر: <code>const API_URL = "..."</code>.<br>
+                4. استبدل ما بين علامتي التنصيص بهذا الرابط.
+            </p>
+        `,
+        confirmButtonText: 'نسخ الرابط',
+        showCloseButton: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            navigator.clipboard.writeText(API_URL);
+            Swal.fire('تم النسخ!', 'الرابط الآن في الحافظة.', 'success');
+        }
+    });
+}
 
 // --- أدوات التحميل (Loader Utils) ---
 function showLoader(s) {
@@ -670,6 +697,8 @@ async function api(action, data = {}) {
 async function useFetch(action, data, resolve) {
     console.log(`🌐 Connecting via Fetch API: ${action}`);
     try {
+        if (!API_URL || API_URL.length < 5) throw new Error("API URL is missing");
+        
         // إضافة cache busting
         const url = API_URL + (API_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
         
