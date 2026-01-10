@@ -1350,5 +1350,17 @@ function editProfile() { Swal.fire({ title:'تعديل الملف', html:`<input
 function readP_SW(i){ readP(i); setTimeout(()=>{ window.tempPhoto=st.photo; Swal.showValidationMessage('تم اختيار الصورة'); }, 500); }
 function joinClassGroup() { let c=localStorage.getItem('cl'); let l=publicSettings[`Group_${c}`]||publicSettings['WhatsApp_Link']; if(l) window.open(l.includes('http')?l:`https://wa.me/${l.replace(/\D/g,'')}`, '_blank'); else Swal.fire('تنبيه','الرابط غير متوفر','info'); }
 </script>
+    <div id="paywall-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; padding:40px; border-radius:15px; text-align:center; max-width:400px; border:4px solid #f59e0b;">
+        <i class="fas fa-lock fa-3x" style="color:#f59e0b; margin-bottom:15px"></i>
+        <h2 style="color:black; margin:0">انتهت المعاينة</h2>
+        <p style="color:#555">وصلت للحد المسموح به (6 أسئلة).</p>
+        <h1 style="color:#1e40af; margin:10px 0">3 JD</h1>
+        <a href="#" id="paywall-wa" target="_blank" class="btn btn-g" style="display:block; text-decoration:none; padding:10px">اشترك الآن</a>
+        <button onclick="location.reload()" style="background:none; border:none; color:#888; margin-top:10px; cursor:pointer">خروج</button>
+    </div>
+</div>
 </body>
 </html>
+
+
