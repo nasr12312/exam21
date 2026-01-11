@@ -6,7 +6,8 @@
     <base target="_top">
     
     <!-- =================================================================================
-         منصة نبراس التعليمية | الإصدار الشامل (V19.0 - Full Paywall Integration)
+         منصة نبراس التعليمية | الإصدار الشامل المتقدم (V20.0 - Enhanced Navigation & UI)
+         تم إضافة نظام تصنيف هرمي (صفوف -> مواد -> امتحانات) + واجهات تفاعلية جديدة
          ================================================================================= -->
     <title>منصة نبراس التعليمية | المنهاج الأردني</title>
     
@@ -46,6 +47,7 @@
     --gold: #f59e0b; 
     --red: #ef4444; 
     --green: #10b981; 
+    --purple: #8b5cf6;
     --text: #f8fafc;
     --shadow-card: 0 10px 30px rgba(0,0,0,0.3);
   }
@@ -352,6 +354,37 @@
   .toast-icon { font-size: 1.2em; }
   .toast-success .toast-icon { color: var(--green); }
   .toast-error .toast-icon { color: var(--red); }
+
+  /* === Breadcrumbs === */
+  .breadcrumbs {
+      display: flex; gap: 10px; align-items: center; margin-bottom: 20px; font-size: 0.9em; color: #94a3b8;
+  }
+  .breadcrumbs span.active { color: var(--gold); font-weight: bold; }
+  .breadcrumbs i { font-size: 0.8em; color: #555; }
+  
+  /* === Exam Preview Modal === */
+  #exam-preview-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999;
+      display: none; justify-content: center; align-items: center; flex-direction: column;
+      backdrop-filter: blur(10px);
+  }
+  .ep-content {
+      background: var(--glass); padding: 30px; border-radius: 20px; border: 1px solid var(--border);
+      max-width: 500px; width: 90%; text-align: center; position: relative;
+      animation: zoomIn 0.3s;
+  }
+  .ep-icon {
+      width: 80px; height: 80px; background: rgba(59,130,246,0.1); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+      color: var(--blue); font-size: 2.5em; border: 2px solid var(--blue);
+  }
+  .ep-details {
+      display: flex; justify-content: space-around; margin: 25px 0;
+      background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;
+  }
+  .ep-d-item { text-align: center; }
+  .ep-d-val { font-size: 1.2em; font-weight: bold; color: var(--text); }
+  .ep-d-lbl { font-size: 0.8em; color: #94a3b8; }
 </style>
 </head>
 
@@ -378,6 +411,35 @@
             <i class="fab fa-whatsapp"></i> اشترك الآن عبر الواتساب
         </button>
         <button class="btn btn-o" style="margin-top:10px; background:#fff; color:#555" onclick="goHome()">عودة للرئيسية</button>
+    </div>
+</div>
+
+<!-- =========================
+     📋 Exam Preview Modal (Before Start)
+     ========================= -->
+<div id="exam-preview-modal">
+    <div class="ep-content">
+        <div class="ep-icon" id="ep-icon"><i class="fas fa-file-signature"></i></div>
+        <h2 id="ep-title" style="margin:0 0 10px; color:var(--text)"></h2>
+        <p id="ep-subtitle" style="color:#94a3b8; margin:0"></p>
+        
+        <div class="ep-details">
+            <div class="ep-d-item">
+                <div class="ep-d-val" id="ep-q-count">--</div>
+                <div class="ep-d-lbl">سؤال</div>
+            </div>
+            <div class="ep-d-item">
+                <div class="ep-d-val" id="ep-time">--</div>
+                <div class="ep-d-lbl">دقيقة</div>
+            </div>
+            <div class="ep-d-item">
+                <div class="ep-d-val">متوسط</div>
+                <div class="ep-d-lbl">الصعوبة</div>
+            </div>
+        </div>
+        
+        <button class="btn btn-p w-100 mb-2" onclick="startExamConfirmed()">ابدأ الامتحان الآن <i class="fas fa-play"></i></button>
+        <button class="btn btn-o w-100" onclick="closeExamPreview()">إلغاء</button>
     </div>
 </div>
 
@@ -574,18 +636,38 @@
               <i class="fas fa-arrow-right"></i> عودة
           </button>
           <h2>الامتحانات المتاحة</h2>
-          <p style="color:#94a3b8">اختر الصف الدراسي لعرض الامتحانات</p>
+          <p style="color:#94a3b8">تصفح الامتحانات حسب الصف والمادة</p>
        </div>
        
+       <!-- Breadcrumbs Navigation -->
+       <div class="container">
+           <div class="breadcrumbs">
+               <span onclick="resetExamsView()" style="cursor:pointer">الامتحانات</span>
+               <i class="fas fa-chevron-left hidden" id="bc-sep-1"></i>
+               <span id="bc-class" class="hidden"></span>
+               <i class="fas fa-chevron-left hidden" id="bc-sep-2"></i>
+               <span id="bc-subject" class="hidden"></span>
+           </div>
+       </div>
+
        <!-- Level 1: Classes Grid -->
-       <div id="exam-classes-grid" class="grid">
+       <div id="exam-classes-grid" class="grid animate__animated animate__fadeIn">
            <!-- Populated via JS -->
        </div>
        
-       <!-- Level 2: Exams List (Hidden initially) -->
-       <div id="exam-list-container" class="hidden">
-           <button class="btn btn-o btn-sm" onclick="showPublicExams()" style="margin-bottom:15px">↩ رجوع للصفوف</button>
-           <h3 id="selected-class-title" style="color:var(--gold); margin-bottom:20px"></h3>
+       <!-- Level 2: Subjects Grid (Hidden initially) -->
+       <div id="exam-subjects-grid" class="grid animate__animated animate__fadeIn hidden">
+           <!-- Populated via JS -->
+       </div>
+
+       <!-- Level 3: Exams List (Hidden initially) -->
+       <div id="exam-list-container" class="hidden animate__animated animate__fadeIn">
+           <div class="d-flex justify-content-between align-items-center mb-3">
+               <h3 id="selected-subject-title" style="color:var(--gold); margin:0"></h3>
+               <div class="search-box" style="margin:0; padding:5px 15px; width:auto">
+                   <input id="exam-search-input" placeholder="بحث في الامتحانات..." style="margin:0; border:none; background:transparent" onkeyup="filterExamsInList()">
+               </div>
+           </div>
            <div id="public-exams-list" class="grid"></div>
        </div>
     </div>
@@ -882,10 +964,29 @@ let token = localStorage.getItem('tk');
 let publicSettings = {}; 
 let deviceId = localStorage.getItem('did');
 if (!deviceId) { deviceId = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now(); localStorage.setItem('did', deviceId); }
-let st = { photo:null, exam:[], ans:{}, idx:0, title:'', cheats:0, lastScore: 0, assignFile: null, assignName: '', marked: [], timerInterval: null, isGuest: false };
+let st = { photo:null, exam:[], ans:{}, idx:0, title:'', cheats:0, lastScore: 0, assignFile: null, assignName: '', marked: [], timerInterval: null, isGuest: false, currentPreviewExam: null };
 let allSubjects = [];
 let publicLibData = [];
-let guestExamsData = {}; // Store fetched guest exams
+// Hierarchical storage for guest exams: { ClassName: { SubjectName: [ExamObjects] } }
+let guestExamsData = {}; 
+
+// --- Expanded Subject Icons Mapping (Adds detail and lines) ---
+const subjectIcons = {
+    'الرياضيات': {icon: 'fa-calculator', color: 'var(--blue)'},
+    'اللغة العربية': {icon: 'fa-book-open', color: 'var(--green)'},
+    'اللغة الإنجليزية': {icon: 'fa-language', color: '#f87171'},
+    'الفيزياء': {icon: 'fa-atom', color: '#a78bfa'},
+    'الكيمياء': {icon: 'fa-flask', color: '#fbbf24'},
+    'الأحياء': {icon: 'fa-dna', color: '#34d399'},
+    'علوم الأرض': {icon: 'fa-globe-americas', color: '#60a5fa'},
+    'التاريخ': {icon: 'fa-landmark', color: '#d97706'},
+    'الجغرافيا': {icon: 'fa-map-marked-alt', color: '#10b981'},
+    'التربية الإسلامية': {icon: 'fa-quran', color: '#059669'},
+    'الحاسوب': {icon: 'fa-laptop-code', color: '#6366f1'},
+    'الثقافة المالية': {icon: 'fa-coins', color: '#f59e0b'},
+    'التربية الوطنية': {icon: 'fa-flag', color: '#ef4444'},
+    'عام': {icon: 'fa-book', color: '#94a3b8'}
+};
 
 // ================= Core Logic =================
 let loaderCount = 0;
@@ -941,7 +1042,7 @@ window.onload = function() {
   } else if(viewMode === 'file' && fileId) {
       loadPublicFilePreview(fileId);
   } else if (examParam) {
-      start(examParam); 
+      openExamDetailModal({title: decodeURIComponent(examParam), duration: 20}); // Mock object to start flow
   } else {
       if(token) loadDash(); else goHome();
   }
@@ -954,6 +1055,7 @@ window.onload = function() {
 function goHome() {
     safePushState({}, '', window.location.pathname);
     document.getElementById('paywall-modal').style.display = 'none';
+    document.getElementById('exam-preview-modal').style.display = 'none';
     
     ['public-library-ui', 'public-exams-ui', 'file-preview-ui', 'auth-container', 'v-dash', 'v-exam'].forEach(id => document.getElementById(id).classList.add('hidden'));
     document.getElementById('landing-page').classList.remove('hidden');
@@ -1017,61 +1119,182 @@ function buyPlan(planName) {
     window.open(`https://wa.me/${waNum}?text=${encodeURIComponent('مرحباً، أرغب بالاشتراك في ' + planName)}`, '_blank');
 }
 
-// ✅ NEW: Public Exams Flow (Class -> Exams)
+// ==========================================
+// ✅ ADVANCED PUBLIC EXAMS FLOW (Class -> Subject -> Exam)
+// ==========================================
 function showPublicExams() {
     ['home-view', 'public-library-ui', 'file-preview-ui'].forEach(id => document.getElementById(id).classList.add('hidden'));
     document.getElementById('public-exams-ui').classList.remove('hidden');
+    
+    // Initial fetch of exam structure
+    if(Object.keys(guestExamsData).length === 0) {
+        callApi('getExamsList', {token:null}).then(r => {
+            if(r.success && r.subjects) {
+                // Re-organize data: Class -> Subject -> List
+                let organized = {};
+                r.subjects.forEach(group => {
+                    // 'group.name' is essentially the Subject name from the backend grouping
+                    // 'group.exams' is the list of exams
+                    group.exams.forEach(ex => {
+                        let cls = ex.classLevel || "عام";
+                        let subj = group.name || "عام";
+                        
+                        if(!organized[cls]) organized[cls] = {};
+                        if(!organized[cls][subj]) organized[cls][subj] = [];
+                        organized[cls][subj].push(ex);
+                    });
+                });
+                guestExamsData = organized;
+                renderExamClasses(Object.keys(organized));
+            }
+        });
+    } else {
+        renderExamClasses(Object.keys(guestExamsData));
+    }
+    resetExamsView();
+}
+
+function resetExamsView() {
     document.getElementById('exam-classes-grid').classList.remove('hidden');
+    document.getElementById('exam-subjects-grid').classList.add('hidden');
     document.getElementById('exam-list-container').classList.add('hidden');
     
-    // Fetch and render classes only if not done
-    callApi('getExamsList', {token:null}).then(r => {
-        if(r.success && r.subjects) {
-            let byClass = {};
-            r.subjects.forEach(group => {
-                group.exams.forEach(ex => {
-                    let cls = ex.classLevel || "عام";
-                    if(!byClass[cls]) byClass[cls] = [];
-                    byClass[cls].push(ex);
-                });
-            });
-            guestExamsData = byClass; // Store for navigation
-            renderExamClasses(Object.keys(byClass));
-        }
-    });
+    // Breadcrumbs
+    document.getElementById('bc-class').classList.add('hidden');
+    document.getElementById('bc-class').classList.remove('active');
+    document.getElementById('bc-subject').classList.add('hidden');
+    document.getElementById('bc-sep-1').classList.add('hidden');
+    document.getElementById('bc-sep-2').classList.add('hidden');
 }
 
 function renderExamClasses(classes) {
     let div = document.getElementById('exam-classes-grid');
     div.innerHTML = '';
+    
+    // Sort logic (Tawjihi first)
+    classes.sort((a,b) => {
+        if(a.includes('التوجيهي')) return -1;
+        if(b.includes('التوجيهي')) return 1;
+        return a.localeCompare(b);
+    });
+
     classes.forEach(cls => {
         div.innerHTML += `
-        <div class="feature-box" style="cursor:pointer" onclick="openClassExams('${cls}')">
-            <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
-            <h3>${cls}</h3>
-            <p style="color:#94a3b8">اضغط لعرض الامتحانات</p>
+        <div class="feature-box animate__animated animate__fadeInUp" style="cursor:pointer; padding:20px" onclick="showSubjectsForClass('${cls}')">
+            <div class="feature-icon" style="width:60px; height:60px; font-size:2em; background:rgba(245, 158, 11, 0.1); color:var(--gold)"><i class="fas fa-user-graduate"></i></div>
+            <h3 style="margin:10px 0; font-size:1.3em">${cls}</h3>
+            <p style="color:#94a3b8; font-size:0.9em; margin:0">اضغط لاختيار المادة</p>
         </div>`;
     });
-    if(classes.length === 0) div.innerHTML = '<p style="text-align:center; grid-column:1/-1">لا توجد امتحانات متاحة حالياً.</p>';
+    if(classes.length === 0) div.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:40px; color:#94a3b8">جاري تحميل البيانات...</p>';
 }
 
-function openClassExams(clsName) {
+function showSubjectsForClass(clsName) {
     document.getElementById('exam-classes-grid').classList.add('hidden');
-    document.getElementById('exam-list-container').classList.remove('hidden');
-    document.getElementById('selected-class-title').innerHTML = `<i class="fas fa-folder-open"></i> ${clsName}`;
+    document.getElementById('exam-subjects-grid').classList.remove('hidden');
+    document.getElementById('exam-list-container').classList.add('hidden');
     
-    let exams = guestExamsData[clsName] || [];
+    // Update Breadcrumbs
+    let bcClass = document.getElementById('bc-class');
+    bcClass.innerText = clsName;
+    bcClass.classList.remove('hidden');
+    bcClass.classList.add('active');
+    bcClass.onclick = null; // Current active level isn't clickable to go back to itself
+    document.getElementById('bc-sep-1').classList.remove('hidden');
+    
+    // Make previous crumb clickable
+    document.getElementById('bc-subject').classList.add('hidden');
+    document.getElementById('bc-sep-2').classList.add('hidden');
+
+    let subjects = Object.keys(guestExamsData[clsName] || {});
+    let div = document.getElementById('exam-subjects-grid');
+    div.innerHTML = '';
+    
+    subjects.forEach(subj => {
+        // Get icon style
+        let style = subjectIcons[subj] || subjectIcons['عام'];
+        let count = guestExamsData[clsName][subj].length;
+        
+        div.innerHTML += `
+        <div class="feature-box animate__animated animate__zoomIn" style="cursor:pointer; padding:20px; border-color:${style.color}33" onclick="showExamsForSubject('${clsName}', '${subj}')">
+            <div class="feature-icon" style="width:60px; height:60px; font-size:2em; background:${style.color}1a; color:${style.color}">
+                <i class="fas ${style.icon}"></i>
+            </div>
+            <h3 style="margin:10px 0; font-size:1.2em">${subj}</h3>
+            <span class="badge-item" style="background:${style.color}22; color:${style.color}">${count} امتحان</span>
+        </div>`;
+    });
+    
+    if(subjects.length === 0) div.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#94a3b8">لا توجد مواد لهذا الصف.</p>';
+}
+
+function showExamsForSubject(clsName, subjName) {
+    document.getElementById('exam-subjects-grid').classList.add('hidden');
+    document.getElementById('exam-list-container').classList.remove('hidden');
+    
+    // Update Breadcrumbs
+    let bcClass = document.getElementById('bc-class');
+    bcClass.classList.remove('active');
+    bcClass.style.cursor = 'pointer';
+    bcClass.onclick = function() { showSubjectsForClass(clsName); }; // Go back
+    
+    let bcSubj = document.getElementById('bc-subject');
+    bcSubj.innerText = subjName;
+    bcSubj.classList.remove('hidden');
+    bcSubj.classList.add('active');
+    document.getElementById('bc-sep-2').classList.remove('hidden');
+    
+    document.getElementById('selected-subject-title').innerHTML = `<i class="fas fa-folder-open"></i> ${subjName}`;
+    
+    let exams = guestExamsData[clsName][subjName] || [];
     let listDiv = document.getElementById('public-exams-list');
     listDiv.innerHTML = '';
     
     exams.forEach(x => {
         listDiv.innerHTML += `
-        <div class="exam-item fade-in" onclick="start('${x.title}')">
+        <div class="exam-item fade-in" onclick='openExamDetailModal(${JSON.stringify(x).replace(/'/g, "&apos;")})'>
             <i class="fas fa-file-signature exam-icon"></i>
-            <h3>${x.title}</h3>
-            <div style="font-size:12px; color:var(--green)">ابدأ الامتحان الآن</div>
+            <h3 class="exam-title-text">${x.title}</h3>
+            <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.9em; color:#94a3b8">
+                <span><i class="fas fa-clock"></i> ${x.duration || 20} دقيقة</span>
+                <span style="color:var(--green)">متاح</span>
+            </div>
         </div>`;
     });
+}
+
+function filterExamsInList() {
+    let term = document.getElementById('exam-search-input').value.toLowerCase();
+    let items = document.querySelectorAll('#public-exams-list .exam-item');
+    items.forEach(item => {
+        let title = item.querySelector('.exam-title-text').innerText.toLowerCase();
+        if(title.includes(term)) item.style.display = 'block';
+        else item.style.display = 'none';
+    });
+}
+
+// ✅ NEW: Exam Details Modal (Better UX than direct start)
+function openExamDetailModal(exam) {
+    st.currentPreviewExam = exam;
+    document.getElementById('ep-title').innerText = exam.title;
+    document.getElementById('ep-subtitle').innerText = "هل أنت جاهز لبدء التحدي؟";
+    document.getElementById('ep-time').innerText = exam.duration || "--";
+    document.getElementById('ep-q-count').innerText = "غير محدد"; // Backend doesn't send count in list, just title
+    
+    document.getElementById('exam-preview-modal').style.display = 'flex';
+}
+
+function closeExamPreview() {
+    document.getElementById('exam-preview-modal').style.display = 'none';
+    st.currentPreviewExam = null;
+}
+
+function startExamConfirmed() {
+    if(st.currentPreviewExam) {
+        let t = st.currentPreviewExam.title;
+        closeExamPreview();
+        start(t);
+    }
 }
 
 function showPublicLibrary() {
