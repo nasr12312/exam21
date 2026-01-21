@@ -7,24 +7,31 @@
     
     <!-- =================================================================================
          منصة نبراس التعليمية | الإصدار الشامل المتقدم (V20.0 - Enhanced Navigation & UI)
-         تم إضافة نظام تصنيف هرمي (صفوف -> مواد -> امتحانات) + واجهات تفاعلية جديدة
+         تم دمج تحسينات SEO الديناميكية (Dynamic Meta Tags & Structured Data)
          ================================================================================= -->
-    <title>منصة نبراس التعليمية | المنهاج الأردني</title>
     
-    <!-- تحسينات السيو (SEO) -->
-    <meta name="description" content="منصة نبراس التعليمية: أقوى موقع تعليمي للمنهاج الأردني. شروحات مصورة، امتحانات إلكترونية محوسبة، دوسيات، وأوراق عمل من الصف الأول حتى التوجيهي. تجربة تعليمية تفاعلية مع نخبة من المعلمين.">
+    <!-- ✅ [SEO] عنوان الصفحة الديناميكي (يتغير حسب الامتحان أو الملف) -->
+    <title><?= (typeof pageTitle !== 'undefined') ? pageTitle : 'منصة نبراس التعليمية | المنهاج الأردني' ?></title>
     
-    <meta name="keywords" content="منصة نبراس, مدرسة نبراس, تعليم الكتروني, المنهاج الأردني, توجيهي 2007, توجيهي 2008, امتحانات محوسبة, اختبارات الكترونية, أوراق عمل, دوسيات pdf, شرح لغة عربية, شرح رياضيات, شرح فيزياء, شرح كيمياء, شرح احياء, شرح علوم ارض, شرح انجليزي, شرح تاريخ اردن, شرح تربية اسلامية, الصف الاول, الصف الثاني, الصف الثالث, الصف الرابع, الصف الخامس, الصف السادس, الصف السابع, الصف الثامن, الصف التاسع, الصف العاشر, الاول ثانوي, تأسيس توجيهي, مكثفات توجيهي, اسئلة سنوات سابقة, اسئلة وزارية, متوقع, مقترح, وتد, جو اكاديمي, ابواب, منهاجي, درسك, اوبن ايمس">
-    
+    <!-- ✅ [SEO] الوصف والكلمات المفتاحية الديناميكية -->
+    <meta name="description" content="<?= (typeof pageDesc !== 'undefined') ? pageDesc : 'منصة نبراس التعليمية: أقوى موقع تعليمي للمنهاج الأردني. شروحات مصورة، امتحانات إلكترونية محوسبة.' ?>">
+    <meta name="keywords" content="<?= (typeof pageKeywords !== 'undefined') ? pageKeywords : 'منصة نبراس, تعليم الكتروني, المنهاج الأردني, امتحانات محوسبة, توجيهي' ?>">
     <meta name="author" content="منصة نبراس التعليمية">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph -->
-    <meta property="og:title" content="منصة نبراس التعليمية | طريقك نحو التفوق">
-    <meta property="og:description" content="انضم لأضخم منصة تعليمية للمنهاج الأردني. امتحانات، شروحات، وملفات حصرية.">
-    <meta property="og:image" content="https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png">
-    <meta property="og:url" content="https://www.nebras.school">
+    <!-- ✅ [SEO] Open Graph الديناميكي (للمشاركة عبر فيسبوك وواتساب) -->
+    <meta property="og:title" content="<?= (typeof pageTitle !== 'undefined') ? pageTitle : 'منصة نبراس التعليمية' ?>">
+    <meta property="og:description" content="<?= (typeof pageDesc !== 'undefined') ? pageDesc : 'انضم لأضخم منصة تعليمية للمنهاج الأردني.' ?>">
+    <meta property="og:image" content="<?= (typeof pageImage !== 'undefined') ? pageImage : 'https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png' ?>">
+    <meta property="og:url" content="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : 'https://www.nebras.school' ?>">
     <meta property="og:type" content="website">
+
+    <!-- ✅ [SEO] البيانات المنظمة (JSON-LD Schema) لمحركات البحث -->
+    <? if (typeof jsonLd !== 'undefined' && jsonLd) { ?>
+    <script type="application/ld+json">
+    <?!= jsonLd ?>
+    </script>
+    <? } ?>
 
     <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
@@ -728,6 +735,7 @@
     <footer class="landing-footer">
        <div class="social-links" id="footer-socials"></div>
        <p>&copy; 2024 منصة نبراس التعليمية. جميع الحقوق محفوظة.</p>
+       <a href="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : '#' ?>?view=sitemap" style="opacity:0.1; font-size:10px">Sitemap</a>
     </footer>
   </div>
 </div>
@@ -1610,4 +1618,3 @@ function joinClassGroup() { let c=localStorage.getItem('cl'); let l=publicSettin
 </script>
 </body>
 </html>
-
