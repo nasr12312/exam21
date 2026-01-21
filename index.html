@@ -6,31 +6,44 @@
     <base target="_top">
     
     <!-- =================================================================================
-         منصة نبراس التعليمية | الإصدار الشامل المتقدم (V20.0 - Enhanced Navigation & UI)
-         تم دمج تحسينات SEO الديناميكية (Dynamic Meta Tags & Structured Data)
+         منصة نبراس التعليمية | الإصدار الشامل المتقدم (V20.2 - Google SEO Optimized)
+         تم دمج روابط النشر والدومين الخاصة بك
          ================================================================================= -->
     
-    <!-- ✅ [SEO] عنوان الصفحة الديناميكي (يتغير حسب الامتحان أو الملف) -->
+    <!-- 🔥 [SEO IMPORTANT] كود التحقق من جوجل -->
+    <!-- إذا كان لديك كود HTML Tag من Google Search Console، ضعه هنا بدلاً من السطر التالي -->
+    <meta name="google-site-verification" content="PASTE_YOUR_GOOGLE_VERIFICATION_CODE_HERE" />
+
+    <!-- ✅ [SEO] عنوان الصفحة -->
     <title><?= (typeof pageTitle !== 'undefined') ? pageTitle : 'منصة نبراس التعليمية | المنهاج الأردني' ?></title>
     
-    <!-- ✅ [SEO] الوصف والكلمات المفتاحية الديناميكية -->
+    <!-- ✅ [SEO] الوصف والكلمات المفتاحية -->
     <meta name="description" content="<?= (typeof pageDesc !== 'undefined') ? pageDesc : 'منصة نبراس التعليمية: أقوى موقع تعليمي للمنهاج الأردني. شروحات مصورة، امتحانات إلكترونية محوسبة.' ?>">
     <meta name="keywords" content="<?= (typeof pageKeywords !== 'undefined') ? pageKeywords : 'منصة نبراس, تعليم الكتروني, المنهاج الأردني, امتحانات محوسبة, توجيهي' ?>">
     <meta name="author" content="منصة نبراس التعليمية">
-    <meta name="robots" content="index, follow">
     
-    <!-- ✅ [SEO] ربط خريطة الموقع (Sitemap) تلقائياً لمحركات البحث -->
-    <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : 'https://www.nebras.school' ?>?view=sitemap">
-    <link rel="canonical" href="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : 'https://www.nebras.school' ?>">
+    <!-- ✅ [SEO] تعليمات روبوتات البحث (Google Bots) -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    
+    <!-- ✅ [SEO] الروابط الأساسية (تم تحديثها لرابط المنصة) -->
+    <link rel="canonical" href="https://www.nebras.school/">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://www.nebras.school/?view=sitemap">
 
-    <!-- ✅ [SEO] Open Graph الديناميكي (للمشاركة عبر فيسبوك وواتساب) -->
+    <!-- ✅ [SEO] Open Graph (Facebook/WhatsApp) -->
     <meta property="og:title" content="<?= (typeof pageTitle !== 'undefined') ? pageTitle : 'منصة نبراس التعليمية' ?>">
     <meta property="og:description" content="<?= (typeof pageDesc !== 'undefined') ? pageDesc : 'انضم لأضخم منصة تعليمية للمنهاج الأردني.' ?>">
     <meta property="og:image" content="<?= (typeof pageImage !== 'undefined') ? pageImage : 'https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png' ?>">
-    <meta property="og:url" content="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : 'https://www.nebras.school' ?>">
+    <meta property="og:url" content="https://www.nebras.school/">
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_JO">
 
-    <!-- ✅ [SEO] البيانات المنظمة (JSON-LD Schema) لمحركات البحث -->
+    <!-- ✅ [SEO] Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= (typeof pageTitle !== 'undefined') ? pageTitle : 'منصة نبراس التعليمية' ?>">
+    <meta name="twitter:description" content="<?= (typeof pageDesc !== 'undefined') ? pageDesc : 'أقوى منصة تعليمية للمنهاج الأردني.' ?>">
+    <meta name="twitter:image" content="<?= (typeof pageImage !== 'undefined') ? pageImage : 'https://i.ibb.co/VrJsk41/Gemini-Generated-Image-u0u4kwu0u4kwu0u4.png' ?>">
+
+    <!-- ✅ [SEO] البيانات المنظمة (JSON-LD Schema) -->
     <? if (typeof jsonLd !== 'undefined' && jsonLd) { ?>
     <script type="application/ld+json">
     <?!= jsonLd ?>
@@ -739,7 +752,7 @@
     <footer class="landing-footer">
        <div class="social-links" id="footer-socials"></div>
        <p>&copy; 2024 منصة نبراس التعليمية. جميع الحقوق محفوظة.</p>
-       <a href="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : '#' ?>?view=sitemap" style="opacity:0.1; font-size:10px">Sitemap</a>
+       <a href="https://www.nebras.school/?view=sitemap" style="opacity:0.1; font-size:10px">Sitemap</a>
     </footer>
   </div>
 </div>
@@ -1275,13 +1288,17 @@ function showExamsForSubject(clsName, subjName) {
     });
 }
 
+// ✅ FIX: Robust exam search filter
 function filterExamsInList() {
-    let term = document.getElementById('exam-search-input').value.toLowerCase();
+    let term = document.getElementById('exam-search-input').value.toLowerCase().trim();
     let items = document.querySelectorAll('#public-exams-list .exam-item');
     items.forEach(item => {
-        let title = item.querySelector('.exam-title-text').innerText.toLowerCase();
-        if(title.includes(term)) item.style.display = 'block';
-        else item.style.display = 'none';
+        let titleEl = item.querySelector('.exam-title-text');
+        if(titleEl) {
+            let title = titleEl.innerText.toLowerCase();
+            if(title.includes(term)) item.style.display = 'block';
+            else item.style.display = 'none';
+        }
     });
 }
 
@@ -1340,9 +1357,16 @@ function renderLibGrid(list) {
     } else { div.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#94a3b8">لا توجد نتائج</p>'; }
 }
 
+// ✅ FIX: Robust library search filter (Handles nulls)
 function filterLibraryLocal() {
-    let term = document.getElementById('lib-search-input').value.toLowerCase();
-    let filtered = publicLibData.filter(f => f.title.toLowerCase().includes(term) || f.subject.toLowerCase().includes(term) || f.cls.toLowerCase().includes(term));
+    let term = document.getElementById('lib-search-input').value.toLowerCase().trim();
+    let filtered = publicLibData.filter(f => {
+       // Convert all fields to strings and lowercase safely to prevent crashes on null values
+       let t = (f.title || '').toString().toLowerCase();
+       let s = (f.subject || '').toString().toLowerCase();
+       let c = (f.cls || '').toString().toLowerCase();
+       return t.includes(term) || s.includes(term) || c.includes(term);
+    });
     renderLibGrid(filtered);
 }
 
