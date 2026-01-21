@@ -19,6 +19,10 @@
     <meta name="author" content="منصة نبراس التعليمية">
     <meta name="robots" content="index, follow">
     
+    <!-- ✅ [SEO] ربط خريطة الموقع (Sitemap) تلقائياً لمحركات البحث -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : 'https://www.nebras.school' ?>?view=sitemap">
+    <link rel="canonical" href="<?= (typeof deploymentUrl !== 'undefined') ? deploymentUrl : 'https://www.nebras.school' ?>">
+
     <!-- ✅ [SEO] Open Graph الديناميكي (للمشاركة عبر فيسبوك وواتساب) -->
     <meta property="og:title" content="<?= (typeof pageTitle !== 'undefined') ? pageTitle : 'منصة نبراس التعليمية' ?>">
     <meta property="og:description" content="<?= (typeof pageDesc !== 'undefined') ? pageDesc : 'انضم لأضخم منصة تعليمية للمنهاج الأردني.' ?>">
